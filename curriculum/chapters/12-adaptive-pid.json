@@ -1,0 +1,48 @@
+{
+  "schema_ver": 1,
+  "id": "12-adaptive-pid",
+  "title": "적응형 PID",
+  "part": "D",
+  "order": 12,
+  "status": "ready",
+  "requires": ["10-validation"],
+  "est_minutes": 70,
+  "objectives": [
+    "오차 크기와 공의 종류(K_b)에 따라 고정 게인이 최선이 아닌 이유를 설명한다",
+    "게인 스케줄링의 경계 출력 튐을 계산하고 보간·bumpless 전환으로 완화한다",
+    "MRAC(MIT 규칙)의 기준 모델·적응 이득·투영의 역할을 설명하고 고정 PID와 검증 도구로 비교한다"
+  ],
+  "keywords": ["적응 제어", "게인 스케줄링", "bumpless 전환", "MRAC", "MIT 규칙", "기준 모델", "적응 이득", "모델 오차"],
+  "slides": [50],
+  "widgets": ["schedule-editor", "adaptation-plot", "controller-panel", "live-plot", "validation-run", "compare-bars", "overlay-plot"],
+  "predictions": [
+    { "id": "p1", "type": "numeric", "q": "오차 10 cm(속도 0)에서 '멂'→'가까움' 전환 시 P 항 명령 변화는 몇 도?", "unit": "°" },
+    { "id": "p2", "type": "short", "q": "γ를 1에서 10으로 키우면 게인 시계열은 어떤 모양이 될까?" }
+  ],
+  "practice": {
+    "modes": ["device", "virtual", "sample"],
+    "controller": "gain-schedule",
+    "controllers_allowed": ["gain-schedule", "mrac", "pid"],
+    "safe_defaults": { "kp_near": 1.0, "ki_near": 0, "kd_near": 1.2, "kp_far": 0.6, "ki_far": 0, "kd_far": 1.8, "boundary": 0.10, "blend": "switch", "blend_width": 0.04, "bumpless": false },
+    "param_limits": { "kp_near": [0, 4], "ki_near": [0, 0.5], "kd_near": [0, 6], "kp_far": [0, 4], "ki_far": [0, 0.5], "kd_far": [0, 6], "boundary": [0.03, 0.2], "blend_width": [0.01, 0.1] },
+    "setpoint_profile": { "type": "staircase", "levels_mm": [120, 170, 270, 170], "hold_s": 6 },
+    "angle_limit_deg": 20,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball+servo",
+    "repeat": 3,
+    "done_when": "repeat_completed"
+  },
+  "sample_sessions": [ { "slot": "gs-best" }, { "slot": "gs-legacy" }, { "slot": "mrac-best" } ],
+  "promote_slots": ["gs-best", "mrac-best"],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "슬라이드 50 게인(Kp 가까움 2.3884, 멂 0.66861)에서 오차 0.10 m, 속도 0일 때 경계를 넘는 순간 P 항 명령 변화(°)는? (소수 첫째 자리)", "answer": 9.9, "tol_abs": 0.1, "unit": "°", "explain": "ΔKp·e = 1.71979 × 0.10 = 0.172 rad = 9.85°. 잡음으로 경계를 오가면 이 크기로 반복해서 튄다.", "answer_source": "analytic: (kp_near − kp_far)·boundary, gain-schedule.js 기본값" },
+    { "id": "q2", "type": "numeric", "q": "J = c·m·R²인 공에서 K_b = g·d/(L(1 + c)). 속이 찬 공(c = 2/5)의 K_b는 속이 빈 공(c = 2/3)의 몇 배인가? (소수 둘째 자리)", "answer": 1.19, "tol_abs": 0.005, "unit": "배", "explain": "(1 + 2/3)/(1 + 2/5) = 1.667/1.4 = 1.190. 질량·반지름이 아니라 공의 모양이 K_b를 바꾼다.", "answer_source": "analytic: plant.plantParams 식에서 J = c·m·R² 대입" },
+    { "id": "q3", "type": "numeric", "q": "기준 모델 ζ = 0.9, ωn = 1.2 rad/s의 극점 실수부 크기(1/s)는? (소수 둘째 자리)", "answer": 1.08, "tol_abs": 0.005, "unit": "1/s", "explain": "s = −ζωn ± jωn√(1 − ζ²) = −1.08 ± j0.52. 실수부 크기 ζωn = 1.08이 응답이 줄어드는 빠르기다.", "answer_source": "analytic: 2차 시스템 극점 (mrac.js 기본값)" },
+    { "id": "q4", "type": "choice", "q": "MRAC가 명령이 포화된 동안 적응을 멈추는 이유는?", "choices": ["계산량을 줄이려고", "포화 중에는 게인을 바꿔도 응답이 달라지지 않아, 그때의 오차로 게인을 고치면 잘못된 방향으로 가므로", "포화 중에는 기준 모델이 멈추므로", "투영 범위를 넘지 않게 하려고"], "answer": 1, "explain": "MIT 규칙은 게인이 출력에 주는 영향(감도)을 가정한다. 포화되면 그 영향이 사라지므로 오차를 게인 탓으로 돌리면 게인이 엉뚱하게 표류한다." },
+    { "id": "q5", "type": "choice", "q": "게인 스케줄링에서 bumpless 전환이 하는 일은?", "choices": ["경계를 없앤다", "게인이 바뀌는 순간 출력 차이를 보정 항으로 흡수해 계단을 없애고 서서히 넘긴다", "적분을 0으로 만든다", "경계 근처에서 제어를 멈춘다"], "answer": 1, "explain": "출력 차이를 b 항으로 흡수하고 시정수 0.5 s로 감쇠시킨다. 게인 전환은 그대로이고 출력만 연속이 된다." },
+    { "id": "q6", "type": "short", "q": "게인 스케줄링과 MRAC 중 '공을 탁구공에서 쇠구슬로 바꾸는 상황'에 더 적합한 것은? 이유와 한계를 함께 쓰라.", "model_answer": "MRAC가 더 적합하다. 게인 스케줄링은 오차 크기를 기준으로 미리 정한 게인을 쓰므로 공의 종류(K_b 변화)를 모른다. MRAC는 기준 모델과의 차이로 K_b 변화의 영향을 감지해 게인을 고친다. 한계: 적응에 시간이 걸리고, γ가 크면 적응 루프가 불안정해지며, 포화·잡음이 많으면 적응이 잘못될 수 있다. 공 종류를 미리 안다면 공별 게인표(스케줄링 변수 = 공 종류)도 가능하다.", "rubric": ["스케줄링 변수(오차)와 K_b 변화의 불일치 지적", "MRAC의 적응 원리", "MRAC의 한계(γ, 포화, 시간)"] }
+  ],
+  "instructor_notes": "worksheets/12-adaptive-pid.md"
+}

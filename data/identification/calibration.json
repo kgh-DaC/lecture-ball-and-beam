@@ -1,0 +1,54 @@
+{
+  "schema_ver": 1,
+  "created_at": "2026-11-04T00:00:00+09:00",
+  "servo_model": "HS5645MG",
+  "servo_pin": 9,
+  "provenance": "real",
+  "basis": "servo_horn",
+  "method": "서보각 0/90/180°를 각 10회 이동·정착 후 A0 측정, 점별 평균(사용자 실측)",
+  "source": "사용자 실측(2026-11-04, 0/90/180°, 각 n=10)",
+  "points": [
+    {
+      "cmd_cdeg": -9000,
+      "servo_deg": 0,
+      "pot_raw_mean": 60,
+      "pot_raw_std": null,
+      "n": 10
+    },
+    {
+      "cmd_cdeg": 0,
+      "servo_deg": 90,
+      "pot_raw_mean": 330,
+      "pot_raw_std": null,
+      "n": 10
+    },
+    {
+      "cmd_cdeg": 9000,
+      "servo_deg": 180,
+      "pot_raw_mean": 598,
+      "pot_raw_std": null,
+      "n": 10
+    }
+  ],
+  "fit": {
+    "order": 1,
+    "a_cdeg_per_lsb": 33.45724907063197,
+    "b_cdeg": -11018.587360594795,
+    "c": 0
+  },
+  "line_lsb": {
+    "slope_lsb_per_deg": 2.988888888888889,
+    "raw_at_0": 60.333333333333314,
+    "raw_at_90": 329.3333333333333,
+    "residuals_lsb": [
+      -0.3333,
+      0.6667,
+      -0.3333
+    ],
+    "monotonic": "up"
+  },
+  "residual_max_cdeg": 22.3,
+  "warn": null,
+  "dir_checked": false,
+  "notes": "사용자 실측(2026-11-04): 서보각 0/90/180°로 각 10회 이동 → A0 평균(σ 미기록 = null). 최소제곱 raw = r0 + k·서보각(서보각 = 명령, 오차 없음으로 회귀). trim 0·dir 1 기준 cmd = (서보각 − 90°)·100 이므로 cdeg = a·raw + b 는 서보 혼 각도 좌표다 — 빔 수평은 조립 후 trim 으로 맞춘다. raw 가 서보각과 함께 증가(예전 슬라이드 67 임시값은 감소 방향: 포텐쇼미터 배선 방향 차이, calibration-simulated-slide67.json 에 보존)."
+}

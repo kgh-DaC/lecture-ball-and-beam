@@ -1,0 +1,252 @@
+{
+ "schema_ver": 1,
+ "kind": "twin_design_vs_twin",
+ "provenance": "simulated",
+ "scenario_id": "step-nominal",
+ "seed": 1,
+ "params_ref": "twin-nominal-v1",
+ "design_model": "ball_servo (ASSUMED_SERVO, α 0.2, Ts 0.06, noise off)",
+ "rows": [
+  {
+   "label": "PD 슬라이드47",
+   "id": "pid",
+   "params": {
+    "kp": 0.574,
+    "ki": 0,
+    "kd": 0.994,
+    "n_filt": 10,
+    "d_on": "error"
+   },
+   "design": {
+    "po": 54.04510558711615,
+    "ts": 7.319999999999999,
+    "ess_mm": 0.6197691522761006,
+    "itae": 0.24690912570747484,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 67.44344381998951,
+    "ts": 8.255,
+    "ess_mm": 8.58159278904047,
+    "itae": 0.5891091969571322,
+    "final_err_mm": 13.044829532614614,
+    "success": false,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 5.7058638987451875
+   }
+  },
+  {
+   "label": "PD 슬라이드48",
+   "id": "pid",
+   "params": {
+    "kp": 2.3884,
+    "ki": 0,
+    "kd": 2.0684,
+    "n_filt": 10,
+    "d_on": "error"
+   },
+   "design": {
+    "po": 90.19128247667415,
+    "ts": null,
+    "ess_mm": 1.4343459848928097,
+    "itae": 0.38812900421326063,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 115.9603187786991,
+    "ts": null,
+    "ess_mm": 2.626649773385364,
+    "itae": 0.624921257771626,
+    "final_err_mm": 12.929953794545781,
+    "success": false,
+    "status": "ok",
+    "u_sat_ratio": 0.005,
+    "meas_err_rms_mm": 9.468874431034047
+   }
+  },
+  {
+   "label": "PD p1",
+   "id": "pid",
+   "params": {
+    "kp": 1,
+    "ki": 0,
+    "kd": 1.5,
+    "n_filt": 8,
+    "d_on": "measurement"
+   },
+   "design": {
+    "po": 10.913616389552622,
+    "ts": 5.22,
+    "ess_mm": 0.3689843599249676,
+    "itae": 0.10605091164827708,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 41.28696601071884,
+    "ts": null,
+    "ess_mm": 0.27577752274776657,
+    "itae": 0.3156522311662666,
+    "final_err_mm": 6.97532296289171,
+    "success": true,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 5.63434170585207
+   }
+  },
+  {
+   "label": "PD 서보 재설계",
+   "id": "pid",
+   "params": {
+    "kp": 0.5,
+    "ki": 0,
+    "kd": 1.25,
+    "n_filt": 8,
+    "d_on": "measurement"
+   },
+   "design": {
+    "po": 0.11022483947475954,
+    "ts": 6.4799999999999995,
+    "ess_mm": 0.42326140698689674,
+    "itae": 0.20047125915348968,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 15.156554026539135,
+    "ts": null,
+    "ess_mm": 3.445302365932573,
+    "itae": 0.272727148204301,
+    "final_err_mm": 5.969698168027634,
+    "success": true,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 4.751969131209967
+   }
+  },
+  {
+   "label": "PID TL",
+   "id": "pid",
+   "params": {
+    "kp": 1.46,
+    "ki": 0.1637,
+    "kd": 2.439,
+    "n_filt": 8,
+    "d_on": "measurement"
+   },
+   "design": {
+    "po": 10.950829827390814,
+    "ts": 8.280000000000001,
+    "ess_mm": 4.898344339784144,
+    "itae": 0.28097465373228303,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 44.21072703169405,
+    "ts": null,
+    "ess_mm": 3.612080200798673,
+    "itae": 0.4248256649897173,
+    "final_err_mm": 14.24305557951348,
+    "success": false,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 6.840077537465551
+   }
+  },
+  {
+   "label": "LQR",
+   "id": "lqr",
+   "params": {
+    "q_e": 400,
+    "q_edot": 25,
+    "q_theta": 33,
+    "r": 3.65,
+    "integral": false,
+    "q_i": 50,
+    "observer": "luenberger",
+    "obs_speed": 3,
+    "theta_meas": true
+   },
+   "design": {
+    "po": 3.188456267920413,
+    "ts": 1.8599999999999999,
+    "ess_mm": 0.0007460992907937225,
+    "itae": 0.03653223541526909,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 10.341620497961182,
+    "ts": null,
+    "ess_mm": 3.7288843048926266,
+    "itae": 0.2351337505972778,
+    "final_err_mm": 8.585345310730048,
+    "success": true,
+    "status": "ok",
+    "u_sat_ratio": 0.01,
+    "meas_err_rms_mm": 5.633776411257102
+   }
+  },
+  {
+   "label": "LQI",
+   "id": "lqr",
+   "params": {
+    "q_e": 400,
+    "q_edot": 25,
+    "q_theta": 33,
+    "r": 3.65,
+    "integral": true,
+    "q_i": 50,
+    "observer": "luenberger",
+    "obs_speed": 3,
+    "theta_meas": true
+   },
+   "design": {
+    "po": 22.060643059443212,
+    "ts": 5.1,
+    "ess_mm": 0.9785248610262309,
+    "itae": 0.16056645030507374,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 36.986828487692286,
+    "ts": null,
+    "ess_mm": 0.8576336911952365,
+    "itae": 0.34726059110733826,
+    "final_err_mm": 6.28547769063826,
+    "success": true,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 5.511466371719322
+   }
+  },
+  {
+   "label": "SMC sat",
+   "id": "smc",
+   "params": {
+    "lambda": 1,
+    "eta": 0.1,
+    "phi": 0.05,
+    "switch": "sat",
+    "kb_nominal": 0.8709,
+    "observer": "luenberger"
+   },
+   "design": {
+    "po": 0.03181420888537233,
+    "ts": 3.7199999999999998,
+    "ess_mm": 0.02479120930579115,
+    "itae": 0.08814208963144016,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 10.644013852435236,
+    "ts": null,
+    "ess_mm": 10.624137218310265,
+    "itae": 0.3122523126675402,
+    "final_err_mm": 15.569935207112195,
+    "success": false,
+    "status": "ok",
+    "u_sat_ratio": 0.005,
+    "meas_err_rms_mm": 5.064709088839625
+   }
+  }
+ ]
+}

@@ -1,0 +1,33 @@
+{
+  "schema_ver": 1,
+  "id": "09-sample-data",
+  "title": "샘플 데이터 분석",
+  "part": "C",
+  "order": 9,
+  "status": "ready",
+  "requires": ["06-realtime-pid", "08-model-compare"],
+  "est_minutes": 50,
+  "objectives": [
+    "샘플의 출처·조건 배지를 읽고 비교 가능한 데이터인지 판단한다",
+    "최고 사례 점수(정규화 가중합)를 손으로 계산하고 가중치가 순위에 주는 영향을 설명한다",
+    "비교 화면의 조건 검사·지표·점수·상충 경고를 근거로 승격 여부를 결정한다"
+  ],
+  "keywords": ["샘플", "provenance", "조건 불명", "최고 사례", "min-max 정규화", "가중치", "승격", "상충"],
+  "slides": [48, 49],
+  "widgets": ["sample-browser", "overlay-plot", "score-weights", "sample-compare", "promote-sample"],
+  "predictions": [
+    { "id": "p1", "type": "choice", "q": "가중치를 ITAE에만 1.0으로 주면 1등은?", "choices": ["A", "B", "C"] },
+    { "id": "p2", "type": "short", "q": "ITAE는 최고지만 5% 밴드 안에서 잔진동이 계속되는 세션을 승격해야 할까?" }
+  ],
+  "sample_sessions": [ { "slot": "pid-legacy" }, { "slot": "pid-best" }, { "slot": "pid-servo-redesign" } ],
+  "promote_slots": ["pid-best", "pid-servo-redesign"],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "본문 4.1절 표의 후보 B의 점수는? (기본 가중치 0.4/0.3/0.2/0.1, 소수 둘째 자리)", "answer": 0.6, "tol_abs": 0.005, "unit": "", "explain": "B의 정규화 값: ITAE 0, t_s 1, P.O. 1, u_tv 1 → 0.4·0 + 0.3·1 + 0.2·1 + 0.1·1 = 0.60. A = 0.34, C = 0.40이므로 1등은 A.", "answer_source": "computed: store/best.score (A 0.34, B 0.60, C 0.40)" },
+    { "id": "q2", "type": "choice", "q": "같은 표에서 가중치를 ITAE 0.1, t_s 0.2, P.O. 0.6, u_tv 0.1로 바꾸면 1등은?", "choices": ["A", "B", "C"], "answer": 2, "explain": "C는 ITAE가 가장 나쁘지만 오버슈트·정착시간·u_tv가 가장 좋다. 점수 A 0.34, B 0.90, C 0.10. 가중치가 순위를 바꾼다.", "answer_source": "computed: store/best.score" },
+    { "id": "q3", "type": "choice", "q": "엑셀 유래 샘플(real-xlsx-*)을 내 표준 스텝 세션과 우열 비교하지 않는 가장 중요한 이유는?", "choices": ["실측이 아니므로", "게인 단위·시간축·설정값 등 조건이 불명이거나 달라서", "데이터가 오래되어서", "엑셀 형식이라 정밀도가 낮아서"], "answer": 1, "explain": "엑셀 샘플은 실측이지만 게인 단위(rad/m인지 °/cm인지), 샘플 주기(50 ms 가정), 설정값(220 mm 고정)이 다르거나 불명이다. 조건이 다르면 우열을 단정할 수 없다." },
+    { "id": "q4", "type": "choice", "q": "포화 비율 15%, 유실 1%인 세션의 ITAE가 묶음에서 가장 작다. 최고 사례 선정에서 이 세션은?", "choices": ["1등이 된다", "자격 검사에서 제외된다", "점수에 벌점을 받는다", "유실이 적어서 가산점을 받는다"], "answer": 1, "explain": "포화 비율 10%를 넘으면 후보에서 빠진다. 각도 한계가 응답을 만든 것이라 제어기 성능으로 볼 수 없기 때문이다." },
+    { "id": "q5", "type": "multi", "q": "승격 비교 화면의 조건 검사가 대조하는 항목을 모두 고르라.", "choices": ["제어기", "설정값 프로파일", "서보 모델", "샘플 주기", "실험한 학생 이름", "모델 종류"], "answer": [0, 1, 2, 3, 5], "explain": "조건 검사는 실험 결과에 영향을 주는 조건(제어기, 프로파일, 서보, 샘플 주기, 모델 종류)을 본다. 누가 실험했는지는 조건이 아니다." },
+    { "id": "q6", "type": "short", "q": "후보 세션이 점수는 기존 샘플보다 낮지만(우위) 오버슈트는 4%p 크다. 승격(교체), 별도 추가, 보류 중 무엇을 고르겠는가? 근거를 쓰라.", "model_answer": "정답은 하나가 아니다. 예: 응용에서 오버슈트가 중요하지 않고 조건이 같으며 반복 시행에서도 우위가 유지되면 교체. 오버슈트 제한이 중요한 응용이거나 시행이 한 번뿐이라면 별도 추가 또는 보류. 핵심은 조건 동일 여부, 상충하는 지표의 중요도, 시행 횟수를 근거로 드는 것이다.", "rubric": ["조건이 같은지 확인", "상충하는 지표(오버슈트)의 중요도 판단", "시행 횟수(우연 가능성) 언급", "선택과 근거가 일치"] }
+  ],
+  "instructor_notes": "worksheets/09-sample-data.md"
+}

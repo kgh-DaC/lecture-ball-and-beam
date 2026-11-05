@@ -1,0 +1,48 @@
+{
+  "schema_ver": 1,
+  "id": "05-nyquist",
+  "title": "나이키스트·보드로 PID 설계",
+  "part": "B",
+  "order": 5,
+  "status": "ready",
+  "requires": ["04-root-locus"],
+  "est_minutes": 60,
+  "objectives": [
+    "볼앤빔 개루프의 보드·나이키스트 선도를 읽고 이득·위상·지연 여유를 구한다",
+    "센서 필터와 샘플링 지연이 위상여유를 깎는 정도를 계산한다",
+    "위상여유 목표(≥ 35°, D 필터 N = 8·센서 필터·샘플링 지연 포함)로 PD 게인을 재조정하고, D 필터가 위상여유를 제한하는 이유를 설명한다"
+  ],
+  "keywords": ["주파수 응답", "보드 선도", "나이키스트", "위상여유", "이득여유", "지연여유", "센서 필터"],
+  "slides": [30, 48, 49],
+  "widgets": ["bode", "margin-readout", "nyquist", "root-locus", "controller-panel", "live-plot"],
+  "predictions": [
+    { "id": "p1", "type": "numeric", "q": "슬라이드 48 PD(위젯 설정 D 필터 N = 8, 지연 없을 때 약 51.5°)에 센서 필터(α = 0.2)를 넣으면 위상여유는 몇 도가 될까?", "unit": "°" },
+    { "id": "p2", "type": "choice", "q": "실기(서보 지연 포함)의 오버슈트는 가상 장치와 비교해?", "choices": ["더 크다", "더 작다", "비슷하다"] },
+    { "id": "p3", "type": "short", "q": "D 필터(N = 8)가 있으면 Kd/Kp를 키워도 위상여유가 잘 오르지 않는 이유는?" }
+  ],
+  "practice": {
+    "modes": ["virtual"],
+    "controller": "pid",
+    "controllers_allowed": ["pid"],
+    "safe_defaults": { "kp": 2.3884, "ki": 0, "kd": 2.0684, "n_filt": 8, "d_on": "measurement" },
+    "param_limits": { "kp": [0, 6], "ki": [0, 1], "kd": [0, 6] },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 20,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ { "slot": "pd-design" } ],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "P(s) = 0.8709/s²의 ω = 1 rad/s에서 크기(dB)는?", "answer": -1.20, "tol_abs": 0.02, "unit": "dB", "explain": "|P(j1)| = 0.8709 → 20·log10(0.8709) ≈ −1.20 dB. 위상은 모든 주파수에서 −180°다.", "answer_source": "analytic: 20log10(K_b/ω²) (analysis.bode, python-control 대조 완료: tests/control/check_chapters.mjs)" },
+    { "id": "q2", "type": "numeric", "q": "위상여유 60°, 이득교차주파수 2 rad/s인 루프의 지연여유(s)는?", "answer": 0.5236, "tol_rel": 0.005, "unit": "s", "explain": "지연여유 = PM(rad)/ωgc = 1.0472/2 ≈ 0.524 s.", "answer_source": "analytic: PM/ωgc 정의 (analysis.margins delay_margin_s 정의와 같음)" },
+    { "id": "q3", "type": "numeric", "q": "순수 지연 0.03 s가 ω = 2 rad/s에서 만드는 위상 지연(°)은?", "answer": 3.44, "tol_abs": 0.05, "unit": "°", "explain": "ωT = 0.06 rad ≈ 3.44°. 샘플링(ZOH) 지연 자체는 크지 않다. 센서 필터가 훨씬 크다(q4).", "answer_source": "analytic: ωT" },
+    { "id": "q4", "type": "numeric", "q": "센서 필터(T_f = 0.24 s)가 ω = 1.91 rad/s에서 만드는 위상 지연(°)은?", "answer": 24.6, "tol_abs": 0.2, "unit": "°", "explain": "atan(0.24 × 1.91) = atan(0.458) ≈ 24.6°. 이 지연이 D 필터 없는 순수 PD 기준으로 슬라이드 48 PD의 위상여유를 60.8°에서 34.2°로 줄인다(교차주파수도 2.06 → 1.91 rad/s로 낮아짐). 위젯 설정(D 필터 N = 8)에서는 교차주파수가 약 2.0 rad/s라 51.5°에서 24.9°로 준다.", "answer_source": "analytic: atan(T_f ω) (analysis.sensorTF, python-control 대조 완료: tests/control/check_chapters.mjs)" },
+    { "id": "q5", "type": "choice", "q": "지연이 전혀 없는 이상적 PD + 이중 적분기 루프의 이득여유는?", "choices": ["0 dB", "약 6 dB", "무한대", "음수"], "answer": 2, "explain": "위상이 −180° + atan(Kd ω/Kp)로 항상 −180°보다 위에 있어 위상교차주파수가 없다. 지연이나 필터가 들어가야 유한한 이득여유가 생긴다." },
+    { "id": "q6", "type": "short", "q": "슬라이드 49에서 필터 sensitivity를 0.1로 낮추자 곡선은 부드러워졌지만 정착이 늦어졌다. 위상여유로 설명하라.", "model_answer": "sensitivity(α)를 낮추면 필터 시정수 T_f = T_s(1−α)/α가 0.24 s에서 0.54 s로 커져 교차주파수 근처에서 위상 지연이 커진다. 위상여유가 크게 줄어(슬라이드 48 PD, 위젯 설정 N = 8 기준 약 25°→6°; 순수 PD 기준 34°→13°) 감쇠가 작아지고 진동이 오래 남아 정착이 늦어진다.", "rubric": ["α 감소 → 필터 시정수(지연) 증가", "위상여유 감소", "감쇠 감소로 진동·정착 지연"] }
+  ],
+  "instructor_notes": "worksheets/05-nyquist.md"
+}

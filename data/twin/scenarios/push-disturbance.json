@@ -1,0 +1,18 @@
+{
+  "schema_ver": 1,
+  "id": "push-disturbance",
+  "title": "공 밀기·빔 충격 외란",
+  "description": "150 → 200 mm 스텝 후 정착한 공을 8 s 에 손가락으로 밀고(+80 mm/s), 12 s 에 빔을 친다(서보 출력축 +2° 순간 변위). 외란 뒤 최대 오차와 회복 시간을 본다.",
+  "seed": 7,
+  "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 14 },
+  "duration_s": 16,
+  "disturbance": [
+    { "t": 8, "type": "ball_push", "dv_mm_s": 80 },
+    { "t": 12, "type": "beam_knock", "dtheta_deg": 2 }
+  ],
+  "sensor_fault": [],
+  "param_variation": { "friction": 0.5, "tau_servo": 0.3, "delay_servo": 0.5, "level_offset_deg": 0.1 },
+  "loop": { "fs_ms": 60, "alpha_milli": 200, "lim_cdeg": 3000, "y_source": "filt" },
+  "success": { "tol_mm": 10, "window_s": 2 },
+  "design_model": "ball_servo"
+}

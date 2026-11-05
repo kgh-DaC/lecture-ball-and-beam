@@ -1,0 +1,17 @@
+{
+  "schema_ver": 1,
+  "id": "estop-drill",
+  "title": "비상 정지 연습",
+  "description": "제어 중 6 s 에 비상 정지(M,0). 펌웨어 규칙대로 IDLE + 명령 0(수평)이 되고 제어기 출력은 더 이상 적용되지 않는다. 수평 오차(0.05°)와 마찰 때문에 공이 천천히 굴러가 멈춤판에 닿을 수 있다 — 실기에서 비상 정지 후 공을 손으로 잡아야 하는 이유.",
+  "seed": 5,
+  "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 10 },
+  "duration_s": 12,
+  "disturbance": [],
+  "sensor_fault": [],
+  "safety_events": [ { "t": 6, "type": "estop" } ],
+  "param_variation": {},
+  "loop": { "fs_ms": 60, "alpha_milli": 200, "lim_cdeg": 3000, "y_source": "filt" },
+  "success": { "tol_mm": 10, "window_s": 2 },
+  "design_model": "ball_servo",
+  "notes": "이 시나리오의 status 는 항상 'estop'(성공 판정 대상 아님). 안전 장치 체험용"
+}

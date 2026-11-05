@@ -1,0 +1,48 @@
+{
+  "schema_ver": 1,
+  "id": "18-rl-control",
+  "title": "신경망 정책과 진화 전략",
+  "part": "E",
+  "order": 18,
+  "status": "ready",
+  "requires": ["17-rl-basics"],
+  "est_minutes": 90,
+  "objectives": [
+    "신경망 정책의 입력·출력을 설명하고, PD 제어기가 가장 단순한 정책임을 보인다",
+    "진화 전략(ES)으로 정책을 찾는 원리를 설명하고, 학습 곡선과 필요한 시뮬레이션 양을 해석한다",
+    "시뮬-실제 차이와 도메인 랜덤화를 설명하고, 안전 장치(폴백·포화·변화율 제한)를 갖춘 정책을 가상 장치에서 PID와 비교한다"
+  ],
+  "keywords": ["신경망 정책", "선형 정책", "진화 전략", "시뮬-실제 차이", "도메인 랜덤화", "안전 장치", "폴백", "포화", "변화율 제한", "폴백 비율"],
+  "slides": [],
+  "widgets": ["rl-trainer", "reward-curve", "policy-map", "nn-viz", "controller-panel", "live-plot", "ai-compare", "overlay-plot"],
+  "predictions": [
+    { "id": "p1", "type": "numeric", "q": "후보 24 × 후보당 3 에피소드 × 120세대, 에피소드 10 s를 실제 장치에서 실시간으로 하면 몇 시간?", "unit": "h" },
+    { "id": "p2", "type": "short", "q": "랜덤화 없이/랜덤화로 학습한 정책을 공칭 모델과 (K_b 0.8배, τ 0.10 s) 모델에서 시험하면 결과는?" }
+  ],
+  "practice": {
+    "modes": ["virtual", "sample", "device"],
+    "controller": "nn-policy",
+    "controllers_allowed": ["nn-policy", "pid"],
+    "safe_defaults": {
+      "nn-policy": { "policy": "es", "e_max": 0.10, "angle_limit": 0.17, "rate_limit": 3, "hold_s": 1.0, "fb_kp": 0.5, "fb_kd": 1.25 },
+      "pid": { "kp": 1.0, "ki": 0, "kd": 1.5, "n_filt": 8, "d_on": "measurement" }
+    },
+    "param_limits": {
+      "nn-policy": { "e_max": [0.02, 0.10], "angle_limit": [0.05, 0.17], "rate_limit": [0.5, 3], "hold_s": [0.5, 5], "fb_kp": [0, 2], "fb_kd": [0, 3] },
+      "pid": { "kp": [0, 6], "ki": [0, 1], "kd": [0, 6] }
+    },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 10,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball+servo",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ { "slot": "ai-best" }, "sim-ai-es" ],
+  "promote_slots": ["ai-best"],
+  "ai_bundles": ["data/ai/es-policy.json"],
+  "device_note": "실제 장치 모드는 선택 실습이며 하드웨어에서 시험하지 않았다. 본문 7절 안전 상자 조건을 모두 만족할 때만 사용",
+  "instructor_notes": "worksheets/18-rl-control.md"
+}

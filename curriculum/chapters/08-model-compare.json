@@ -1,0 +1,49 @@
+{
+  "schema_ver": 1,
+  "id": "08-model-compare",
+  "title": "서보 포함 모델과 이전 모델 비교",
+  "part": "C",
+  "order": 8,
+  "status": "ready",
+  "requires": ["07-servo-id"],
+  "est_minutes": 60,
+  "objectives": [
+    "서보 모델을 포함한 전체 전달함수를 만들고 극점·위상여유 변화를 설명한다",
+    "같은 PID에 대해 두 모델 예측과 실측을 겹쳐 적합도·지표 차이로 정량 비교한다",
+    "서보 포함 모델로 PID를 재설계하고 같은 조건의 실험으로 확인한다"
+  ],
+  "keywords": ["전체 전달함수", "서보 극점", "위상여유", "모델 검증", "적합도", "재설계", "provenance"],
+  "slides": [45, 47, 48],
+  "widgets": ["model-compare", "overlay-plot", "root-locus", "bode", "margin-readout", "controller-panel", "live-plot", "sample-compare", "promote-sample"],
+  "predictions": [
+    { "id": "p1", "type": "numeric", "q": "06장 안전 기본값 PD(α = 0.2)의 위상여유는 서보 무시 모델에서 약 33°. 서보를 넣으면?", "unit": "°" },
+    { "id": "p2", "type": "choice", "q": "30° 스텝으로 식별한(τ가 큰) 서보 모델을 쓰면 예측 오버슈트는 실측보다?", "choices": ["크다", "작다", "같다"] },
+    { "id": "p3", "type": "choice", "q": "서보 포함 모델로 재설계한 PD의 Kd/Kp 비율은 06장 PD와 비교해?", "choices": ["크다", "작다", "같다"] }
+  ],
+  "practice": {
+    "modes": ["device", "virtual", "sample"],
+    "controller": "pid",
+    "controllers_allowed": ["pid"],
+    "safe_defaults": { "kp": 1.0, "ki": 0, "kd": 1.5, "n_filt": 8, "d_on": "measurement" },
+    "param_limits": { "kp": [0, 6], "ki": [0, 1], "kd": [0, 6] },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 20,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball+servo",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ { "slot": "pid-best" }, { "slot": "pid-servo-redesign" } ],
+  "promote_slots": ["pid-servo-redesign"],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "서보 모델 K e^{−T_d s}/(τs + 1)에서 τ = 0.06 s, T_d = 0.02 s일 때 ω = 2 rad/s에서 서보가 더하는 위상 지연(°)은? (소수 첫째 자리)", "answer": 9.1, "tol_abs": 0.1, "unit": "°", "explain": "atan(0.06 × 2) + 2 × 0.02 rad = 6.84° + 2.29° ≈ 9.1°. 이 값만큼 위상여유가 준다(교차주파수가 거의 그대로일 때).", "answer_source": "analytic: atan(τω) + ωT_d, plant.ASSUMED_SERVO 값" },
+    { "id": "q2", "type": "numeric", "q": "τ = 0.06 s인 1차 서보 모델이 더하는 개루프 극점의 위치(rad/s)는? (부호 포함, 소수 첫째 자리)", "answer": -16.7, "tol_abs": 0.1, "unit": "rad/s", "explain": "1/(τs + 1)의 극점은 s = −1/τ = −16.7 rad/s. 교차주파수보다 멀지만 그 근처에서 위상을 깎는다.", "answer_source": "analytic: −1/τ" },
+    { "id": "q3", "type": "choice", "q": "슬라이드 48 PD는 06장 안전 기본값 PD보다 서보를 넣었을 때 위상여유가 더 많이 줄었다(약 9° 대 7°). 가장 직접적인 이유는?", "choices": ["Ki가 있어서", "이득교차주파수가 더 높아서 같은 서보 지연이 더 큰 위상을 깎으므로", "센서 필터가 달라서", "서보 이득 K가 1보다 작아서"], "answer": 1, "explain": "서보의 위상 지연 atan(τω) + ωT_d는 ω가 클수록 커진다. 게인이 큰 설계일수록 교차주파수가 높아 서보 무시의 대가가 크다.", "answer_source": "computed: analysis.margins (ball vs ball+servo, α = 0.2)" },
+    { "id": "q4", "type": "numeric", "q": "실측에 대해 ‖y − ŷ‖/‖y − ȳ‖가 서보 무시 모델은 0.45, 서보 포함 모델은 0.25였다. 적합도는 몇 %p 좋아졌는가?", "answer": 20, "tol_abs": 0.1, "unit": "%p", "explain": "적합도 = 100(1 − 비율). 55% → 75%로 20%p 개선. 숫자는 문제용 가정값이다.", "answer_source": "analytic: fit 정의(07장)" },
+    { "id": "q5", "type": "choice", "q": "pid-best 슬롯에 '시뮬레이션' 배지가 붙어 있다. 이 데이터로 서보 포함 모델이 더 정확하다고 결론 내릴 수 있는가?", "choices": ["있다. 그래프가 잘 맞으므로", "없다. 시뮬레이션은 모델이 만든 데이터라 모델 검증이 아니다", "있다. 번들 데이터는 교수자가 검증했으므로", "배지와 무관하다"], "answer": 1, "explain": "모델로 만든 데이터에 모델을 맞추면 잘 맞는 것이 당연하다. 모델 검증에는 실측(provenance real)이 필요하다." },
+    { "id": "q6", "type": "short", "q": "서보 포함 모델로 재설계했는데도 실측 오버슈트가 예측보다 크다. 남은 차이의 원인 후보 두 가지와 각각을 확인하는 방법을 쓰라.", "model_answer": "(1) 서보 모델이 실제와 다름(식별 진폭이 커서 τ가 과대/과소, 또는 빔 부하 차이) → 제어 중 기록된 servo_pot_cdeg와 u_cdeg를 모델 서보 응답과 비교. (2) K_b 오차(공 반지름·관성, 빔 치수) → 03장 개루프 굴림 실험으로 실제 가속도를 다시 잼. 그 밖에 빔 수평 오차(trim), 레일 마찰, 초음파 반사 위치 오차.", "rubric": ["서보 모델 오차와 확인 방법", "K_b 또는 기구 파라미터 오차와 확인 방법", "근거 데이터(그래프·지표)를 언급"] }
+  ],
+  "instructor_notes": "worksheets/08-model-compare.md"
+}

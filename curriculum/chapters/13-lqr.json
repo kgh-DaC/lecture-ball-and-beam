@@ -1,0 +1,48 @@
+{
+  "schema_ver": 1,
+  "id": "13-lqr",
+  "title": "LQR",
+  "part": "D",
+  "order": 13,
+  "status": "ready",
+  "requires": ["08-model-compare", "10-validation"],
+  "est_minutes": 80,
+  "objectives": [
+    "서보 포함 모델을 상태공간으로 쓰고 PD를 상태 피드백의 특수한 경우로 설명한다",
+    "브라이슨 규칙으로 Q, R을 정하고 Q/R 변화가 극점·입력·응답에 주는 영향을 예측·확인한다",
+    "관측기(차분, Luenberger, 칼만)와 포텐쇼미터 θ 측정을 비교하고 LQR을 PID와 검증 도구로 비교한다"
+  ],
+  "keywords": ["상태 피드백", "가제어성", "LQR", "리카티 방정식", "브라이슨 규칙", "관측기", "칼만 필터", "LQI", "이산화"],
+  "slides": [],
+  "widgets": ["qr-explorer", "observer-lab", "controller-panel", "live-plot", "validation-run"],
+  "predictions": [
+    { "id": "p1", "type": "short", "q": "R을 10배로 키우면 극점, 서보 명령 크기, 정착시간은 각각 어떻게 바뀔까?" },
+    { "id": "p2", "type": "choice", "q": "Luenberger 관측기 obs_speed를 3에서 10으로 올리면 서보 명령은?", "choices": ["더 매끄러워진다", "잡음이 커져 더 들쭉날쭉해진다", "변화 없다"] }
+  ],
+  "practice": {
+    "modes": ["device", "virtual", "sample"],
+    "controller": "lqr",
+    "controllers_allowed": ["lqr"],
+    "safe_defaults": { "q_e": 400, "q_edot": 25, "q_theta": 33, "r": 10, "integral": false, "q_i": 50, "observer": "luenberger", "obs_speed": 3, "theta_meas": true },
+    "param_limits": { "q_e": [10, 5000], "q_edot": [0, 500], "q_theta": [0, 500], "r": [1, 100], "q_i": [0, 500], "obs_speed": [1, 6] },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 15,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball+servo",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ { "slot": "lqr-best" } ],
+  "promote_slots": ["lqr-best"],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "브라이슨 규칙으로 위치 오차 허용 최대값을 2 cm로 잡으면 q_e(1/m²)는?", "answer": 2500, "tol_abs": 0.5, "unit": "1/m²", "explain": "q_e = 1/0.02² = 2500. 허용값을 5 cm → 2 cm로 줄이면 가중치는 6.25배.", "answer_source": "analytic: 1/e_max² (lqr.js Lqr.design 정의)" },
+    { "id": "q2", "type": "numeric", "q": "입력 허용 최대값을 20°로 잡으면 r(1/rad²)은? (소수 둘째 자리)", "answer": 8.21, "tol_abs": 0.01, "unit": "1/rad²", "explain": "20° = 0.34907 rad → 1/0.34907² = 8.207.", "answer_source": "analytic: 1/u_max²" },
+    { "id": "q3", "type": "numeric", "q": "서보 무시 연속 모델(ë = K_b u)에서 q_e = 400, r = 3.65일 때 LQR 위치 게인 k₁(rad/m)은? (소수 첫째 자리)", "answer": 10.5, "tol_abs": 0.05, "unit": "rad/m", "explain": "k₁ = √(q_e/r) = √(109.6) = 10.47. 06장 안전 기본값 Kp = 1.0의 10배다.", "answer_source": "computed: analysis.lqr(ball 모델, Q = diag(400, 25), R = 3.65) → K = [10.468, 5.558]" },
+    { "id": "q4", "type": "choice", "q": "Q는 그대로 두고 R을 키우면?", "choices": ["입력이 커지고 응답이 빨라진다", "입력이 작아지고 응답이 느려진다", "입력과 응답 모두 변화 없다", "관측기가 빨라진다"], "answer": 1, "explain": "R은 입력에 대한 벌점이다. 키우면 게인이 작아져 서보를 덜 쓰고 극점이 원점 쪽으로 와 느려진다. 게인은 Q/R 비율에만 의존한다." },
+    { "id": "q5", "type": "choice", "q": "이 장치에서 LQR에 관측기가 필요한 가장 직접적인 이유는?", "choices": ["서보 각도를 잴 수 없어서", "초음파 센서는 위치만 재므로 속도 상태를 추정해야 해서", "리카티 방정식을 풀기 위해", "샘플 주기를 줄이기 위해"], "answer": 1, "explain": "속도 ė는 측정되지 않는다. 서보 각도는 포텐쇼미터로 잴 수 있다(캘리브레이션 필요)." },
+    { "id": "q6", "type": "short", "q": "'LQR은 최적 제어이므로 PID보다 항상 좋다'를 반박하라.", "model_answer": "LQR은 정해진 비용함수 J(Q, R의 선택)와 모델이 정확하다는 가정 아래에서만 최적이다. Q/R을 다르게 고르면 다른 '최적'이 나오고, 10장 지표(오버슈트, 정착시간)와 J는 다르다. 모델 오차(서보 지연, K_b), 측정 잡음, 관측기 지연, 샘플링 때문에 실기에서는 잘 튜닝한 PID와 비슷하거나 못할 수 있다. 검증 도구로 같은 조건에서 비교해야 한다.", "rubric": ["J와 Q/R 선택에 대한 최적성이라는 점", "모델 오차·잡음·관측기의 영향", "같은 조건 검증의 필요"] }
+  ],
+  "instructor_notes": "worksheets/13-lqr.md"
+}

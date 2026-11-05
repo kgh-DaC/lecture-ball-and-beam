@@ -1,0 +1,78 @@
+{
+  "schema_ver": 1,
+  "session_id": "real-xlsx-pd_f1",
+  "kind": "control",
+  "created_at": null,
+  "chapter_id": null,
+  "source": "import_xlsx",
+  "provenance": "real",
+  "title": "PD_f1 (기존 실측, 조건 불명)",
+  "device": null,
+  "controller": {
+    "id": "pid",
+    "params": {
+      "kp": 2.3884,
+      "kd": 2.0684,
+      "ki": 0.0
+    },
+    "y_source": "unknown"
+  },
+  "plant_params": null,
+  "model_kind": "unknown",
+  "servo_tf": null,
+  "calibration": null,
+  "setpoint_profile": {
+    "type": "const",
+    "ref_mm": 220,
+    "duration_s": 22.9
+  },
+  "sample_period_ms": null,
+  "conditions": {
+    "status": "unknown",
+    "date": null,
+    "sample_period_ms": null,
+    "period_assumed": true,
+    "assumed_period_ms": 50,
+    "gains_status": "annotated",
+    "gain_units": "unknown",
+    "servo_model": "unknown",
+    "filter": "no filter",
+    "clamp_rule": "raw ≤ 0 또는 raw ≥ 35.0 → lost",
+    "notes": "시트 'PD_f1' / 시트 메모 지표(출처 미상, metrics 에 쓰지 않음): tr 0.628, ts 4.71, po 24.3 / 유실 처리: 클램프 의심 5개, 숫자 아님 0개, 빈 칸 0개"
+  },
+  "run_group": null,
+  "attempt": null,
+  "notes": "",
+  "stats": {
+    "n": 458,
+    "n_lost": 5,
+    "lost_ratio": 0.0109
+  },
+  "csv_columns": [
+    "t_s",
+    "ref_mm",
+    "y_mm",
+    "y_filt_mm",
+    "u_cdeg",
+    "cmd_echo_cdeg",
+    "servo_pot_cdeg",
+    "pot_raw",
+    "mode",
+    "dt_ms",
+    "lost"
+  ],
+  "complete": true,
+  "xlsx": {
+    "file": "data/raw/PID_test_data.xlsx",
+    "sheet": "PD_f1",
+    "columns": "y=A(cm), ref=B(cm)",
+    "first_row": 1,
+    "slots": [
+      "pid-legacy"
+    ],
+    "badges": [
+      "조건 불명",
+      "시간축 추정"
+    ]
+  }
+}

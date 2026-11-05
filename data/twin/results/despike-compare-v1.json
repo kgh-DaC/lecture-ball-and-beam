@@ -1,0 +1,1151 @@
+{
+ "schema_ver": 1,
+ "kind": "twin_despike_compare",
+ "provenance": "simulated",
+ "created_by": "tests/twin/report_despike.mjs",
+ "params_ref": "twin-nominal-v1",
+ "params_despike": 0,
+ "modes": [
+  0,
+  1,
+  2
+ ],
+ "n": 30,
+ "note": "params.loop.despike 만 바꾸고 나머지는 report_robustness.mjs 와 같은 조건. LQR·LQI·SMC 는 aux.y_raw_m(원측정)을 쓰므로 despike 영향이 없다.",
+ "step_nominal": [
+  {
+   "label": "PD 슬라이드47",
+   "d0": {
+    "po": 67.44344381998951,
+    "ts": 8.255,
+    "ess_mm": 8.58159278904047,
+    "itae": 0.5891091969571322,
+    "success": false,
+    "n_rejected": 0
+   },
+   "d1": {
+    "po": 69.68780694881443,
+    "ts": null,
+    "ess_mm": 13.98351862174843,
+    "itae": 0.6596737034854866,
+    "success": false,
+    "n_rejected": 119
+   },
+   "d2": {
+    "po": 59.828954643106215,
+    "ts": 7.412000000000001,
+    "ess_mm": 12.67433446863847,
+    "itae": 0.6269307980393446,
+    "success": false,
+    "n_rejected": 2
+   }
+  },
+  {
+   "label": "PD 슬라이드48",
+   "d0": {
+    "po": 115.9603187786991,
+    "ts": null,
+    "ess_mm": 2.626649773385364,
+    "itae": 0.624921257771626,
+    "success": false,
+    "n_rejected": 0
+   },
+   "d1": {
+    "po": 147.0114592331314,
+    "ts": null,
+    "ess_mm": 7.986229160590607,
+    "itae": 1.2829234079412095,
+    "success": false,
+    "n_rejected": 160
+   },
+   "d2": {
+    "po": 110.39442958077841,
+    "ts": null,
+    "ess_mm": 0.4187685489273618,
+    "itae": 0.5425118066366897,
+    "success": false,
+    "n_rejected": 2
+   }
+  },
+  {
+   "label": "PD p1",
+   "d0": {
+    "po": 41.28696601071884,
+    "ts": null,
+    "ess_mm": 0.27577752274776657,
+    "itae": 0.3156522311662666,
+    "success": true,
+    "n_rejected": 0
+   },
+   "d1": {
+    "po": 25.99757430140886,
+    "ts": 8.014000000000001,
+    "ess_mm": 3.049189528133822,
+    "itae": 0.29597870962633116,
+    "success": true,
+    "n_rejected": 114
+   },
+   "d2": {
+    "po": 9.4145065345627,
+    "ts": 5.846,
+    "ess_mm": 7.33185928571195,
+    "itae": 0.3423232631029667,
+    "success": true,
+    "n_rejected": 2
+   }
+  },
+  {
+   "label": "PD 서보 재설계",
+   "d0": {
+    "po": 15.156554026539135,
+    "ts": null,
+    "ess_mm": 3.445302365932573,
+    "itae": 0.272727148204301,
+    "success": true,
+    "n_rejected": 0
+   },
+   "d1": {
+    "po": 12.387884849165859,
+    "ts": 4.942,
+    "ess_mm": 2.1741140480592835,
+    "itae": 0.2076018336780756,
+    "success": true,
+    "n_rejected": 108
+   },
+   "d2": {
+    "po": 5.459280544381211,
+    "ts": 4.039,
+    "ess_mm": 3.5833549670593046,
+    "itae": 0.24480672590012595,
+    "success": true,
+    "n_rejected": 2
+   }
+  },
+  {
+   "label": "PID TL",
+   "d0": {
+    "po": 44.21072703169405,
+    "ts": null,
+    "ess_mm": 3.612080200798673,
+    "itae": 0.4248256649897173,
+    "success": false,
+    "n_rejected": 0
+   },
+   "d1": {
+    "po": 30.027454428711952,
+    "ts": null,
+    "ess_mm": 9.362126433895945,
+    "itae": 0.5399889777415531,
+    "success": false,
+    "n_rejected": 126
+   },
+   "d2": {
+    "po": 18.999756823629678,
+    "ts": null,
+    "ess_mm": 7.791754035371968,
+    "itae": 0.3739695904298327,
+    "success": false,
+    "n_rejected": 2
+   }
+  },
+  {
+   "label": "LQR",
+   "d0": {
+    "po": 10.341620497961182,
+    "ts": null,
+    "ess_mm": 3.7288843048926266,
+    "itae": 0.2351337505972778,
+    "success": true,
+    "n_rejected": 0
+   },
+   "d1": {
+    "po": 10.341620497961182,
+    "ts": null,
+    "ess_mm": 3.7288843048926266,
+    "itae": 0.2351337505972778,
+    "success": true,
+    "n_rejected": 124
+   },
+   "d2": {
+    "po": 10.341620497961182,
+    "ts": null,
+    "ess_mm": 3.7288843048926266,
+    "itae": 0.2351337505972778,
+    "success": true,
+    "n_rejected": 2
+   }
+  },
+  {
+   "label": "LQI",
+   "d0": {
+    "po": 36.986828487692286,
+    "ts": null,
+    "ess_mm": 0.8576336911952365,
+    "itae": 0.34726059110733826,
+    "success": true,
+    "n_rejected": 0
+   },
+   "d1": {
+    "po": 36.986828487692286,
+    "ts": null,
+    "ess_mm": 0.8576336911952365,
+    "itae": 0.34726059110733826,
+    "success": true,
+    "n_rejected": 122
+   },
+   "d2": {
+    "po": 36.986828487692286,
+    "ts": null,
+    "ess_mm": 0.8576336911952365,
+    "itae": 0.34726059110733826,
+    "success": true,
+    "n_rejected": 2
+   }
+  },
+  {
+   "label": "SMC sat",
+   "d0": {
+    "po": 10.644013852435236,
+    "ts": null,
+    "ess_mm": 10.624137218310265,
+    "itae": 0.3122523126675402,
+    "success": false,
+    "n_rejected": 0
+   },
+   "d1": {
+    "po": 10.644013852435236,
+    "ts": null,
+    "ess_mm": 10.624137218310265,
+    "itae": 0.3122523126675402,
+    "success": false,
+    "n_rejected": 118
+   },
+   "d2": {
+    "po": 10.644013852435236,
+    "ts": null,
+    "ess_mm": 10.624137218310265,
+    "itae": 0.3122523126675402,
+    "success": false,
+    "n_rejected": 2
+   }
+  }
+ ],
+ "montecarlo": [
+  {
+   "scenario_id": "step-nominal",
+   "seed": 1,
+   "n": 30,
+   "by_despike": {
+    "0": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.26666666666666666,
+      "itae_mean": 0.8683267642525785,
+      "po_mean": 63.795827611467125,
+      "final_err_mm_mean": 17.494359532316487,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0.2,
+      "itae_mean": 0.6376800643271281,
+      "po_mean": 109.14108653934095,
+      "final_err_mm_mean": 14.764883653284672,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.4,
+      "itae_mean": 0.4660110256952457,
+      "po_mean": 19.109794187688564,
+      "final_err_mm_mean": 11.921243353598216,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.3,
+      "itae_mean": 0.7301840733396896,
+      "po_mean": 7.814033308410359,
+      "final_err_mm_mean": 17.92103857708338,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0.1,
+      "itae_mean": 0.477364621302245,
+      "po_mean": 34.91104863508738,
+      "final_err_mm_mean": 15.763030375036719,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.7666666666666667,
+      "itae_mean": 0.3122689392172503,
+      "po_mean": 10.396244644787474,
+      "final_err_mm_mean": 7.93328303554099,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.8666666666666667,
+      "itae_mean": 0.3728110946772382,
+      "po_mean": 28.005296462343956,
+      "final_err_mm_mean": 7.29986058346896,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.5,
+      "itae_mean": 0.4311912163073618,
+      "po_mean": 15.175490080478834,
+      "final_err_mm_mean": 11.494583646279041,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ],
+    "1": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.3,
+      "itae_mean": 0.9243783581895095,
+      "po_mean": 76.13809633361578,
+      "final_err_mm_mean": 18.493095760169187,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0,
+      "itae_mean": 1.3259518199871088,
+      "po_mean": 148.90038280118193,
+      "final_err_mm_mean": 38.04254277328153,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.5,
+      "itae_mean": 0.4731319424695472,
+      "po_mean": 23.60394510090696,
+      "final_err_mm_mean": 10.16072693893937,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.3,
+      "itae_mean": 0.6985156515910428,
+      "po_mean": 5.419992514797495,
+      "final_err_mm_mean": 15.08571552219372,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0,
+      "itae_mean": 0.5771649735827611,
+      "po_mean": 33.53986916849913,
+      "final_err_mm_mean": 22.779902038392503,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.7666666666666667,
+      "itae_mean": 0.3122689392172503,
+      "po_mean": 10.396244644787474,
+      "final_err_mm_mean": 7.93328303554099,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.8666666666666667,
+      "itae_mean": 0.3728110946772382,
+      "po_mean": 28.005296462343956,
+      "final_err_mm_mean": 7.29986058346896,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.5,
+      "itae_mean": 0.4311912163073618,
+      "po_mean": 15.175490080478834,
+      "final_err_mm_mean": 11.494583646279041,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ],
+    "2": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.3333333333333333,
+      "itae_mean": 0.8884898014030542,
+      "po_mean": 67.8000423714772,
+      "final_err_mm_mean": 16.57636465845293,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0.2,
+      "itae_mean": 0.6047451920170711,
+      "po_mean": 109.1141694081264,
+      "final_err_mm_mean": 13.64217836531539,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.5333333333333333,
+      "itae_mean": 0.46380460453878464,
+      "po_mean": 13.407027619323742,
+      "final_err_mm_mean": 9.351877741320163,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.4,
+      "itae_mean": 0.6655086318520224,
+      "po_mean": 4.028021956142745,
+      "final_err_mm_mean": 13.436443959385972,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0.06666666666666667,
+      "itae_mean": 0.42664691431314866,
+      "po_mean": 21.26858433781226,
+      "final_err_mm_mean": 14.049648029301927,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.7666666666666667,
+      "itae_mean": 0.3122689392172503,
+      "po_mean": 10.396244644787474,
+      "final_err_mm_mean": 7.93328303554099,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.8666666666666667,
+      "itae_mean": 0.3728110946772382,
+      "po_mean": 28.005296462343956,
+      "final_err_mm_mean": 7.29986058346896,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.5,
+      "itae_mean": 0.4311912163073618,
+      "po_mean": 15.175490080478834,
+      "final_err_mm_mean": 11.494583646279041,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ]
+   }
+  },
+  {
+   "scenario_id": "push-disturbance",
+   "seed": 7,
+   "n": 30,
+   "by_despike": {
+    "0": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.26666666666666666,
+      "itae_mean": 2.6856411069634594,
+      "po_mean": 80.95608102365554,
+      "final_err_mm_mean": 18.302948834157256,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0.13333333333333333,
+      "itae_mean": 1.702373677567389,
+      "po_mean": 98.63261070512648,
+      "final_err_mm_mean": 17.916009308009855,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.2,
+      "itae_mean": 1.662576843660422,
+      "po_mean": 21.43493613813056,
+      "final_err_mm_mean": 15.44497881109445,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.13333333333333333,
+      "itae_mean": 2.746262285740424,
+      "po_mean": 10.213237510934634,
+      "final_err_mm_mean": 27.15892426797145,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0.13333333333333333,
+      "itae_mean": 1.4953143387924699,
+      "po_mean": 15.584730696275242,
+      "final_err_mm_mean": 16.309649491681125,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.7,
+      "itae_mean": 0.9172337242008978,
+      "po_mean": 5.8113853654364505,
+      "final_err_mm_mean": 7.541213364625463,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.6666666666666666,
+      "itae_mean": 1.370920078475522,
+      "po_mean": 16.432206638810612,
+      "final_err_mm_mean": 9.987131310424862,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.43333333333333335,
+      "itae_mean": 1.3305141124166933,
+      "po_mean": 8.039030863312062,
+      "final_err_mm_mean": 12.046157514446103,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ],
+    "1": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.2,
+      "itae_mean": 2.84979445570777,
+      "po_mean": 105.99926438845,
+      "final_err_mm_mean": 21.845285710927683,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0,
+      "itae_mean": 3.1007638629700627,
+      "po_mean": 115.39016880175915,
+      "final_err_mm_mean": 44.75405019042852,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.06666666666666667,
+      "itae_mean": 1.9322797488881962,
+      "po_mean": 31.13451611064082,
+      "final_err_mm_mean": 19.528331231609506,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.03333333333333333,
+      "itae_mean": 2.8893666555841495,
+      "po_mean": 10.330548336735758,
+      "final_err_mm_mean": 31.68814475836525,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0,
+      "itae_mean": 1.8300180755895963,
+      "po_mean": 9.450910521462651,
+      "final_err_mm_mean": 25.254803373876033,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.7,
+      "itae_mean": 0.9172337242008978,
+      "po_mean": 5.8113853654364505,
+      "final_err_mm_mean": 7.541213364625463,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.6666666666666666,
+      "itae_mean": 1.370920078475522,
+      "po_mean": 16.432206638810612,
+      "final_err_mm_mean": 9.987131310424862,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.43333333333333335,
+      "itae_mean": 1.3305141124166933,
+      "po_mean": 8.039030863312062,
+      "final_err_mm_mean": 12.046157514446103,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ],
+    "2": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.26666666666666666,
+      "itae_mean": 2.718684354366195,
+      "po_mean": 87.35279876756812,
+      "final_err_mm_mean": 18.933709560600928,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0.06666666666666667,
+      "itae_mean": 1.676669548647532,
+      "po_mean": 103.64696873287176,
+      "final_err_mm_mean": 16.48292220637907,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.23333333333333334,
+      "itae_mean": 1.6375284453815129,
+      "po_mean": 20.622361585644377,
+      "final_err_mm_mean": 14.527248505359655,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.13333333333333333,
+      "itae_mean": 2.7823866599115674,
+      "po_mean": 6.542115158172903,
+      "final_err_mm_mean": 28.222237396379217,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0.13333333333333333,
+      "itae_mean": 1.381400538318828,
+      "po_mean": 6.6345957705348475,
+      "final_err_mm_mean": 13.28725270401717,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.7,
+      "itae_mean": 0.9172337242008978,
+      "po_mean": 5.8113853654364505,
+      "final_err_mm_mean": 7.541213364625463,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.6666666666666666,
+      "itae_mean": 1.370920078475522,
+      "po_mean": 16.432206638810612,
+      "final_err_mm_mean": 9.987131310424862,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.43333333333333335,
+      "itae_mean": 1.3305141124166933,
+      "po_mean": 8.039030863312062,
+      "final_err_mm_mean": 12.046157514446103,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ]
+   }
+  },
+  {
+   "scenario_id": "param-shift",
+   "seed": 11,
+   "n": 30,
+   "by_despike": {
+    "0": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.2,
+      "itae_mean": 1.3209902285528796,
+      "po_mean": 108.46693293573581,
+      "final_err_mm_mean": 18.48205762532315,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0.36666666666666664,
+      "itae_mean": 1.9234459105040997,
+      "po_mean": 187.0491847497003,
+      "final_err_mm_mean": 35.87904216718745,
+      "end_hit_rate": 0.06666666666666667,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.36666666666666664,
+      "itae_mean": 0.7819015726380829,
+      "po_mean": 26.95390271892055,
+      "final_err_mm_mean": 13.047781518310936,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.16666666666666666,
+      "itae_mean": 1.2995611440691783,
+      "po_mean": 14.086109866867892,
+      "final_err_mm_mean": 19.553021661503553,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0.3333333333333333,
+      "itae_mean": 1.1721176807818297,
+      "po_mean": 33.58383492192225,
+      "final_err_mm_mean": 29.913709764204828,
+      "end_hit_rate": 0.03333333333333333,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.6333333333333333,
+      "itae_mean": 0.4235222581200178,
+      "po_mean": 5.597173211485494,
+      "final_err_mm_mean": 8.216015125058572,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.7333333333333333,
+      "itae_mean": 0.45389451269896613,
+      "po_mean": 20.232619557297376,
+      "final_err_mm_mean": 6.495186968048492,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.5,
+      "itae_mean": 0.5530765276979154,
+      "po_mean": 4.820762207701107,
+      "final_err_mm_mean": 9.929550378968703,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ],
+    "1": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.3333333333333333,
+      "itae_mean": 1.3144020503799736,
+      "po_mean": 131.05680019680142,
+      "final_err_mm_mean": 17.274983695004753,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0.03333333333333333,
+      "itae_mean": 4.387256019557588,
+      "po_mean": 308.51374751621097,
+      "final_err_mm_mean": 106.69578796478156,
+      "end_hit_rate": 0.43333333333333335,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.4666666666666667,
+      "itae_mean": 0.8508651020986142,
+      "po_mean": 31.48620712863335,
+      "final_err_mm_mean": 13.976868861200012,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.23333333333333334,
+      "itae_mean": 1.208317638789168,
+      "po_mean": 12.411641517118662,
+      "final_err_mm_mean": 17.497474650139285,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0.2,
+      "itae_mean": 2.2176024980647404,
+      "po_mean": 42.965662250436104,
+      "final_err_mm_mean": 65.99696097337188,
+      "end_hit_rate": 0.13333333333333333,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.6333333333333333,
+      "itae_mean": 0.4235222581200178,
+      "po_mean": 5.597173211485494,
+      "final_err_mm_mean": 8.216015125058572,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.7333333333333333,
+      "itae_mean": 0.45389451269896613,
+      "po_mean": 20.232619557297376,
+      "final_err_mm_mean": 6.495186968048492,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.5,
+      "itae_mean": 0.5530765276979154,
+      "po_mean": 4.820762207701107,
+      "final_err_mm_mean": 9.929550378968703,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ],
+    "2": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.43333333333333335,
+      "itae_mean": 1.2420634282544214,
+      "po_mean": 108.53593714991894,
+      "final_err_mm_mean": 16.518508545839257,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0.3333333333333333,
+      "itae_mean": 2.0536980866766577,
+      "po_mean": 200.4206093031826,
+      "final_err_mm_mean": 39.73288022731851,
+      "end_hit_rate": 0.06666666666666667,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.5,
+      "itae_mean": 0.7707592265813811,
+      "po_mean": 20.93617716076915,
+      "final_err_mm_mean": 11.471656761885628,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.23333333333333334,
+      "itae_mean": 1.2446263440663732,
+      "po_mean": 10.00849321369441,
+      "final_err_mm_mean": 18.029113558460235,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0.36666666666666664,
+      "itae_mean": 1.0996453090028537,
+      "po_mean": 32.24320848607134,
+      "final_err_mm_mean": 27.889838725243575,
+      "end_hit_rate": 0.03333333333333333,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.6333333333333333,
+      "itae_mean": 0.4235222581200178,
+      "po_mean": 5.597173211485494,
+      "final_err_mm_mean": 8.216015125058572,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.7333333333333333,
+      "itae_mean": 0.45389451269896613,
+      "po_mean": 20.232619557297376,
+      "final_err_mm_mean": 6.495186968048492,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.5,
+      "itae_mean": 0.5530765276979154,
+      "po_mean": 4.820762207701107,
+      "final_err_mm_mean": 9.929550378968703,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ]
+   }
+  },
+  {
+   "scenario_id": "sensor-fault",
+   "seed": 3,
+   "n": 30,
+   "by_despike": {
+    "0": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.16666666666666666,
+      "itae_mean": 1.8335032742986066,
+      "po_mean": 38.08717312571525,
+      "final_err_mm_mean": 17.673182737486506,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0,
+      "itae_mean": 2.1125467694094895,
+      "po_mean": 118.80818403938501,
+      "final_err_mm_mean": 29.86333253562548,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.06666666666666667,
+      "itae_mean": 1.6909392670124637,
+      "po_mean": 14.062745484454604,
+      "final_err_mm_mean": 21.526624097882674,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.16666666666666666,
+      "itae_mean": 1.948681538570384,
+      "po_mean": 5.168820674799603,
+      "final_err_mm_mean": 20.761918035362562,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0.03333333333333333,
+      "itae_mean": 2.320788333153239,
+      "po_mean": 31.449104686407964,
+      "final_err_mm_mean": 35.83207651171221,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.7,
+      "itae_mean": 0.9686427798584665,
+      "po_mean": 3.869841450137712,
+      "final_err_mm_mean": 7.601507798129775,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.9333333333333333,
+      "itae_mean": 0.943310719681898,
+      "po_mean": 12.647265472543525,
+      "final_err_mm_mean": 4.821234188257673,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.4,
+      "itae_mean": 1.9716885455350617,
+      "po_mean": 5.551795932278901,
+      "final_err_mm_mean": 12.902145208047965,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ],
+    "1": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.23333333333333334,
+      "itae_mean": 1.8995043516872727,
+      "po_mean": 48.84087717197646,
+      "final_err_mm_mean": 18.908121110372978,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0,
+      "itae_mean": 3.237409312574992,
+      "po_mean": 167.89520818527873,
+      "final_err_mm_mean": 58.35309417153612,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.03333333333333333,
+      "itae_mean": 1.8136261126724806,
+      "po_mean": 17.368611676439805,
+      "final_err_mm_mean": 25.531412553033338,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.13333333333333333,
+      "itae_mean": 1.9781968553766176,
+      "po_mean": 3.255292638054593,
+      "final_err_mm_mean": 22.661895969013266,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0,
+      "itae_mean": 3.4005370926755507,
+      "po_mean": 52.76061587344382,
+      "final_err_mm_mean": 71.62251633962008,
+      "end_hit_rate": 0.06666666666666667,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.7,
+      "itae_mean": 0.9686427798584665,
+      "po_mean": 3.869841450137712,
+      "final_err_mm_mean": 7.601507798129775,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.9333333333333333,
+      "itae_mean": 0.943310719681898,
+      "po_mean": 12.647265472543525,
+      "final_err_mm_mean": 4.821234188257673,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.4,
+      "itae_mean": 1.9716885455350617,
+      "po_mean": 5.551795932278901,
+      "final_err_mm_mean": 12.902145208047965,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ],
+    "2": [
+     {
+      "label": "PD 슬라이드47",
+      "success_rate": 0.4666666666666667,
+      "itae_mean": 1.6954104302479154,
+      "po_mean": 41.92159991017239,
+      "final_err_mm_mean": 14.58644503091673,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 슬라이드48",
+      "success_rate": 0.3,
+      "itae_mean": 1.3925341776249875,
+      "po_mean": 124.07367142205617,
+      "final_err_mm_mean": 16.13100992442331,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD p1",
+      "success_rate": 0.6,
+      "itae_mean": 0.8915967732381597,
+      "po_mean": 13.927468012404496,
+      "final_err_mm_mean": 8.463532609968617,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PD 서보 재설계",
+      "success_rate": 0.5,
+      "itae_mean": 1.444943721884855,
+      "po_mean": 2.8591310746142975,
+      "final_err_mm_mean": 12.945712389621018,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "PID TL",
+      "success_rate": 0.36666666666666664,
+      "itae_mean": 1.0279298479914465,
+      "po_mean": 32.427412535064285,
+      "final_err_mm_mean": 14.755952133631338,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQR",
+      "success_rate": 0.7,
+      "itae_mean": 0.9686427798584665,
+      "po_mean": 3.869841450137712,
+      "final_err_mm_mean": 7.601507798129775,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "LQI",
+      "success_rate": 0.9333333333333333,
+      "itae_mean": 0.943310719681898,
+      "po_mean": 12.647265472543525,
+      "final_err_mm_mean": 4.821234188257673,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     },
+     {
+      "label": "SMC sat",
+      "success_rate": 0.4,
+      "itae_mean": 1.9716885455350617,
+      "po_mean": 5.551795932278901,
+      "final_err_mm_mean": 12.902145208047965,
+      "end_hit_rate": 0,
+      "diverged_rate": 0
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema_ver": 1,
+  "id": "sensor-fault",
+  "title": "센서 고장 (이상값·유실·멈춤)",
+  "description": "스텝 정착 후 6 s 에 이상값 3연속(≈304 mm), 8~11 s 에 이상값 비율 15 %(과거 실기 기록), 12~12.5 s 에 측정 완전 유실, 14~14.5 s 에 같은 값 반복(stuck). 제어기는 센서 출력만 받는다. 트윈 기본 despike 0(펌웨어 1.0.0 동작)에서는 펌웨어 필터가 범위 안의 이상값을 거르지 않는다는 점이 핵심이다. 펌웨어 1.1.0 기본(gate)으로 같은 고장을 보려면 sensor-fault-gate.",
+  "seed": 3,
+  "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 15 },
+  "duration_s": 17,
+  "disturbance": [],
+  "sensor_fault": [
+    { "t": 6, "type": "outlier_burst", "n": 3, "value_mm": 304 },
+    { "t": 8, "type": "outlier_rate", "duration_s": 3, "prob": 0.15 },
+    { "t": 12, "type": "dropout", "duration_s": 0.5 },
+    { "t": 14, "type": "stuck", "duration_s": 0.5 }
+  ],
+  "param_variation": { "friction": 0.5, "tau_servo": 0.3, "level_offset_deg": 0.1, "sensor_noise": 0.5 },
+  "loop": { "fs_ms": 60, "alpha_milli": 200, "lim_cdeg": 3000, "y_source": "filt" },
+  "success": { "tol_mm": 10, "window_s": 2 },
+  "design_model": "ball_servo"
+}

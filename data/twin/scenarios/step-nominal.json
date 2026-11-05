@@ -1,0 +1,16 @@
+{
+  "schema_ver": 1,
+  "id": "step-nominal",
+  "title": "설정값 스텝 (공칭 트윈)",
+  "description": "150 → 200 mm 스텝(2 s 뒤). 설계 모델로 만든 제어기를 공칭 트윈(비선형 + 비이상성)에 그대로 적용한다. 설계 모델 시뮬레이션(P1 프로파일)과 같은 조건이라 '설계 vs 트윈' 비교의 기준 시나리오다.",
+  "seed": 1,
+  "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 10 },
+  "duration_s": 12,
+  "disturbance": [],
+  "sensor_fault": [],
+  "param_variation": { "friction": 0.5, "tau_servo": 0.3, "delay_servo": 0.5, "inertia_ratio": 0.1, "level_offset_deg": 0.1, "sensor_noise": 0.5 },
+  "loop": { "fs_ms": 60, "alpha_milli": 200, "lim_cdeg": 3000, "y_source": "filt" },
+  "success": { "tol_mm": 10, "window_s": 2 },
+  "design_model": "ball_servo",
+  "notes": "param_variation 은 몬테카를로 전용(runScenario 단독 실행은 공칭). 상대 ±, level_offset_deg 는 절대 ±°"
+}

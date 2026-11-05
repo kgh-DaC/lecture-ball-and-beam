@@ -1,0 +1,230 @@
+{
+  "schema_ver": 1,
+  "id": "02-hardware",
+  "title": "하드웨어 구성",
+  "part": "A",
+  "order": 2,
+  "status": "ready",
+  "requires": [
+    "01-intro"
+  ],
+  "est_minutes": 120,
+  "objectives": [
+    "블록선도의 각 상자를 실제 부품(서보, 초음파 센서, 아두이노, 기구부)과 연결한다",
+    "펄스폭↔각도, 에코 시간↔거리를 계산하고 센서 주기·분해능의 의미를 설명한다",
+    "정지 잡음을 측정하고 거리 필터 α의 잡음-지연 상충을 설명한다",
+    "Nano·확장 실드·센서·서보를 배선하고, 서보를 별도 5.0 V 전원과 공통 GND로 안전하게 구동하는 이유를 설명한다",
+    "하드웨어 설정 순서(조립 전 시험 → 서보 90° 고정과 조립 → 조립 후 시험)를 따라 하고, 각 단계가 앞 단계의 결과에 기대는 이유를 설명한다",
+    "포텐쇼미터 매핑 시험과 초음파 위치 응답 시험의 결과(평균·σ·직선)를 기준값과 비교해 합격 여부를 판단한다",
+    "찾은 수평 서보각을 trim(cdeg)과 A0 기대값으로 환산하고, 앱 연결이 안 될 때 명령줄 도구(serial_check.py)로 보드·배선 문제와 브라우저 문제를 가른다"
+  ],
+  "keywords": [
+    "서보",
+    "PWM",
+    "포텐쇼미터",
+    "HC-SR04",
+    "재귀 필터",
+    "이상값 제거",
+    "샘플 주기",
+    "배선",
+    "Arduino Nano",
+    "서보 전원",
+    "공통 GND",
+    "하드웨어 설정 순서",
+    "포텐쇼미터 매핑",
+    "벤치 모드",
+    "수평(trim)",
+    "조립",
+    "trim 환산",
+    "serial_check"
+  ],
+  "slides": [
+    39,
+    43,
+    44,
+    45,
+    49,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    63,
+    64,
+    67
+  ],
+  "widgets": [
+    "hardware-steps",
+    "pwm-demo",
+    "overlay-plot",
+    "wiring-diagram",
+    "device-settings",
+    "pot-mapping-test",
+    "servo-center-assist",
+    "signal-monitor",
+    "level-finder",
+    "level-trim",
+    "sensor-position-test",
+    "angle-limit-finder",
+    "device-check"
+  ],
+  "predictions": [
+    {
+      "id": "p1",
+      "type": "numeric",
+      "q": "cmd = +10°(trim 0, dir +1)일 때 펄스폭은?",
+      "unit": "µs"
+    },
+    {
+      "id": "p2",
+      "type": "choice",
+      "q": "α = 0.1과 0.2 중 정지 잡음이 더 작고 더 늦게 따라가는 쪽은?",
+      "choices": [
+        "α = 0.1이 잡음 작고 더 늦다",
+        "α = 0.2가 잡음 작고 더 늦다",
+        "α = 0.1이 잡음 작지만 더 빠르다",
+        "차이 없다"
+      ]
+    },
+    {
+      "id": "p3",
+      "type": "numeric",
+      "q": "필터 값 182 mm에서 304 mm 튄 값이 한 번 들어오면 α = 0.2 재귀 필터 출력은 몇 mm 위로 튈까?",
+      "unit": "mm"
+    },
+    {
+      "id": "p4",
+      "type": "numeric",
+      "q": "기준 직선(서보각 0° → 60, 90° → 330, 180° → 598)이 맞다면 서보각 45°에서 A0 raw는?",
+      "unit": "LSB"
+    },
+    {
+      "id": "p5",
+      "type": "numeric",
+      "q": "빔이 0.5° 기울어 있을 때 수평으로 돌리려면 서보각을 몇 도 바꿔야 할까? (Lα ≈ dθ, L = 0.34 m, d = 0.052 m)",
+      "unit": "°"
+    },
+    {
+      "id": "p6",
+      "type": "choice",
+      "q": "⑤ 수평 찾기를 건너뛰고 바로 ⑥ 초음파 위치 응답을 재면?",
+      "choices": [
+        "공이 굴러가 위치마다 정지 측정이 안 되어 σ·오차가 커지고, 센서 탓인지 가를 수 없다",
+        "초음파 센서의 분해능이 나빠진다",
+        "결과가 수평일 때와 같다",
+        "포텐쇼미터 값이 틀어진다"
+      ]
+    },
+    {
+      "id": "p7",
+      "type": "numeric",
+      "q": "수평이 서보각 83°(명령 0, dir +1)에서 찾아졌다면 trim은 몇 cdeg일까? (A0 기대값도 함께 생각해 보기)",
+      "unit": "cdeg"
+    }
+  ],
+  "practice": {
+    "modes": [
+      "device",
+      "virtual",
+      "sample"
+    ],
+    "controller": "openloop",
+    "safe_defaults": {
+      "theta": 0
+    },
+    "param_limits": {
+      "theta": [
+        -0.0349,
+        0.0349
+      ]
+    },
+    "setpoint_profile": {
+      "type": "const",
+      "ref_mm": 170,
+      "duration_s": 10
+    },
+    "angle_limit_deg": 10,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [
+    {
+      "slot": "filter-compare"
+    }
+  ],
+  "quiz": [
+    {
+      "id": "q1",
+      "type": "numeric",
+      "q": "펄스 범위 544~2400 µs, trim 0, dir +1에서 명령각 cmd = +10°(서보 100°)의 펄스폭(µs)은?",
+      "answer": 1575.1,
+      "tol_abs": 1,
+      "unit": "µs",
+      "explain": "us = 544 + 100/180 × (2400 − 544) = 544 + 1031.1 = 1575.1 µs. 수평(cmd 0°, 서보 90°)은 1472 µs다.",
+      "answer_source": "analytic: architecture.md §3 펄스 식 (펌웨어 ball_beam.ino 정수 반올림식과 대조 완료: 1575 µs, 허용오차 1 µs 이내)"
+    },
+    {
+      "id": "q2",
+      "type": "numeric",
+      "q": "HC-SR04의 Echo HIGH 시간이 1176 µs였다. 음속 340 m/s로 계산한 거리(mm)는?",
+      "answer": 199.9,
+      "tol_abs": 0.5,
+      "unit": "mm",
+      "explain": "거리 = 1176e-6 × 340 / 2 = 0.19992 m ≈ 199.9 mm. 2로 나누는 것은 왕복이기 때문이다 [슬라이드 54].",
+      "answer_source": "analytic: 슬라이드 54 식"
+    },
+    {
+      "id": "q3",
+      "type": "numeric",
+      "q": "샘플 주기 60 ms일 때 제어기가 1초에 받는 측정 수(Hz)는? (소수 첫째 자리)",
+      "answer": 16.7,
+      "tol_abs": 0.1,
+      "unit": "Hz",
+      "explain": "1/0.06 = 16.67 Hz. HC-SR04는 60 ms 이상 간격을 권장하므로 이보다 빨리 잴 수 없다 [슬라이드 54].",
+      "answer_source": "analytic: 1/Ts"
+    },
+    {
+      "id": "q4",
+      "type": "numeric",
+      "q": "재귀 필터 α = 0.2, 샘플 주기 0.06 s의 연속 근사 시정수 T_f = T_s(1−α)/α (s)는?",
+      "answer": 0.24,
+      "tol_abs": 0.005,
+      "unit": "s",
+      "explain": "0.06 × 0.8 / 0.2 = 0.24 s. α = 0.1이면 0.54 s로 두 배 이상 늦어진다. 이것이 슬라이드 49에서 s = 0.1일 때 정착이 늦어진 이유다.",
+      "answer_source": "analytic: controller-interface.md §5 sensorTF 정의 (analysis.sensorTF 대조 완료: T_f = 0.24 s)"
+    },
+    {
+      "id": "q5",
+      "type": "choice",
+      "q": "서보를 외부 전원으로 구동할 때 반드시 해야 하는 것은?",
+      "choices": [
+        "서보 GND와 아두이노 GND를 연결(공통 GND)",
+        "서보 신호선을 A0에 연결",
+        "아두이노 5V를 외부 전원 +에 연결",
+        "센서 Trig를 D9로 옮김"
+      ],
+      "answer": 0,
+      "explain": "공통 GND가 없으면 서보 신호의 기준 전압이 달라 오동작하고, 포텐쇼미터 A0 측정도 틀어진다. 아두이노 5V를 외부 전원 +에 연결하면 USB 5 V와 외부 5 V가 부딪히므로 하지 않는다(6.3절)."
+    },
+    {
+      "id": "q6",
+      "type": "short",
+      "q": "포텐쇼미터 와이퍼를 A0에 연결하기 전에 멀티미터로 무엇을 확인해야 하며, 왜 그런가?",
+      "model_answer": "서보를 실제 구동 전압으로 켠 상태에서 와이퍼 전압이 0~5 V 범위 안인지 확인한다. 와이퍼 전압은 서보 전원 전압을 따라가므로 서보 전원이 5 V를 넘으면(예: 6 V) 와이퍼 전압도 5 V를 넘을 수 있고, A0 허용 범위를 넘으면 아두이노가 손상된다. 서보 전원을 연결 전에 5.0 V 이하로 확인하고, 넘으면 5.0 V로 낮추거나 분압한다.",
+      "rubric": [
+        "와이퍼 전압 0~5 V 범위 확인",
+        "서보 전원이 5 V를 넘으면(예: 6 V) 초과 가능성과 보드 손상 언급",
+        "대책(서보 전원 5.0 V 이하 확인·구동 또는 분압) 언급"
+      ]
+    }
+  ],
+  "instructor_notes": "worksheets/02-hardware.md"
+}

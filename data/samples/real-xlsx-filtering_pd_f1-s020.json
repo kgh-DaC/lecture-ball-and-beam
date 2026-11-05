@@ -1,0 +1,78 @@
+{
+  "schema_ver": 1,
+  "session_id": "real-xlsx-filtering_pd_f1-s020",
+  "kind": "control",
+  "created_at": null,
+  "chapter_id": null,
+  "source": "import_xlsx",
+  "provenance": "real",
+  "title": "filtering_PD_f1 (기존 실측, 조건 불명) s=0.2",
+  "device": null,
+  "controller": {
+    "id": "pid",
+    "params": {
+      "kp": 2.3884,
+      "ki": 0.0,
+      "kd": 2.0684
+    },
+    "y_source": "unknown"
+  },
+  "plant_params": null,
+  "model_kind": "unknown",
+  "servo_tf": null,
+  "calibration": null,
+  "setpoint_profile": {
+    "type": "const",
+    "ref_mm": 220,
+    "duration_s": 57.85
+  },
+  "sample_period_ms": null,
+  "conditions": {
+    "status": "unknown",
+    "date": null,
+    "sample_period_ms": null,
+    "period_assumed": true,
+    "assumed_period_ms": 50,
+    "gains_status": "inferred",
+    "gain_units": "unknown",
+    "servo_model": "unknown",
+    "filter": "재귀 필터 sensitivity 0.2 (시트 메모)",
+    "clamp_rule": "raw ≤ 0 또는 raw ≥ 30.0 → lost",
+    "notes": "시트 'filtering_PD_f1' / 유실 처리: 클램프 의심 6개, 숫자 아님 0개, 빈 칸 0개 / 한 시트에 실험 2개(s=0.2: O–Q 열). 게인 기록 없음 — 시트 이름상 PD_f1 게인으로 추정만"
+  },
+  "run_group": null,
+  "attempt": null,
+  "notes": "",
+  "stats": {
+    "n": 1157,
+    "n_lost": 6,
+    "lost_ratio": 0.0052
+  },
+  "csv_columns": [
+    "t_s",
+    "ref_mm",
+    "y_mm",
+    "y_filt_mm",
+    "u_cdeg",
+    "cmd_echo_cdeg",
+    "servo_pot_cdeg",
+    "pot_raw",
+    "mode",
+    "dt_ms",
+    "lost"
+  ],
+  "complete": true,
+  "xlsx": {
+    "file": "data/raw/PID_test_data.xlsx",
+    "sheet": "filtering_PD_f1",
+    "columns": "y=P(cm), ref=O(cm), filt=Q(cm)",
+    "first_row": 2,
+    "slots": [
+      "filter-compare"
+    ],
+    "badges": [
+      "조건 불명",
+      "시간축 추정"
+    ]
+  }
+}

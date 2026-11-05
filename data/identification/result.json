@@ -1,0 +1,105 @@
+{
+  "schema_ver": 1,
+  "created_at": "2026-11-03T00:00:00+09:00",
+  "servo_model": "HS5645MG",
+  "provenance": "simulated",
+  "servo": {
+    "type": "fo_slew",
+    "K": 1,
+    "tau_s": 0.06,
+    "Td_s": 0.02,
+    "wn_rad_s": null,
+    "zeta": null,
+    "vmax_rad_s": 6.981317007977318,
+    "fit_pct": null,
+    "valid_fit_pct": null,
+    "assumed": true
+  },
+  "K_b": 0.8708833113358925,
+  "P_tf": {
+    "num": [
+      0.8708833113358925
+    ],
+    "den": [
+      0.06,
+      1,
+      0,
+      0
+    ],
+    "delay": 0.02
+  },
+  "P_poles": [
+    {
+      "re": 0,
+      "im": 0
+    },
+    {
+      "re": 0,
+      "im": 0
+    },
+    {
+      "re": -16.666666666666668,
+      "im": 0
+    }
+  ],
+  "calibration_ref": "2026-11-03T00:00:00+09:00",
+  "data_sessions": [
+    "sim-servo-step-10deg",
+    "sim-servo-prbs"
+  ],
+  "notes": "가정값(plant.ASSUMED_SERVO). 실측 식별 결과가 아니다. 07장에서 실측으로 식별하면 provenance real 결과가 이 파일보다 우선한다(IndexedDB). 아래 fit_demo 는 번들 합성 데이터에 identification.js 를 돌린 시연 값이다. 10° 스텝·±5° PRBS 에서는 속도 한계가 거의 작동하지 않아(|Δθ| < vmax·τ ≈ 24°) fo_slew 의 vmax 는 식별되지 않는다(값이 의미 없음) — vmax 는 30° 이상 큰 스텝으로 식별한다.",
+  "fit_demo": {
+    "sim-servo-step-10deg": {
+      "fo": {
+        "type": "fo",
+        "K": 1.0003204383295343,
+        "tau_s": 0.058531550919478176,
+        "Td_s": 0.020997658174148247,
+        "wn_rad_s": null,
+        "zeta": null,
+        "vmax_rad_s": null,
+        "fit_pct": 96.41990279027821,
+        "valid_fit_pct": null,
+        "assumed": false
+      },
+      "fo_slew": {
+        "type": "fo_slew",
+        "K": 1.0000854845203693,
+        "tau_s": 0.05822822416552868,
+        "Td_s": 0.019833625607669037,
+        "wn_rad_s": null,
+        "zeta": null,
+        "vmax_rad_s": 2.4184585700954684,
+        "fit_pct": 96.42552875863977,
+        "valid_fit_pct": null,
+        "assumed": false
+      }
+    },
+    "sim-servo-prbs": {
+      "fo": {
+        "type": "fo",
+        "K": 1.0008759789019415,
+        "tau_s": 0.06014459523574178,
+        "Td_s": 0.019994442052551215,
+        "wn_rad_s": null,
+        "zeta": null,
+        "vmax_rad_s": null,
+        "fit_pct": 94.81608916845096,
+        "valid_fit_pct": null,
+        "assumed": false
+      },
+      "fo_slew": {
+        "type": "fo_slew",
+        "K": 1.000875865699126,
+        "tau_s": 0.06014458090567873,
+        "Td_s": 0.019994430645997235,
+        "wn_rad_s": null,
+        "zeta": null,
+        "vmax_rad_s": 3.940502606805723,
+        "fit_pct": 94.81608916838684,
+        "valid_fit_pct": null,
+        "assumed": false
+      }
+    }
+  }
+}

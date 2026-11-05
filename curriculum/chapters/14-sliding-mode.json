@@ -1,0 +1,48 @@
+{
+  "schema_ver": 1,
+  "id": "14-sliding-mode",
+  "title": "슬라이딩모드 제어",
+  "part": "D",
+  "order": 14,
+  "status": "ready",
+  "requires": ["13-lqr"],
+  "est_minutes": 70,
+  "objectives": [
+    "위상평면에서 슬라이딩 면과 도달 조건을 설명하고 모델 오차 상한과 η의 관계로 강인성을 설명한다",
+    "sign 스위칭의 채터링 원인과 경계층 Φ의 트레이드오프를 설명하고, 경계층 안의 등가 PD 게인을 계산한다",
+    "모델 오차(K_b 변화) 조건에서 SMC와 PID를 검증 도구로 비교한다"
+  ],
+  "keywords": ["슬라이딩모드", "위상평면", "슬라이딩 면", "도달 조건", "강인성", "채터링", "경계층", "등가 제어"],
+  "slides": [],
+  "widgets": ["phase-plane", "smc-lab", "controller-panel", "live-plot", "validation-run", "overlay-plot"],
+  "predictions": [
+    { "id": "p1", "type": "short", "q": "sign 스위칭을 쓰면 u 그래프는 어떤 모양일까? 60 ms 샘플링에서 면 위에 정확히 머물 수 있을까?" },
+    { "id": "p2", "type": "choice", "q": "기본값(λ = 1, Φ = 0.05)에서 50 mm 스텝 시작 순간 |s|는 Φ와 비교해?", "choices": ["Φ보다 훨씬 크다", "Φ와 같다(경계층 가장자리)", "Φ보다 훨씬 작다"] }
+  ],
+  "practice": {
+    "modes": ["device", "virtual", "sample"],
+    "controller": "smc",
+    "controllers_allowed": ["smc"],
+    "safe_defaults": { "lambda": 1.0, "eta": 0.1, "phi": 0.05, "switch": "sat", "kb_nominal": 0.8709, "observer": "luenberger" },
+    "param_limits": { "lambda": [0.3, 3], "eta": [0, 0.5], "phi": [0.01, 0.2], "kb_nominal": [0.5, 1.5] },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 15,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball+servo",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ { "slot": "smc-best" }, "sim-smc-sign" ],
+  "promote_slots": ["smc-best"],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "λ = 1, η = 0.1, Φ = 0.05, K̂_b = 0.8709일 때 경계층 안 등가 PD의 Kp(rad/m)는? (소수 둘째 자리)", "answer": 2.30, "tol_abs": 0.01, "unit": "rad/m", "explain": "Kp,eff = ηλ/(ΦK̂_b) = 0.1/(0.05 × 0.8709) = 2.296. Kd,eff = (λ + η/Φ)/K̂_b = 3/0.8709 = 3.44.", "answer_source": "computed: smc.js Smc.equivalentPD → { kp: 2.2965, kd: 3.4447 }" },
+    { "id": "q2", "type": "numeric", "q": "e(0) = −0.05 m, ė(0) = 0, λ = 2, η = 0.2 m/s²(sign 스위칭, 모델 정확)일 때 면 도달 시간의 상한(s)은?", "answer": 0.5, "tol_abs": 0.001, "unit": "s", "explain": "|s(0)| = |0 + 2 × (−0.05)| = 0.1 m/s. ṡ = −η sign(s)이므로 t ≤ 0.1/0.2 = 0.5 s.", "answer_source": "analytic: t_reach ≤ |s(0)|/η" },
+    { "id": "q3", "type": "numeric", "q": "경계층 Φ = 0.02 m/s, λ = 1 s⁻¹일 때 경계층이 보장하는 오차 범위 |e| ≤ ? (mm)", "answer": 20, "tol_abs": 0.1, "unit": "mm", "explain": "정상 상태에서 |s| ≤ Φ, ė → 0이면 |λe| ≤ Φ → |e| ≤ Φ/λ = 0.02 m = 20 mm. 그 안에서는 선형 PD처럼 수렴하지만 '보장'은 이 범위까지다.", "answer_source": "analytic: Φ/λ" },
+    { "id": "q4", "type": "choice", "q": "이 장치에서 채터링의 가장 직접적인 원인은?", "choices": ["λ가 너무 작아서", "불연속 sign 스위칭이 60 ms 샘플링·서보 지연과 만나 면을 계속 넘나들므로", "센서 필터 α가 커서", "K̂_b가 정확해서"], "answer": 1, "explain": "이상적 슬라이딩은 무한히 빠른 스위칭이 필요하다. 샘플링과 지연 때문에 상태가 면을 지나친 뒤에야 뒤집혀 고주파 진동이 생긴다." },
+    { "id": "q5", "type": "choice", "q": "Φ를 키울 때 얻는 것과 잃는 것으로 옳은 것은?", "choices": ["얻음: 강인성 / 잃음: 매끄러움", "얻음: 매끄러운 명령(채터링 감소) / 잃음: 경계층 안에서의 강인성·정확도 보장", "얻음: 빠른 도달 / 잃음: 없음", "Φ는 성능과 무관하다"], "answer": 1, "explain": "경계층 안에서는 선형 PD가 되어 매끄럽지만, 도달 조건에 의한 보장은 |e| ≤ Φ/λ까지로 약해진다." },
+    { "id": "q6", "type": "short", "q": "기본값 SMC의 표준 스텝 응답이 같은 등가 게인의 PD와 거의 같았다. 이유를 s와 Φ로 설명하라.", "model_answer": "시작점에서 |s| = λ|e| = 1 × 0.05 = 0.05로 Φ와 같아 처음부터 경계층 가장자리에 있다. 이후 |s| < Φ 구간에서는 sat(s/Φ) = s/Φ로 제어 법칙이 선형 PD(Kp 2.30, Kd 3.44)와 같다. 스위칭이 일어나는 경계층 밖 구간이 거의 없으므로 두 응답이 같다. SMC다운 동작을 보려면 Φ를 줄이거나 스텝을 키운다.", "rubric": ["|s(0)| = λ|e(0)| 계산", "경계층 안에서 선형 PD가 됨", "Φ를 줄이거나 스텝을 키우는 대안"] }
+  ],
+  "instructor_notes": "worksheets/14-sliding-mode.md"
+}

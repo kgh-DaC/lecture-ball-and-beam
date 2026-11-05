@@ -1,0 +1,47 @@
+{
+  "schema_ver": 1,
+  "id": "19-imitation-nn",
+  "title": "모방 학습: 행동복제와 DAgger",
+  "part": "E",
+  "order": 19,
+  "status": "ready",
+  "requires": ["18-rl-control"],
+  "est_minutes": 70,
+  "objectives": [
+    "행동복제를 선생님의 (상태, 명령) 쌍으로 하는 지도학습으로 설명하고 16장 학습 과정과 연결한다",
+    "분포 이동이 왜 생기고 왜 오차가 쌓이는지 설명하고, DAgger가 그것을 어떻게 줄이는지 설명한다",
+    "행동복제와 DAgger 정책을 가상 장치에서 선생님(PD)과 비교하고, 신경망 제어기의 한계를 정리한다"
+  ],
+  "keywords": ["모방 학습", "행동복제", "시연", "분포 이동", "DAgger", "폐루프 평가", "신경망 제어기의 한계"],
+  "slides": [],
+  "widgets": ["imitation-lab", "policy-map", "nn-viz", "controller-panel", "live-plot", "overlay-plot"],
+  "predictions": [
+    { "id": "p1", "type": "choice", "q": "시연이 모두 목표 ±15 mm 안에서 시작했다. 학습 손실이 아주 작은 행동복제 정책을 목표 200 mm, 시작 60 mm(오차 140 mm)에서 돌리면?", "choices": ["선생님 PD처럼 공을 데려온다", "느리지만 데려온다", "엉뚱한 명령으로 벗어나거나 폴백이 켜질 수 있다"] },
+    { "id": "p2", "type": "short", "q": "DAgger 라운드가 지날수록 데이터 크기, 학습 손실, 폐루프 실패율은 각각 어떻게 변할까? 학습 손실이 커질 수 있을까?" }
+  ],
+  "practice": {
+    "modes": ["virtual", "sample"],
+    "controller": "nn-policy",
+    "controllers_allowed": ["nn-policy", "pid"],
+    "safe_defaults": {
+      "nn-policy": { "policy": "bc", "e_max": 0.10, "angle_limit": 0.30, "rate_limit": 3, "hold_s": 1.0, "fb_kp": 0.5, "fb_kd": 1.25 },
+      "pid": { "kp": 0.5, "ki": 0, "kd": 1.25, "n_filt": 8, "d_on": "measurement" }
+    },
+    "param_limits": {
+      "nn-policy": { "e_max": [0.02, 0.15], "angle_limit": [0.05, 0.35], "rate_limit": [0.5, 6], "hold_s": [0.5, 5], "fb_kp": [0, 2], "fb_kd": [0, 3] },
+      "pid": { "kp": [0, 6], "ki": [0, 1], "kd": [0, 6] }
+    },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 15,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball+servo",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ "sim-ai-bc", "sim-ai-dagger", { "slot": "ai-best" } ],
+  "promote_slots": ["ai-best"],
+  "ai_bundles": ["data/ai/bc-policy.json", "data/ai/dagger-policy.json"],
+  "instructor_notes": "worksheets/19-imitation-nn.md"
+}

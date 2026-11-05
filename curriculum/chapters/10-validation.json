@@ -1,0 +1,47 @@
+{
+  "schema_ver": 1,
+  "id": "10-validation",
+  "title": "검증 도구",
+  "part": "C",
+  "order": 10,
+  "status": "ready",
+  "requires": ["09-sample-data"],
+  "est_minutes": 60,
+  "objectives": [
+    "공통 지표 정의(10–90% 상승시간, ±5% 정착시간, ITAE, 제어 노력)를 이 시스템의 의미와 함께 설명한다",
+    "같은 조건 N회 반복으로 평균±표본 표준편차를 내고, 흩어짐을 근거로 우열 판단을 제한한다",
+    "두 PID를 공정 비교 규칙에 따라 검증하고 수치가 있는 해석 문단과 보고서를 만든다"
+  ],
+  "keywords": ["검증", "반복 시행", "평균", "표준편차", "공정 비교", "ITAE", "제어 노력", "보고서", "묶음 승격"],
+  "slides": [34, 35, 48],
+  "widgets": ["controller-panel", "validation-run", "metrics-table", "compare-bars", "sample-compare"],
+  "predictions": [
+    { "id": "p1", "type": "numeric", "q": "06장 PID를 같은 조건으로 3번 실행하면 오버슈트의 표준편차는 몇 %p일까?", "unit": "%p" }
+  ],
+  "practice": {
+    "modes": ["device", "virtual", "sample"],
+    "controller": "pid",
+    "controllers_allowed": ["pid"],
+    "safe_defaults": { "kp": 1.0, "ki": 0, "kd": 1.5, "n_filt": 8, "d_on": "measurement" },
+    "param_limits": { "kp": [0, 6], "ki": [0, 1], "kd": [0, 6] },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 20,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball+servo",
+    "repeat": 3,
+    "done_when": "repeat_completed"
+  },
+  "sample_sessions": [ { "slot": "pid-best" } ],
+  "promote_slots": ["pid-best"],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "세 번 실행한 오버슈트가 12%, 15%, 18%다. 표본 표준편차(%p)는?", "answer": 3, "tol_abs": 0.01, "unit": "%p", "explain": "평균 15, 편차 제곱합 9 + 0 + 9 = 18, N − 1 = 2로 나누면 9, 제곱근 3. 결과는 15 ± 3%.", "answer_source": "analytic: 표본 표준편차 (store/compare.js와 같은 N−1 정의)" },
+    { "id": "q2", "type": "choice", "q": "A의 오버슈트 15 ± 3%, B 13 ± 4% (각 3회). 올바른 결론은?", "choices": ["B가 확실히 낫다", "평균 차이(2%p)가 흩어짐보다 작아 우열을 단정하기 어렵다", "A가 낫다", "시행 횟수와 무관하게 평균만 비교하면 된다"], "answer": 1, "explain": "평균 차이가 표준편차보다 작다. 시행을 늘리거나 다른 지표를 함께 봐야 한다." },
+    { "id": "q3", "type": "numeric", "q": "검증 1회차 200 샘플 중 30 샘플에서 명령이 각도 한계에 닿았다. u_sat 비율은?", "answer": 0.15, "tol_abs": 0.001, "unit": "", "explain": "30/200 = 0.15(15%). 10%를 넘으므로 이 회차는 최고 사례 후보 자격이 없다(09장). 각도 한계를 확인하거나 게인을 낮춘다.", "answer_source": "analytic: u_sat_ratio 정의" },
+    { "id": "q4", "type": "numeric", "q": "오차가 t = 0~2 s 동안 0.01 m로 일정하고 그 뒤 0이다. ITAE(m·s²)는? (연속 적분으로)", "answer": 0.02, "tol_abs": 0.0005, "unit": "m·s²", "explain": "ITAE = ∫₀² t·0.01 dt = 0.01·(2²/2) = 0.02. 같은 오차라도 늦게 남을수록 더 크게 벌한다.", "answer_source": "analytic: ∫ t|e| dt" },
+    { "id": "q5", "type": "choice", "q": "PID A와 B를 비교할 때 가장 공정한 실행 순서는?", "choices": ["A, A, A, B, B, B", "A, B, A, B, A, B", "B를 먼저 세 번", "각 한 번씩만"], "answer": 1, "explain": "번갈아 실행하면 시간에 따라 변하는 요인(배터리, 온도, 공 위치 습관)이 두 제어기에 고르게 영향을 준다." },
+    { "id": "q6", "type": "short", "q": "검증 결과 B는 A보다 오버슈트가 작지만 정착시간이 길고 u_tv는 비슷했다. 수치가 들어간 해석 문단의 형식으로 쓰라(숫자는 가상의 값을 써도 된다).", "model_answer": "예: '조건 P1(150→200 mm, α 0.2, 각도 한계 20°, HS-5645MG)에서 B는 A보다 오버슈트가 4 ± 2%p 작았고(각 3회), 정착시간은 0.8 ± 0.3 s 길었다. u_tv는 차이가 흩어짐 안이었다. 오버슈트 제한이 중요한 경우 B, 빠른 위치 이동이 중요한 경우 A를 권한다.'", "rubric": ["조건 명시", "평균 ± 편차와 시행 횟수", "상충하는 두 지표를 모두 언급", "응용에 따른 권고"] }
+  ],
+  "instructor_notes": "worksheets/10-validation.md"
+}

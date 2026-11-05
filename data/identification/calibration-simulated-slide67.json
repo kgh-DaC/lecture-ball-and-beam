@@ -1,0 +1,50 @@
+{
+  "schema_ver": 1,
+  "created_at": "2026-11-03T00:00:00+09:00",
+  "servo_model": "HS5645MG",
+  "servo_pin": 9,
+  "provenance": "simulated",
+  "points": [
+    {
+      "cmd_cdeg": -3000,
+      "pot_raw_mean": 390.3,
+      "pot_raw_std": 0,
+      "n": 0
+    },
+    {
+      "cmd_cdeg": -1500,
+      "pot_raw_mean": 349.13,
+      "pot_raw_std": 0,
+      "n": 0
+    },
+    {
+      "cmd_cdeg": 0,
+      "pot_raw_mean": 307.95,
+      "pot_raw_std": 0,
+      "n": 0
+    },
+    {
+      "cmd_cdeg": 1500,
+      "pot_raw_mean": 266.77,
+      "pot_raw_std": 0,
+      "n": 0
+    },
+    {
+      "cmd_cdeg": 3000,
+      "pot_raw_mean": 225.6,
+      "pot_raw_std": 0,
+      "n": 0
+    }
+  ],
+  "fit": {
+    "order": 1,
+    "a_cdeg_per_lsb": -36.42987249544626,
+    "b_cdeg": 11218.579234972676,
+    "c": 0
+  },
+  "residual_max_cdeg": 0,
+  "warn": null,
+  "dir_checked": false,
+  "notes": "슬라이드 67 프리셋(map(pot, 555, 60.9, 0, 180))에서 만든 가정값. 실측 캘리브레이션이 아니다 — 07장 calibration-wizard 로 바꾼다. (2026-11-04: calibration.json 은 사용자 실측으로 바뀌었고 이 파일은 예전 가정값 보존본이다. result.json 의 calibration_ref 2026-11-03T00:00:00+09:00 이 이 파일을 가리킨다. raw 감소 방향 — 지금 장치 배선과 반대.)",
+  "superseded_by": "calibration.json (2026-11-04T00:00:00+09:00, provenance real)"
+}

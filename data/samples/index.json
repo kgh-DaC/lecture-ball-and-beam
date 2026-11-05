@@ -1,0 +1,2748 @@
+{
+  "schema_ver": 1,
+  "updated_at": "2026-11-03T16:31:11.930Z",
+  "generator": "tools/build_samples.mjs + tools/convert_raw_xlsx.py + tests/control/build_ai.mjs",
+  "slots": [
+    {
+      "id": "filter-compare",
+      "label": "센서 필터 비교 (기존 실측)",
+      "controller": "pid",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "openloop-roll",
+      "label": "개루프 굴림",
+      "controller": "openloop",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 170,
+        "duration_s": null
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "pd-design",
+      "label": "슬라이드 PD 설계 (서보 무시)",
+      "controller": "pid",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "pid-best",
+      "label": "실시간 PID 최고 사례",
+      "controller": "pid",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "pid-legacy",
+      "label": "기존 PID 실측 (조건 불명)",
+      "controller": "pid",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "servo-step",
+      "label": "서보 스텝 응답",
+      "controller": null,
+      "setpoint_profile": null,
+      "kind": "id",
+      "active": null
+    },
+    {
+      "id": "pid-servo-redesign",
+      "label": "서보 포함 모델로 재설계한 PID",
+      "controller": "pid",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "relay-cycle",
+      "label": "릴레이 극한 사이클",
+      "controller": "relay",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 170,
+        "duration_s": null
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "autotune-best",
+      "label": "오토튜닝 PID 최고 사례",
+      "controller": "pid",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "gs-best",
+      "label": "게인 스케줄링 최고 사례",
+      "controller": "gain-schedule",
+      "setpoint_profile": {
+        "type": "staircase",
+        "levels_mm": [
+          120,
+          170,
+          270,
+          170
+        ],
+        "hold_s": 6
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "gs-legacy",
+      "label": "기존 적응 제어 실측 (조건 불명)",
+      "controller": "gain-schedule",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "mrac-best",
+      "label": "MRAC 최고 사례",
+      "controller": "mrac",
+      "setpoint_profile": {
+        "type": "staircase",
+        "levels_mm": [
+          120,
+          170,
+          270,
+          170
+        ],
+        "hold_s": 6
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "lqr-best",
+      "label": "LQR 최고 사례",
+      "controller": "lqr",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "smc-best",
+      "label": "슬라이딩모드 최고 사례",
+      "controller": "smc",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "ai-best",
+      "label": "신경망 정책 최고 사례",
+      "controller": "nn-policy",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "kind": "control",
+      "active": null
+    },
+    {
+      "id": "q-best",
+      "label": "Q 표 정책 최고 사례",
+      "controller": "q-policy",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "kind": "control",
+      "active": null
+    }
+  ],
+  "samples": [
+    {
+      "id": "sim-openloop-2deg",
+      "title": "개루프 2° 굴림 (시뮬레이션, 서보 무시)",
+      "kind": "control",
+      "controller": "openloop",
+      "params": {
+        "theta": 0.0349
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_only"
+      },
+      "model_kind": "ball_only",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 170,
+        "duration_s": 5
+      },
+      "slots": [
+        "openloop-roll"
+      ],
+      "chapter_ids": [
+        "03-plant-model"
+      ],
+      "files": {
+        "meta": "sim-openloop-2deg.json",
+        "csv": "sim-openloop-2deg.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0,
+        "t1_s": 4.98,
+        "ref_from_mm": 101,
+        "ref_to_mm": 170,
+        "y_initial_mm": 101,
+        "computable": true,
+        "reason": null,
+        "tr": 1.3845,
+        "tp": 4.86,
+        "po": 3.0690537084399074,
+        "ts": 3.96,
+        "ts_settled": true,
+        "ts_dwell_s": 1.0200000000000005,
+        "min_dwell_s": 1,
+        "ess": 169.88235294117646,
+        "iae": 414.48000000000025,
+        "ise": 50573.52000000002,
+        "itae": 1348.8264000000001,
+        "u_rms": 2,
+        "u_sat_ratio": 0,
+        "u_tv": 0,
+        "lost_ratio": 0.011904761904761904,
+        "y_final_mm": 339.88235294117646
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "서보 무시"
+      ],
+      "score": {
+        "group": "openloop-roll",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-pid-slide47",
+      "title": "슬라이드 47 PD (0.574, 0.994) 시뮬레이션, 서보 무시",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 0.574,
+        "ki": 0,
+        "kd": 0.994,
+        "n_filt": 10,
+        "d_on": "error"
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_only"
+      },
+      "model_kind": "ball_only",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "pd-design"
+      ],
+      "chapter_ids": [
+        "04-root-locus",
+        "05-nyquist"
+      ],
+      "files": {
+        "meta": "sim-pid-slide47.json",
+        "csv": "sim-pid-slide47.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 150,
+        "computable": true,
+        "reason": null,
+        "tr": 0.8600000000000003,
+        "tp": 2.2800000000000002,
+        "po": 49.30769230769232,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": 0.1800000000000015,
+        "min_dwell_s": 1,
+        "ess": 1.6538461538461604,
+        "iae": 87.00000000000011,
+        "ise": 2003.1599999999985,
+        "itae": 186.5556,
+        "u_rms": 2.1257455127466227,
+        "u_sat_ratio": 0,
+        "u_tv": 23.49,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 198.34615384615384
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "서보 무시"
+      ],
+      "score": {
+        "group": "pd-design",
+        "value": 0.5714285714285714,
+        "rank": 2,
+        "n_candidates": 2,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-pid-slide48",
+      "title": "슬라이드 48 PD (2.3884, 2.0684) 시뮬레이션, 서보 무시",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 2.3884,
+        "ki": 0,
+        "kd": 2.0684,
+        "n_filt": 10,
+        "d_on": "error"
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_only"
+      },
+      "model_kind": "ball_only",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "pd-design"
+      ],
+      "chapter_ids": [
+        "04-root-locus",
+        "05-nyquist",
+        "06-realtime-pid"
+      ],
+      "files": {
+        "meta": "sim-pid-slide48.json",
+        "csv": "sim-pid-slide48.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 151,
+        "computable": true,
+        "reason": null,
+        "tr": 0.42224999999999957,
+        "tp": 1.3199999999999998,
+        "po": 70.32967032967031,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": 0.1800000000000015,
+        "min_dwell_s": 1,
+        "ess": 0.5384615384615472,
+        "iae": 73.62000000000015,
+        "ise": 1635.2999999999981,
+        "itae": 145.94400000000002,
+        "u_rms": 5.598453801042391,
+        "u_sat_ratio": 0.015037593984962405,
+        "u_tv": 78.7,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 200.53846153846155
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "서보 무시"
+      ],
+      "score": {
+        "group": "pd-design",
+        "value": 0.42857142857142855,
+        "rank": 1,
+        "n_candidates": 2,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-pid-p1",
+      "title": "PD (1.0, 1.5) 표준 스텝 — 가상 장치 시뮬레이션",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 1,
+        "ki": 0,
+        "kd": 1.5,
+        "n_filt": 8,
+        "d_on": "measurement"
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "pid-best"
+      ],
+      "chapter_ids": [
+        "06-realtime-pid"
+      ],
+      "files": {
+        "meta": "sim-pid-p1.json",
+        "csv": "sim-pid-p1.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 150,
+        "computable": true,
+        "reason": null,
+        "tr": 1.3599999999999999,
+        "tp": 2.8200000000000003,
+        "po": 11.538461538461547,
+        "ts": 5.94,
+        "ts_settled": true,
+        "ts_dwell_s": 1.9800000000000004,
+        "min_dwell_s": 1,
+        "ess": 1.2307692307692264,
+        "iae": 72.96000000000015,
+        "ise": 2323.199999999992,
+        "itae": 105.02999999999999,
+        "u_rms": 1.110835897411244,
+        "u_sat_ratio": 0,
+        "u_tv": 14.63,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 201.23076923076923
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "pid-best",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-pid-servo-redesign",
+      "title": "서보 포함 모델로 다시 맞춘 PD (0.5, 0, 1.25)",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 0.5,
+        "ki": 0,
+        "kd": 1.25,
+        "n_filt": 8,
+        "d_on": "measurement"
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "pid-servo-redesign"
+      ],
+      "chapter_ids": [
+        "08-model-compare"
+      ],
+      "files": {
+        "meta": "sim-pid-servo-redesign.json",
+        "csv": "sim-pid-servo-redesign.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 150,
+        "computable": true,
+        "reason": null,
+        "tr": 2.3400000000000003,
+        "tp": 7.680000000000001,
+        "po": 5.384615384615358,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": 0,
+        "min_dwell_s": 1,
+        "ess": 1.6923076923076792,
+        "iae": 109.73999999999998,
+        "ise": 3462.899999999997,
+        "itae": 195.5304,
+        "u_rms": 0.5589403239293846,
+        "u_sat_ratio": 0,
+        "u_tv": 6.86,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 198.30769230769232
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "pid-servo-redesign",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-relay",
+      "title": "릴레이 극한 사이클 (h 0.05 rad, kd_stab 1.5)",
+      "kind": "control",
+      "controller": "relay",
+      "params": {
+        "h": 0.05,
+        "eps": 0.006,
+        "bias": 0,
+        "max_time": 40,
+        "kd_stab": 1.5
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 170,
+        "duration_s": 40
+      },
+      "slots": [
+        "relay-cycle"
+      ],
+      "chapter_ids": [
+        "11-autotuning"
+      ],
+      "files": {
+        "meta": "sim-relay.json",
+        "csv": "sim-relay.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0,
+        "t1_s": 39.96,
+        "ref_from_mm": 171,
+        "ref_to_mm": 170,
+        "y_initial_mm": 171,
+        "computable": false,
+        "reason": "small_step",
+        "tr": null,
+        "tp": null,
+        "po": null,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": null,
+        "ess": null,
+        "iae": null,
+        "ise": null,
+        "itae": null,
+        "u_rms": 2.984515937687189,
+        "u_sat_ratio": 0,
+        "u_tv": 632.96,
+        "lost_ratio": 0.010494752623688156
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "relay-cycle",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "itae",
+          "ts",
+          "po"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-pid-zn",
+      "title": "릴레이 → Ziegler–Nichols PID (1.927, 0.9507, 2.476)",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 1.927,
+        "ki": 0.9507,
+        "kd": 2.476,
+        "n_filt": 8,
+        "d_on": "measurement"
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "autotune-best"
+      ],
+      "chapter_ids": [
+        "11-autotuning"
+      ],
+      "files": {
+        "meta": "sim-pid-zn.json",
+        "csv": "sim-pid-zn.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 151,
+        "computable": true,
+        "reason": null,
+        "tr": 0.7633333333333332,
+        "tp": 2.0999999999999996,
+        "po": 59.968602825745684,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": 1,
+        "ess": 0.3846153846153868,
+        "iae": 102.36000000000007,
+        "ise": 2542.9199999999946,
+        "itae": 248.32080000000002,
+        "u_rms": 2.945512069807805,
+        "u_sat_ratio": 0,
+        "u_tv": 41.94,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 199.6153846153846
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "autotune-best",
+        "value": 1,
+        "rank": 2,
+        "n_candidates": 2,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-pid-tl",
+      "title": "릴레이 → Tyreus–Luyben PID (1.46, 0.1637, 2.439)",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 1.46,
+        "ki": 0.1637,
+        "kd": 2.439,
+        "n_filt": 8,
+        "d_on": "measurement"
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "autotune-best"
+      ],
+      "chapter_ids": [
+        "11-autotuning"
+      ],
+      "files": {
+        "meta": "sim-pid-tl.json",
+        "csv": "sim-pid-tl.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 151,
+        "computable": true,
+        "reason": null,
+        "tr": 1.056,
+        "tp": 4.92,
+        "po": 11.067503924646804,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": 0,
+        "min_dwell_s": 1,
+        "ess": 5.576923076923066,
+        "iae": 79.67999999999999,
+        "ise": 2041.9199999999998,
+        "itae": 193.10760000000013,
+        "u_rms": 1.8340382331351504,
+        "u_sat_ratio": 0,
+        "u_tv": 27.91,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 205.57692307692307
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "autotune-best",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 2,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-gs-slide50",
+      "title": "게인 스케줄링 (슬라이드 50 게인, 경계 10 cm)",
+      "kind": "control",
+      "controller": "gain-schedule",
+      "params": {
+        "kp_near": 2.3884,
+        "ki_near": 0,
+        "kd_near": 2.0684,
+        "kp_far": 0.66861,
+        "ki_far": 0.023404,
+        "kd_far": 4.7753,
+        "boundary": 0.1,
+        "blend": "switch",
+        "blend_width": 0.04,
+        "bumpless": false
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "staircase",
+        "levels_mm": [
+          120,
+          170,
+          270,
+          170
+        ],
+        "hold_s": 6
+      },
+      "slots": [
+        "gs-best"
+      ],
+      "chapter_ids": [
+        "12-adaptive-pid"
+      ],
+      "files": {
+        "meta": "sim-gs-slide50.json",
+        "csv": "sim-gs-slide50.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 6,
+        "t1_s": 11.94,
+        "ref_from_mm": 120,
+        "ref_to_mm": 170,
+        "y_initial_mm": 120,
+        "computable": true,
+        "reason": null,
+        "tr": 0.7799999999999994,
+        "tp": 1.7999999999999998,
+        "po": 29.5,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": 1,
+        "ess": 5.25,
+        "iae": 78.78000000000003,
+        "ise": 2012.3399999999997,
+        "itae": 144.4032,
+        "u_rms": 3.534896320968975,
+        "u_sat_ratio": 0,
+        "u_tv": 36.72,
+        "lost_ratio": 0.01,
+        "y_final_mm": 175.25
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "gs-best",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-mrac",
+      "title": "MRAC (MIT rule, γ 3)",
+      "kind": "control",
+      "controller": "mrac",
+      "params": {
+        "zeta_ref": 0.9,
+        "wn_ref": 1.2,
+        "gamma": 3,
+        "kp0": 1,
+        "kd0": 1.5,
+        "kp_min": 0.2,
+        "kp_max": 4,
+        "kd_min": 0.5,
+        "kd_max": 5
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "staircase",
+        "levels_mm": [
+          120,
+          170,
+          270,
+          170
+        ],
+        "hold_s": 6
+      },
+      "slots": [
+        "mrac-best"
+      ],
+      "chapter_ids": [
+        "12-adaptive-pid"
+      ],
+      "files": {
+        "meta": "sim-mrac.json",
+        "csv": "sim-mrac.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 6,
+        "t1_s": 11.94,
+        "ref_from_mm": 120,
+        "ref_to_mm": 170,
+        "y_initial_mm": 120,
+        "computable": true,
+        "reason": null,
+        "tr": 1.8000000000000007,
+        "tp": 3.5999999999999996,
+        "po": 14.499999999999998,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": 0,
+        "min_dwell_s": 1,
+        "ess": 1.75,
+        "iae": 82.38000000000002,
+        "ise": 2583.1799999999985,
+        "itae": 116.10720000000002,
+        "u_rms": 1.204328858742495,
+        "u_sat_ratio": 0,
+        "u_tv": 80.56,
+        "lost_ratio": 0.01,
+        "y_final_mm": 171.75
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "mrac-best",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-lqr",
+      "title": "LQR + Luenberger (브라이슨 규칙 기본값)",
+      "kind": "control",
+      "controller": "lqr",
+      "params": {
+        "q_e": 400,
+        "q_edot": 25,
+        "q_theta": 33,
+        "r": 3.65,
+        "integral": false,
+        "q_i": 50,
+        "observer": "luenberger",
+        "obs_speed": 3,
+        "theta_meas": true
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "lqr-best"
+      ],
+      "chapter_ids": [
+        "13-lqr"
+      ],
+      "files": {
+        "meta": "sim-lqr.json",
+        "csv": "sim-lqr.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 150,
+        "computable": true,
+        "reason": null,
+        "tr": 1.3200000000000003,
+        "tp": 2.8200000000000003,
+        "po": 7.461538461538453,
+        "ts": 5.04,
+        "ts_settled": true,
+        "ts_dwell_s": 2.880000000000001,
+        "min_dwell_s": 1,
+        "ess": 0.2692307692307736,
+        "iae": 51.84000000000009,
+        "ise": 1613.2799999999972,
+        "itae": 56.50200000000004,
+        "u_rms": 1.7749633057734193,
+        "u_sat_ratio": 0,
+        "u_tv": 71.39,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 200.26923076923077
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "lqr-best",
+        "value": 0.4000000000000001,
+        "rank": 1,
+        "n_candidates": 2,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-lqi",
+      "title": "LQI (적분 상태 포함) + Luenberger",
+      "kind": "control",
+      "controller": "lqr",
+      "params": {
+        "q_e": 400,
+        "q_edot": 25,
+        "q_theta": 33,
+        "r": 3.65,
+        "integral": true,
+        "q_i": 50,
+        "observer": "luenberger",
+        "obs_speed": 3,
+        "theta_meas": true
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "lqr-best"
+      ],
+      "chapter_ids": [
+        "13-lqr"
+      ],
+      "files": {
+        "meta": "sim-lqi.json",
+        "csv": "sim-lqi.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 150,
+        "computable": true,
+        "reason": null,
+        "tr": 0.9499999999999997,
+        "tp": 2.0999999999999996,
+        "po": 21.923076923076906,
+        "ts": 4.62,
+        "ts_settled": true,
+        "ts_dwell_s": 3.3000000000000007,
+        "min_dwell_s": 1,
+        "ess": 2.038461538461547,
+        "iae": 69.48000000000016,
+        "ise": 1556.0400000000002,
+        "itae": 140.2992,
+        "u_rms": 2.256344771820856,
+        "u_sat_ratio": 0,
+        "u_tv": 39.43,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 202.03846153846155
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "lqr-best",
+        "value": 0.6000000000000001,
+        "rank": 2,
+        "n_candidates": 2,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-smc-sat",
+      "title": "슬라이딩모드 (sat 경계층 Φ 0.05)",
+      "kind": "control",
+      "controller": "smc",
+      "params": {
+        "lambda": 1,
+        "eta": 0.1,
+        "phi": 0.05,
+        "switch": "sat",
+        "kb_nominal": 0.8709,
+        "observer": "luenberger"
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "smc-best"
+      ],
+      "chapter_ids": [
+        "14-sliding-mode"
+      ],
+      "files": {
+        "meta": "sim-smc-sat.json",
+        "csv": "sim-smc-sat.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 151,
+        "computable": true,
+        "reason": null,
+        "tr": 2.286,
+        "tp": 7.680000000000001,
+        "po": 3.924646781789661,
+        "ts": 6.6000000000000005,
+        "ts_settled": true,
+        "ts_dwell_s": 1.3200000000000003,
+        "min_dwell_s": 1,
+        "ess": 0.07692307692306599,
+        "iae": 73.38000000000011,
+        "ise": 2200.139999999995,
+        "itae": 94.60080000000005,
+        "u_rms": 1.524373654191775,
+        "u_sat_ratio": 0,
+        "u_tv": 139.62,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 200.07692307692307
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": {
+        "group": "smc-best",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-smc-sign",
+      "title": "슬라이딩모드 sign (채터링 비교용, 실기 금지)",
+      "kind": "control",
+      "controller": "smc",
+      "params": {
+        "lambda": 1,
+        "eta": 0.1,
+        "phi": 0.05,
+        "switch": "sign",
+        "kb_nominal": 0.8709,
+        "observer": "luenberger"
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [],
+      "chapter_ids": [
+        "14-sliding-mode"
+      ],
+      "files": {
+        "meta": "sim-smc-sign.json",
+        "csv": "sim-smc-sign.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 149,
+        "computable": true,
+        "reason": null,
+        "tr": 2.295,
+        "tp": 5.16,
+        "po": 4.751131221719478,
+        "ts": 6.6000000000000005,
+        "ts_settled": true,
+        "ts_dwell_s": 1.3200000000000003,
+        "min_dwell_s": 1,
+        "ess": 0.423076923076934,
+        "iae": 69.54000000000006,
+        "ise": 1960.7399999999986,
+        "itae": 94.71959999999996,
+        "u_rms": 6.863458487236231,
+        "u_sat_ratio": 0,
+        "u_tv": 1036.31,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 199.57692307692307
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값",
+        "실기 금지"
+      ],
+      "score": null
+    },
+    {
+      "id": "sim-servo-step-10deg",
+      "title": "서보 스텝 0 → 10° (가정값 합성)",
+      "kind": "id",
+      "controller": null,
+      "params": null,
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 5,
+        "period_assumed": false,
+        "servo_model": "HS5645MG"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": null,
+      "id_signal": {
+        "kind": "step",
+        "from_cdeg": 0,
+        "to_cdeg": 1000,
+        "hold_ms": 500,
+        "id_ts_ms": 5
+      },
+      "slots": [
+        "servo-step"
+      ],
+      "chapter_ids": [
+        "07-servo-id"
+      ],
+      "files": {
+        "meta": "sim-servo-step-10deg.json",
+        "csv": "sim-servo-step-10deg.csv"
+      },
+      "metrics_summary": null,
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": null
+    },
+    {
+      "id": "sim-servo-prbs",
+      "title": "서보 PRBS ±5°, 비트 40 ms (가정값 합성)",
+      "kind": "id",
+      "controller": null,
+      "params": null,
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tools/build_samples.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 5,
+        "period_assumed": false,
+        "servo_model": "HS5645MG"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": null,
+      "id_signal": {
+        "kind": "prbs",
+        "amp_cdeg": 500,
+        "bit_ms": 40,
+        "n_bits": 63,
+        "id_ts_ms": 5
+      },
+      "slots": [],
+      "chapter_ids": [
+        "07-servo-id"
+      ],
+      "files": {
+        "meta": "sim-servo-prbs.json",
+        "csv": "sim-servo-prbs.csv"
+      },
+      "metrics_summary": null,
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값"
+      ],
+      "score": null
+    },
+    {
+      "id": "real-xlsx-adaptive_control",
+      "title": "adaptive_control (기존 실측, 조건 불명)",
+      "kind": "control",
+      "controller": "gain-schedule",
+      "params": {
+        "kp_near": 2.3884,
+        "ki_near": 0,
+        "kd_near": 2.0684,
+        "kp_far": 0.66861,
+        "ki_far": 0.023404,
+        "kd_far": 4.7753,
+        "boundary": 0.1,
+        "blend": "switch"
+      },
+      "provenance": "real",
+      "source": {
+        "kind": "xlsx",
+        "file": "data/raw/PID_test_data.xlsx",
+        "sheet": "adaptive_control",
+        "columns": "y=B(cm), ref=A(cm), filt=C(cm)",
+        "session_id": null
+      },
+      "conditions": {
+        "status": "unknown",
+        "date": null,
+        "sample_period_ms": null,
+        "period_assumed": true,
+        "assumed_period_ms": 50,
+        "gains_status": "annotated",
+        "gain_units": "unknown",
+        "servo_model": "unknown",
+        "filter": "unknown",
+        "clamp_rule": "raw ≤ 0 또는 raw ≥ 30.0 → lost",
+        "notes": "시트 'adaptive_control' / 유실 처리: 클램프 의심 12개, 숫자 아님 0개, 빈 칸 0개 / 게인은 E1·E2 문자열(agg = far, cons = near). 경계 0.10 m 는 시트에 없고 슬라이드 50 에서 옴. 초반 dist 30.0 연속(상한 고정 추정) / controller.params 경계 0.10 m, blend switch 는 슬라이드 50 출처"
+      },
+      "model_kind": "unknown",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "slots": [
+        "gs-legacy"
+      ],
+      "chapter_ids": [
+        "12-adaptive-pid"
+      ],
+      "files": {
+        "meta": "real-xlsx-adaptive_control.json",
+        "csv": "real-xlsx-adaptive_control.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0,
+        "t1_s": 37.7,
+        "ref_from_mm": 298,
+        "ref_to_mm": 220,
+        "y_initial_mm": 298,
+        "computable": true,
+        "reason": "no_u",
+        "tr": 0.9566666666666668,
+        "tp": 3.45,
+        "po": 96.23875021226014,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": 0,
+        "min_dwell_s": 1,
+        "ess": 0.06622516556291203,
+        "iae": 433.50000000000045,
+        "ise": 12695.499999999993,
+        "itae": 5564.519999999991,
+        "u_rms": null,
+        "u_sat_ratio": null,
+        "u_tv": null,
+        "lost_ratio": 0.015894039735099338,
+        "time_assumed": true,
+        "y_final_mm": 220.0662251655629
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "조건 불명",
+        "시간축 추정"
+      ],
+      "score": {
+        "group": "gs-legacy",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts",
+          "u_tv"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "real-xlsx-fil_pd_ex1",
+      "title": "fil_PD_ex1 (기존 실측, 조건 불명)",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 5.4586,
+        "ki": 0,
+        "kd": 2.4395
+      },
+      "provenance": "real",
+      "source": {
+        "kind": "xlsx",
+        "file": "data/raw/PID_test_data.xlsx",
+        "sheet": "fil_PD_ex1",
+        "columns": "y=B(cm), ref=A(cm), filt=C(cm)",
+        "session_id": null
+      },
+      "conditions": {
+        "status": "unknown",
+        "date": null,
+        "sample_period_ms": null,
+        "period_assumed": true,
+        "assumed_period_ms": 50,
+        "gains_status": "annotated",
+        "gain_units": "unknown",
+        "servo_model": "unknown",
+        "filter": "재귀 필터 sensitivity 0.2 (시트 메모)",
+        "clamp_rule": "raw ≤ 0 또는 raw ≥ 30.0 → lost",
+        "notes": "시트 'fil_PD_ex1' / 시트 메모 지표(출처 미상, metrics 에 쓰지 않음): tr 0.445, ts 3.5, po 31.1 / 유실 처리: 클램프 의심 31개, 숫자 아님 0개, 빈 칸 0개"
+      },
+      "model_kind": "unknown",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "slots": [
+        "pid-legacy"
+      ],
+      "chapter_ids": [
+        "09-sample-data"
+      ],
+      "files": {
+        "meta": "real-xlsx-fil_pd_ex1.json",
+        "csv": "real-xlsx-fil_pd_ex1.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0,
+        "t1_s": 71.9,
+        "ref_from_mm": 61,
+        "ref_to_mm": 220,
+        "y_initial_mm": 61,
+        "computable": true,
+        "reason": "no_u",
+        "tr": 3.3956300322061193,
+        "tp": 5.05,
+        "po": 49.0893605870021,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": 1,
+        "ess": 1.9479166666666572,
+        "iae": 1882.2999999999993,
+        "ise": 142018.0999999997,
+        "itae": 38360.0300000001,
+        "u_rms": null,
+        "u_sat_ratio": null,
+        "u_tv": null,
+        "lost_ratio": 0.021542738012508687,
+        "time_assumed": true,
+        "y_final_mm": 221.94791666666666
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "조건 불명",
+        "시간축 추정"
+      ],
+      "score": {
+        "group": "pid-legacy",
+        "value": 0.242954435664819,
+        "rank": 2,
+        "n_candidates": 5,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts",
+          "u_tv"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "real-xlsx-filtering_pd_f1-s010",
+      "title": "filtering_PD_f1 (기존 실측, 조건 불명) s=0.1",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 2.3884,
+        "ki": 0,
+        "kd": 2.0684
+      },
+      "provenance": "real",
+      "source": {
+        "kind": "xlsx",
+        "file": "data/raw/PID_test_data.xlsx",
+        "sheet": "filtering_PD_f1",
+        "columns": "y=B(cm), ref=A(cm), filt=C(cm)",
+        "session_id": null
+      },
+      "conditions": {
+        "status": "unknown",
+        "date": null,
+        "sample_period_ms": null,
+        "period_assumed": true,
+        "assumed_period_ms": 50,
+        "gains_status": "inferred",
+        "gain_units": "unknown",
+        "servo_model": "unknown",
+        "filter": "재귀 필터 sensitivity 0.1 (시트 메모)",
+        "clamp_rule": "raw ≤ 0 또는 raw ≥ 30.0 → lost",
+        "notes": "시트 'filtering_PD_f1' / 유실 처리: 클램프 의심 35개, 숫자 아님 0개, 빈 칸 0개 / 한 시트에 실험 2개(s=0.1: A–C 열). 게인 기록 없음 — 시트 이름상 PD_f1 게인으로 추정만"
+      },
+      "model_kind": "unknown",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "slots": [
+        "filter-compare"
+      ],
+      "chapter_ids": [
+        "02-hardware"
+      ],
+      "files": {
+        "meta": "real-xlsx-filtering_pd_f1-s010.json",
+        "csv": "real-xlsx-filtering_pd_f1-s010.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0.95,
+        "t1_s": 32.55,
+        "ref_from_mm": 0,
+        "ref_to_mm": 220,
+        "y_initial_mm": 202,
+        "computable": true,
+        "reason": "no_u",
+        "tr": 0,
+        "tp": 7.55,
+        "po": 425.19685039370074,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": 1,
+        "ess": 0.4645669291338663,
+        "iae": 1012.3999999999993,
+        "ise": 74976.40000000004,
+        "itae": 8830.055,
+        "u_rms": null,
+        "u_sat_ratio": null,
+        "u_tv": null,
+        "lost_ratio": 0.053712480252764615,
+        "time_assumed": true,
+        "y_final_mm": 220.46456692913387
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "조건 불명",
+        "시간축 추정"
+      ],
+      "score": {
+        "group": "filter-compare",
+        "value": null,
+        "rank": null,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "itae",
+          "ts",
+          "po",
+          "u_tv"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "real-xlsx-filtering_pd_f1-s020",
+      "title": "filtering_PD_f1 (기존 실측, 조건 불명) s=0.2",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 2.3884,
+        "ki": 0,
+        "kd": 2.0684
+      },
+      "provenance": "real",
+      "source": {
+        "kind": "xlsx",
+        "file": "data/raw/PID_test_data.xlsx",
+        "sheet": "filtering_PD_f1",
+        "columns": "y=P(cm), ref=O(cm), filt=Q(cm)",
+        "session_id": null
+      },
+      "conditions": {
+        "status": "unknown",
+        "date": null,
+        "sample_period_ms": null,
+        "period_assumed": true,
+        "assumed_period_ms": 50,
+        "gains_status": "inferred",
+        "gain_units": "unknown",
+        "servo_model": "unknown",
+        "filter": "재귀 필터 sensitivity 0.2 (시트 메모)",
+        "clamp_rule": "raw ≤ 0 또는 raw ≥ 30.0 → lost",
+        "notes": "시트 'filtering_PD_f1' / 유실 처리: 클램프 의심 6개, 숫자 아님 0개, 빈 칸 0개 / 한 시트에 실험 2개(s=0.2: O–Q 열). 게인 기록 없음 — 시트 이름상 PD_f1 게인으로 추정만"
+      },
+      "model_kind": "unknown",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "slots": [
+        "filter-compare"
+      ],
+      "chapter_ids": [
+        "02-hardware"
+      ],
+      "files": {
+        "meta": "real-xlsx-filtering_pd_f1-s020.json",
+        "csv": "real-xlsx-filtering_pd_f1-s020.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0,
+        "t1_s": 57.8,
+        "ref_from_mm": 210,
+        "ref_to_mm": 220,
+        "y_initial_mm": 210,
+        "computable": false,
+        "reason": "small_step",
+        "tr": null,
+        "tp": null,
+        "po": null,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": null,
+        "ess": null,
+        "iae": null,
+        "ise": null,
+        "itae": null,
+        "u_rms": null,
+        "u_sat_ratio": null,
+        "u_tv": null,
+        "lost_ratio": 0.005185825410544511,
+        "time_assumed": true
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "조건 불명",
+        "시간축 추정"
+      ],
+      "score": {
+        "group": "filter-compare",
+        "value": null,
+        "rank": null,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "itae",
+          "ts",
+          "po",
+          "u_tv"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "real-xlsx-pd_f1",
+      "title": "PD_f1 (기존 실측, 조건 불명)",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 2.3884,
+        "kd": 2.0684,
+        "ki": 0
+      },
+      "provenance": "real",
+      "source": {
+        "kind": "xlsx",
+        "file": "data/raw/PID_test_data.xlsx",
+        "sheet": "PD_f1",
+        "columns": "y=A(cm), ref=B(cm)",
+        "session_id": null
+      },
+      "conditions": {
+        "status": "unknown",
+        "date": null,
+        "sample_period_ms": null,
+        "period_assumed": true,
+        "assumed_period_ms": 50,
+        "gains_status": "annotated",
+        "gain_units": "unknown",
+        "servo_model": "unknown",
+        "filter": "no filter",
+        "clamp_rule": "raw ≤ 0 또는 raw ≥ 35.0 → lost",
+        "notes": "시트 'PD_f1' / 시트 메모 지표(출처 미상, metrics 에 쓰지 않음): tr 0.628, ts 4.71, po 24.3 / 유실 처리: 클램프 의심 5개, 숫자 아님 0개, 빈 칸 0개"
+      },
+      "model_kind": "unknown",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "slots": [
+        "pid-legacy"
+      ],
+      "chapter_ids": [
+        "09-sample-data"
+      ],
+      "files": {
+        "meta": "real-xlsx-pd_f1.json",
+        "csv": "real-xlsx-pd_f1.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0,
+        "t1_s": 22.85,
+        "ref_from_mm": 48,
+        "ref_to_mm": 220,
+        "y_initial_mm": 48,
+        "computable": true,
+        "reason": "no_u",
+        "tr": 0.6424369747899159,
+        "tp": 1.9,
+        "po": 76.61147623862487,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": 0.15000000000000213,
+        "min_dwell_s": 1,
+        "ess": 3.7717391304347814,
+        "iae": 515.6500000000002,
+        "ise": 27705.350000000006,
+        "itae": 3333.7450000000044,
+        "u_rms": null,
+        "u_sat_ratio": null,
+        "u_tv": null,
+        "lost_ratio": 0.010917030567685589,
+        "time_assumed": true,
+        "y_final_mm": 216.22826086956522
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "조건 불명",
+        "시간축 추정"
+      ],
+      "score": {
+        "group": "pid-legacy",
+        "value": 0.031103757307898494,
+        "rank": 1,
+        "n_candidates": 5,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts",
+          "u_tv"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "real-xlsx-pd_f2",
+      "title": "PD_f2 (기존 실측, 조건 불명)",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 0.6,
+        "kd": 1.05,
+        "ki": 0
+      },
+      "provenance": "real",
+      "source": {
+        "kind": "xlsx",
+        "file": "data/raw/PID_test_data.xlsx",
+        "sheet": "PD_f2",
+        "columns": "y=A(cm), ref=B(cm)",
+        "session_id": null
+      },
+      "conditions": {
+        "status": "unknown",
+        "date": null,
+        "sample_period_ms": null,
+        "period_assumed": true,
+        "assumed_period_ms": 50,
+        "gains_status": "annotated",
+        "gain_units": "unknown",
+        "servo_model": "unknown",
+        "filter": "no filter",
+        "clamp_rule": "raw ≤ 0 또는 raw ≥ 35.0 → lost",
+        "notes": "시트 'PD_f2' / 시트 메모 지표(출처 미상, metrics 에 쓰지 않음): tr 1.26, ts 9.43, po 24.3 / 유실 처리: 클램프 의심 3개, 숫자 아님 0개, 빈 칸 1개 / 중복 의심: A열 932행 중 932행이 PID_f1 A열 앞부분과 같음"
+      },
+      "model_kind": "unknown",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "slots": [
+        "pid-legacy"
+      ],
+      "chapter_ids": [
+        "09-sample-data"
+      ],
+      "files": {
+        "meta": "real-xlsx-pd_f2.json",
+        "csv": "real-xlsx-pd_f2.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0,
+        "t1_s": 46.55,
+        "ref_from_mm": 253,
+        "ref_to_mm": 220,
+        "y_initial_mm": 253,
+        "computable": true,
+        "reason": "no_u",
+        "tr": 0.022000000000000006,
+        "tp": 2.95,
+        "po": 394.39312915248746,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": 1,
+        "ess": 34.14973262032086,
+        "iae": 1586.3999999999987,
+        "ise": 60833.600000000086,
+        "itae": 35591.97000000003,
+        "u_rms": null,
+        "u_sat_ratio": null,
+        "u_tv": null,
+        "lost_ratio": 0.004291845493562232,
+        "time_assumed": true,
+        "y_final_mm": 254.14973262032086
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "조건 불명",
+        "시간축 추정",
+        "중복 의심"
+      ],
+      "score": {
+        "group": "pid-legacy",
+        "value": 0.5525484810637018,
+        "rank": 4,
+        "n_candidates": 5,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts",
+          "u_tv"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "real-xlsx-pid_f1",
+      "title": "PID_f1 (기존 실측, 조건 불명)",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 1.0632,
+        "ki": 0.11983,
+        "kd": 2.3584
+      },
+      "provenance": "real",
+      "source": {
+        "kind": "xlsx",
+        "file": "data/raw/PID_test_data.xlsx",
+        "sheet": "PID_f1",
+        "columns": "y=A(cm), ref=B(cm)",
+        "session_id": null
+      },
+      "conditions": {
+        "status": "unknown",
+        "date": null,
+        "sample_period_ms": null,
+        "period_assumed": true,
+        "assumed_period_ms": 50,
+        "gains_status": "annotated",
+        "gain_units": "unknown",
+        "servo_model": "unknown",
+        "filter": "no filter",
+        "clamp_rule": "raw ≤ 0 또는 raw ≥ 35.0 → lost",
+        "notes": "시트 'PID_f1' / 시트 메모 지표(출처 미상, metrics 에 쓰지 않음): tr 0.748, ts 6.23, po 14.8 / 유실 처리: 클램프 의심 8개, 숫자 아님 0개, 빈 칸 1개"
+      },
+      "model_kind": "unknown",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "slots": [
+        "pid-legacy"
+      ],
+      "chapter_ids": [
+        "09-sample-data"
+      ],
+      "files": {
+        "meta": "real-xlsx-pid_f1.json",
+        "csv": "real-xlsx-pid_f1.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0,
+        "t1_s": 81.15,
+        "ref_from_mm": 253,
+        "ref_to_mm": 220,
+        "y_initial_mm": 253,
+        "computable": true,
+        "reason": "no_u",
+        "tr": 0.022000000000000006,
+        "tp": 61.1,
+        "po": 305.11010728402033,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": 1,
+        "ess": 3.3136645962732985,
+        "iae": 2660.4000000000033,
+        "ise": 110865.50000000047,
+        "itae": 101435.9225000001,
+        "u_rms": null,
+        "u_sat_ratio": null,
+        "u_tv": null,
+        "lost_ratio": 0.005541871921182266,
+        "time_assumed": true,
+        "y_final_mm": 216.6863354037267
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "조건 불명",
+        "시간축 추정"
+      ],
+      "score": {
+        "group": "pid-legacy",
+        "value": 0.91508644505386,
+        "rank": 5,
+        "n_candidates": 5,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts",
+          "u_tv"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "real-xlsx-pid_f2",
+      "title": "PID_f2 (기존 실측, 조건 불명)",
+      "kind": "control",
+      "controller": "pid",
+      "params": {
+        "kp": 0.27276,
+        "ki": 0.015784,
+        "kd": 1.1784
+      },
+      "provenance": "real",
+      "source": {
+        "kind": "xlsx",
+        "file": "data/raw/PID_test_data.xlsx",
+        "sheet": "PID_f2",
+        "columns": "y=A(cm), ref=B(cm)",
+        "session_id": null
+      },
+      "conditions": {
+        "status": "unknown",
+        "date": null,
+        "sample_period_ms": null,
+        "period_assumed": true,
+        "assumed_period_ms": 50,
+        "gains_status": "annotated",
+        "gain_units": "unknown",
+        "servo_model": "unknown",
+        "filter": "no filter",
+        "clamp_rule": "raw ≤ 0 또는 raw ≥ 35.0 → lost",
+        "notes": "시트 'PID_f2' / 시트 메모 지표(출처 미상, metrics 에 쓰지 않음): tr 1.26, ts 9.43, po 24.3 / 유실 처리: 클램프 의심 13개, 숫자 아님 1개, 빈 칸 1개 / 시트 메모 지표가 PD_f2 와 같음(복사 의심). A34 깨진 문자열(시리얼 잡음)"
+      },
+      "model_kind": "unknown",
+      "setpoint_profile": {
+        "type": "const",
+        "ref_mm": 220,
+        "duration_s": null
+      },
+      "slots": [
+        "pid-legacy"
+      ],
+      "chapter_ids": [
+        "09-sample-data"
+      ],
+      "files": {
+        "meta": "real-xlsx-pid_f2.json",
+        "csv": "real-xlsx-pid_f2.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 0,
+        "t1_s": 55.25,
+        "ref_from_mm": 48,
+        "ref_to_mm": 220,
+        "y_initial_mm": 48,
+        "computable": true,
+        "reason": "no_u",
+        "tr": 6.531115384615385,
+        "tp": 24.8,
+        "po": 43.907187204040824,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": 1,
+        "ess": 1.5203619909502208,
+        "iae": 3203.4000000000024,
+        "ise": 259362.70000000004,
+        "itae": 69273.27500000007,
+        "u_rms": null,
+        "u_sat_ratio": null,
+        "u_tv": null,
+        "lost_ratio": 0.013562386980108499,
+        "time_assumed": true,
+        "y_final_mm": 218.47963800904978
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "조건 불명",
+        "시간축 추정"
+      ],
+      "score": {
+        "group": "pid-legacy",
+        "value": 0.44810102881423464,
+        "rank": 3,
+        "n_candidates": 5,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts",
+          "u_tv"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-ai-es",
+      "title": "신경망 정책 ES (번들, 도메인 랜덤화 학습) — 가상 장치 시뮬레이션",
+      "kind": "control",
+      "controller": "nn-policy",
+      "params": {
+        "policy": "es",
+        "e_max": 0.12,
+        "y_lo": 0.04,
+        "y_hi": 0.31,
+        "fb_kp": 0.5,
+        "fb_kd": 1.25,
+        "angle_limit": 0.35,
+        "rate_limit": 4,
+        "hold_s": 1
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tests/control/build_ai.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "ai-best"
+      ],
+      "chapter_ids": [
+        "18-rl-control",
+        "20-ai-vs-classic"
+      ],
+      "files": {
+        "meta": "sim-ai-es.json",
+        "csv": "sim-ai-es.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 150,
+        "computable": true,
+        "reason": null,
+        "tr": 0.8849999999999998,
+        "tp": 3.84,
+        "po": 6.076923076923094,
+        "ts": 5.64,
+        "ts_settled": true,
+        "ts_dwell_s": 2.280000000000001,
+        "min_dwell_s": 1,
+        "ess": 1.0384615384615472,
+        "iae": 64.74000000000004,
+        "ise": 1790.0999999999985,
+        "itae": 105.06599999999997,
+        "u_rms": 2.6243204634222637,
+        "u_sat_ratio": 0,
+        "u_tv": 211.71,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 198.96153846153845
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값",
+        "AI"
+      ],
+      "score": {
+        "group": "ai-best",
+        "value": 0.30000000000000004,
+        "rank": 1,
+        "n_candidates": 3,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-ai-q",
+      "title": "Q 표 정책 (번들, Q-러닝 10000 에피소드) — 가상 장치 시뮬레이션",
+      "kind": "control",
+      "controller": "q-policy",
+      "params": {
+        "policy": "bundled",
+        "e_max": 0.12,
+        "y_lo": 0.04,
+        "y_hi": 0.31,
+        "fb_kp": 0.5,
+        "fb_kd": 1.25,
+        "angle_limit": 0.35,
+        "rate_limit": 4,
+        "hold_s": 1,
+        "smooth": false
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tests/control/build_ai.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "q-best"
+      ],
+      "chapter_ids": [
+        "17-rl-basics",
+        "20-ai-vs-classic"
+      ],
+      "files": {
+        "meta": "sim-ai-q.json",
+        "csv": "sim-ai-q.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 151,
+        "computable": true,
+        "reason": null,
+        "tr": 0.7275,
+        "tp": 2.2800000000000002,
+        "po": 57.37833594976451,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": null,
+        "min_dwell_s": 1,
+        "ess": 1.1153846153846132,
+        "iae": 137.16000000000008,
+        "ise": 3709.9200000000005,
+        "itae": 412.51320000000027,
+        "u_rms": 5.9262207587300555,
+        "u_sat_ratio": 0,
+        "u_tv": 178.67,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 198.8846153846154
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값",
+        "AI"
+      ],
+      "score": {
+        "group": "q-best",
+        "value": 0,
+        "rank": 1,
+        "n_candidates": 1,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [
+          "ts"
+        ],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-ai-bc",
+      "title": "행동복제(BC) 신경망 정책, 전문가 PD(0.5, 1.25) — 가상 장치 시뮬레이션",
+      "kind": "control",
+      "controller": "nn-policy",
+      "params": {
+        "policy": "bc",
+        "e_max": 0.12,
+        "y_lo": 0.04,
+        "y_hi": 0.31,
+        "fb_kp": 0.5,
+        "fb_kd": 1.25,
+        "angle_limit": 0.35,
+        "rate_limit": 4,
+        "hold_s": 1
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tests/control/build_ai.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "ai-best"
+      ],
+      "chapter_ids": [
+        "19-imitation-nn"
+      ],
+      "files": {
+        "meta": "sim-ai-bc.json",
+        "csv": "sim-ai-bc.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 151,
+        "computable": true,
+        "reason": null,
+        "tr": 2.286,
+        "tp": 4.56,
+        "po": 5.886970172684463,
+        "ts": 6.6000000000000005,
+        "ts_settled": true,
+        "ts_dwell_s": 1.3200000000000003,
+        "min_dwell_s": 1,
+        "ess": 0.1153846153846132,
+        "iae": 100.80000000000007,
+        "ise": 3548.5199999999945,
+        "itae": 139.36679999999993,
+        "u_rms": 0.4904064602353862,
+        "u_sat_ratio": 0,
+        "u_tv": 6.71,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 200.1153846153846
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값",
+        "AI"
+      ],
+      "score": {
+        "group": "ai-best",
+        "value": 0.6440885371278169,
+        "rank": 2,
+        "n_candidates": 3,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    },
+    {
+      "id": "sim-ai-dagger",
+      "title": "DAgger 신경망 정책, 전문가 PD(0.5, 1.25) — 가상 장치 시뮬레이션",
+      "kind": "control",
+      "controller": "nn-policy",
+      "params": {
+        "policy": "dagger",
+        "e_max": 0.12,
+        "y_lo": 0.04,
+        "y_hi": 0.31,
+        "fb_kp": 0.5,
+        "fb_kd": 1.25,
+        "angle_limit": 0.35,
+        "rate_limit": 4,
+        "hold_s": 1
+      },
+      "provenance": "simulated",
+      "source": {
+        "kind": "simulation",
+        "file": "tests/control/build_ai.mjs",
+        "sheet": null,
+        "session_id": null
+      },
+      "conditions": {
+        "status": "known",
+        "sample_period_ms": 60,
+        "period_assumed": false,
+        "servo_model": "HS5645MG",
+        "model_kind": "ball_servo"
+      },
+      "model_kind": "ball_servo",
+      "setpoint_profile": {
+        "type": "step",
+        "from_mm": 150,
+        "to_mm": 200,
+        "pre_s": 2,
+        "hold_s": 8
+      },
+      "slots": [
+        "ai-best"
+      ],
+      "chapter_ids": [
+        "19-imitation-nn"
+      ],
+      "files": {
+        "meta": "sim-ai-dagger.json",
+        "csv": "sim-ai-dagger.csv"
+      },
+      "metrics_summary": {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 151,
+        "computable": true,
+        "reason": null,
+        "tr": 2.9880000000000004,
+        "tp": 7.680000000000001,
+        "po": 4.474097331240161,
+        "ts": 6.6000000000000005,
+        "ts_settled": true,
+        "ts_dwell_s": 1.3200000000000003,
+        "min_dwell_s": 1,
+        "ess": 1.1923076923076792,
+        "iae": 108.47999999999996,
+        "ise": 3400.199999999996,
+        "itae": 186.83639999999986,
+        "u_rms": 0.5615298651663008,
+        "u_sat_ratio": 0,
+        "u_tv": 8.27,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 198.80769230769232
+      },
+      "promoted_at": null,
+      "promotion": null,
+      "badges": [
+        "가정값",
+        "AI"
+      ],
+      "score": {
+        "group": "ai-best",
+        "value": 0.7007609756097563,
+        "rank": 3,
+        "n_candidates": 3,
+        "weights": {
+          "itae": 0.4,
+          "ts": 0.3,
+          "po": 0.2,
+          "u_tv": 0.1
+        },
+        "dropped": [],
+        "computed_at": "2026-11-03T16:31:11.930Z"
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>볼앤빔으로 배우는 제어공학</title>
+  <link rel="stylesheet" href="vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div class="org">
+    <img src="img/logo.png" alt="한국폴리텍대학 광주캠퍼스 로고" width="262" height="240">
+    <span class="org-dept">Dept. Mechanical System</span>
+  </div>
+  <header class="topbar">
+    <button id="toc-toggle" class="btn icon" aria-label="목차 열기/닫기" title="목차">☰</button>
+    <a class="brand" href="#/">볼앤빔 제어공학</a>
+    <input id="search" type="search" placeholder="챕터·용어 검색" aria-label="챕터 검색">
+    <div id="status" class="status" aria-live="polite"></div>
+    <button id="theme" class="btn icon" title="화면 밝기: 자동/밝게/어둡게" aria-label="화면 밝기 전환">◐</button>
+    <button id="bigtext" class="btn icon" title="큰 글씨" aria-label="큰 글씨 전환">가+</button>
+    <button id="estop" class="btn estop" title="비상 정지 (Esc)">비상 정지</button>
+  </header>
+  <div id="banner" class="banner" hidden></div>
+  <div class="layout">
+    <nav id="toc" class="toc" aria-label="목차"></nav>
+    <main id="content" class="content" tabindex="-1">불러오는 중…</main>
+  </div>
+  <noscript>이 교재는 JavaScript가 필요합니다.</noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

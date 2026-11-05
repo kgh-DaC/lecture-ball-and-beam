@@ -1,0 +1,21 @@
+{
+  "schema_ver": 1,
+  "id": "sensor-fault-gate",
+  "title": "센서 고장 + 펌웨어 이상값 제거 gate (1.1.0 기본)",
+  "description": "sensor-fault 와 같은 고장·시드·변동에 펌웨어 1.1.0 기본 이상값 제거 despike 2(gate: 직전 채택값에서 60 mm 넘게 벗어난 값을 최대 3번 연속 버림)를 켠 것. despike 는 filt_mm 에만 작용한다 — dist_mm(원측정)을 쓰는 제어기(LQR·LQI·SMC 는 aux.y_raw_m 우선)는 영향을 받지 않는다. 공이 이상값 위치(~304 mm) 근처면 gate 가 못 거른다.",
+  "seed": 3,
+  "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 15 },
+  "duration_s": 17,
+  "disturbance": [],
+  "sensor_fault": [
+    { "t": 6, "type": "outlier_burst", "n": 3, "value_mm": 304 },
+    { "t": 8, "type": "outlier_rate", "duration_s": 3, "prob": 0.15 },
+    { "t": 12, "type": "dropout", "duration_s": 0.5 },
+    { "t": 14, "type": "stuck", "duration_s": 0.5 }
+  ],
+  "param_variation": { "friction": 0.5, "tau_servo": 0.3, "level_offset_deg": 0.1, "sensor_noise": 0.5 },
+  "loop": { "fs_ms": 60, "alpha_milli": 200, "lim_cdeg": 3000, "y_source": "filt", "despike": 2 },
+  "success": { "tol_mm": 10, "window_s": 2 },
+  "design_model": "ball_servo",
+  "notes": "sensor-fault 와 비교용(같은 seed 3). 다른 점은 loop.despike 하나뿐. docs/theory/digital-twin.md §6.4"
+}

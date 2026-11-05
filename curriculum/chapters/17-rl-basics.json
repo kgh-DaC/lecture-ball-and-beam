@@ -1,0 +1,47 @@
+{
+  "schema_ver": 1,
+  "id": "17-rl-basics",
+  "title": "강화학습 기초: Q-러닝",
+  "part": "E",
+  "order": 17,
+  "status": "ready",
+  "requires": ["16-nn-model-id"],
+  "est_minutes": 80,
+  "objectives": [
+    "볼앤빔을 에이전트·환경·상태·행동·보상으로 나누어 쓰고, 할인 누적 보상과 마르코프 성질의 의미를 설명한다",
+    "보상 설계가 학습 결과를 어떻게 바꾸는지(보상 해킹 포함) 예를 들어 설명하고, 탐험과 활용의 균형을 설명한다",
+    "이산화한 볼앤빔에서 Q-러닝으로 정책을 학습하고, 학습 곡선과 Q-표를 읽어 가상 장치에서 시험한다"
+  ],
+  "keywords": ["강화학습", "에이전트", "환경", "보상", "MDP", "마르코프 성질", "할인율", "보상 해킹", "탐험과 활용", "ε-탐욕", "Q-러닝", "이산화", "차원의 저주", "학습 곡선"],
+  "slides": [],
+  "widgets": ["rl-trainer", "reward-curve", "q-table-view", "policy-map", "controller-panel", "live-plot", "overlay-plot"],
+  "predictions": [
+    { "id": "p1", "type": "choice", "q": "(가상의 설계) 충돌하면 −20을 받고 에피소드가 끝난다면, 오차 150 mm에서 2 s(33스텝) 동안 평균 오차 75 mm로 회복하는 누적 보상과 비교해 에이전트는?", "choices": ["끝까지 버티며 공을 데려온다", "일부러 빨리 충돌해 에피소드를 끝낸다", "둘의 점수가 같아 구분하지 않는다"] },
+    { "id": "p2", "type": "short", "q": "ε을 처음부터 0.05로 고정하면 학습 곡선과 최종 성공률은 기본(1.0 → 0.05)과 비교해 어떻게 될까?" }
+  ],
+  "practice": {
+    "modes": ["virtual", "sample"],
+    "controller": "q-policy",
+    "controllers_allowed": ["q-policy", "pid"],
+    "safe_defaults": {
+      "q-policy": { "policy": "bundled", "e_max": 0.10, "angle_limit": 0.30, "rate_limit": 3 },
+      "pid": { "kp": 1.0, "ki": 0, "kd": 1.5, "n_filt": 8, "d_on": "measurement" }
+    },
+    "param_limits": {
+      "q-policy": { "e_max": [0.02, 0.15], "angle_limit": [0.05, 0.35], "rate_limit": [0.5, 6], "hold_s": [0.5, 5], "fb_kp": [0, 2], "fb_kd": [0, 3] },
+      "pid": { "kp": [0, 6], "ki": [0, 1], "kd": [0, 6] }
+    },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 15,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball+servo",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ { "slot": "q-best" }, "sim-ai-q" ],
+  "promote_slots": ["q-best"],
+  "ai_bundles": ["data/ai/q-table.json"],
+  "instructor_notes": "worksheets/17-rl-basics.md"
+}

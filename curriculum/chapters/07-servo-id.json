@@ -1,0 +1,44 @@
+{
+  "schema_ver": 1,
+  "id": "07-servo-id",
+  "title": "서보모터 시스템 식별",
+  "part": "C",
+  "order": 7,
+  "status": "ready",
+  "requires": ["06-realtime-pid"],
+  "est_minutes": 80,
+  "objectives": [
+    "포텐쇼미터 캘리브레이션으로 서보 실제 각도를 명령각 좌표에서 읽는다",
+    "스텝 응답에서 1차+지연 모델의 K, T_d, τ를 읽고 자동 추정값·적합도와 비교한다",
+    "진폭에 따른 τ 변화로 속도 한계를 판단하고 검증 데이터로 모델을 확인한다"
+  ],
+  "keywords": ["시스템 식별", "포텐쇼미터", "캘리브레이션", "1차+지연", "속도 한계", "ARX", "적합도", "검증 데이터"],
+  "slides": [58, 59, 60, 66, 67],
+  "widgets": ["calibration-wizard", "identification-lab", "overlay-plot"],
+  "predictions": [
+    { "id": "p1", "type": "numeric", "q": "10° 스텝에서 실제 각도가 63%에 도달하는 시간은?", "unit": "ms" },
+    { "id": "p2", "type": "choice", "q": "5° 스텝과 30° 스텝에서 추정한 τ는?", "choices": ["같다", "30° 쪽이 크다", "5° 쪽이 크다"] }
+  ],
+  "practice": {
+    "modes": ["device", "sample"],
+    "controller": "openloop",
+    "safe_defaults": { "theta": 0 },
+    "param_limits": { "theta": [0, 0] },
+    "angle_limit_deg": 30,
+    "fs_ms": 60,
+    "model": "ball+servo",
+    "done_when": "id_saved"
+  },
+  "sample_sessions": [ { "slot": "servo-step" }, "sim-servo-prbs" ],
+  "promote_slots": ["servo-step"],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "0°→10° 스텝 명령에 실제 각도가 최종 9.6°에 머물렀다. 정상상태 이득 K는?", "answer": 0.96, "tol_abs": 0.005, "unit": "", "explain": "K = 9.6/10 = 0.96. 1보다 작으면 서보가 명령에 못 미치거나 캘리브레이션 기울기가 다를 수 있다.", "answer_source": "analytic: K = Δθ/Δu" },
+    { "id": "q2", "type": "numeric", "q": "명령 후 0.020 s에 움직이기 시작했고(T_d), 명령 후 0.110 s에 최종 변화의 63.2%에 도달했다. τ (s)는?", "answer": 0.09, "tol_abs": 0.002, "unit": "s", "explain": "τ = 0.110 − 0.020 = 0.090 s. 63.2% 시점에서 지연을 빼야 한다.", "answer_source": "analytic: τ = t63 − T_d (identification.stepGraphical 의 Td = t63 − τ 정의와 같음, 대조 완료)" },
+    { "id": "q3", "type": "numeric", "q": "서보 최대 속도가 300 °/s라면 30° 스텝을 이동하는 데 최소 몇 초가 걸리는가?", "answer": 0.1, "tol_abs": 0.001, "unit": "s", "explain": "30/300 = 0.1 s. 이 동안은 지수 곡선이 아니라 직선(램프)으로 움직인다. 숫자는 문제용 가정값이다.", "answer_source": "analytic: Δθ/vmax" },
+    { "id": "q4", "type": "numeric", "q": "‖y − ŷ‖/‖y − ȳ‖ = 0.08일 때 적합도(%)는?", "answer": 92, "tol_abs": 0.1, "unit": "%", "explain": "100·(1 − 0.08) = 92%.", "answer_source": "analytic: fit = 100(1 − ‖y − ŷ‖/‖y − ȳ‖) (identification.fitPercent 대조 완료: 92)" },
+    { "id": "q5", "type": "choice", "q": "스텝 진폭을 5°에서 30°로 키우자 추정 τ가 크게 늘었다. 가장 그럴듯한 해석은?", "choices": ["포텐쇼미터 잡음", "서보 속도 한계(비선형)", "캘리브레이션 오프셋", "샘플 주기가 너무 짧음"], "answer": 1, "explain": "선형이면 τ는 진폭과 무관하다. 큰 스텝에서 최대 속도로 램프 이동하는 구간이 생겨 τ가 커 보인다. fo_slew 모델을 쓰거나 제어에서 쓰는 작은 진폭의 모델을 고른다." },
+    { "id": "q6", "type": "short", "q": "모델을 맞춘 기록이 아닌 다른 기록으로 적합도를 다시 재야 하는 이유는?", "model_answer": "맞춘 데이터의 적합도는 잡음이나 그 기록에만 있는 우연한 특징까지 맞춰 실제 예측 능력보다 좋게 나온다(과적합). 다른 입력(예: PRBS)에서도 적합도가 비슷하면 모델이 서보의 일반적인 동작을 잡았다고 볼 수 있다.", "rubric": ["과적합 또는 낙관적 평가 언급", "다른 입력에서의 예측 능력 확인 언급"] },
+    { "id": "q7", "type": "numeric", "q": "가정 서보(τ = 0.06 s, 최대 속도 400 °/s)에서 1차 응답의 처음 기울기가 최대 속도를 넘기 시작하는 스텝 크기(°)는?", "answer": 24, "tol_abs": 0.1, "unit": "°", "explain": "처음 기울기 = Δ/τ. Δ/τ > v_max ⇔ Δ > v_max·τ = 400 × 0.06 = 24°. 이보다 큰 스텝에서는 램프 구간이 생겨 추정 τ가 커진다.", "answer_source": "analytic: v_max·τ, plant.ASSUMED_SERVO 값" }
+  ],
+  "instructor_notes": "worksheets/07-servo-id.md"
+}

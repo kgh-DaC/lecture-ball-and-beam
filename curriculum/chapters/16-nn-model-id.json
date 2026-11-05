@@ -1,0 +1,26 @@
+{
+  "schema_ver": 1,
+  "id": "16-nn-model-id",
+  "title": "데이터로 모델 배우기: 신경망 시스템 식별",
+  "part": "E",
+  "order": 16,
+  "status": "ready",
+  "requires": ["08-model-compare"],
+  "est_minutes": 70,
+  "objectives": [
+    "신경망을 숫자를 조절해 모양을 바꾸는 유연한 함수로 설명하고, 뉴런·층·손실·경사하강법·역전파의 역할을 각각 한 문장으로 말한다",
+    "학습/검증 데이터를 나누는 이유를 설명하고, 학습 곡선으로 과적합을 진단한다",
+    "신경망으로 서보+볼앤빔 모델을 학습하고, 07·08장의 물리 모델과 한 단계·다단계 예측으로 비교한다"
+  ],
+  "keywords": ["신경망", "함수 근사", "MLP", "활성화 함수", "손실", "경사하강법", "역전파", "학습률", "과적합", "검증 데이터", "다단계 예측", "시스템 식별"],
+  "slides": [],
+  "widgets": ["nn-viz", "nn-trainer", "nn-model-compare"],
+  "predictions": [
+    { "id": "p1", "type": "short", "q": "은닉층을 [8]에서 [64, 64]로 키우면 학습 오차와 검증 오차는 각각 어떻게 될까? 데이터가 150개뿐이라면?" },
+    { "id": "p2", "type": "choice", "q": "학습률을 10배로 키우면 학습은?", "choices": ["10배 빨리 끝난다", "조금 빨라진다", "손실이 튀거나 발산할 수 있다", "변화 없다"] },
+    { "id": "p3", "type": "short", "q": "한 단계 예측 오차가 아주 작은 신경망의 50단계(3 s) 위치 오차는? 서보 포함 물리 모델과 비교하면?" }
+  ],
+  "sample_sessions": [],
+  "ai_bundles": ["data/ai/nn-id.json", "data/ai/nn-id-overfit.json"],
+  "instructor_notes": "worksheets/16-nn-model-id.md"
+}

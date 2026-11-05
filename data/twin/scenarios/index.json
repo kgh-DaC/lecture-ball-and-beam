@@ -1,0 +1,11 @@
+{
+  "schema_ver": 1,
+  "scenarios": [
+    { "id": "step-nominal", "file": "step-nominal.json", "title": "설정값 스텝 (공칭 트윈)", "topic": "설계 모델 vs 트윈" },
+    { "id": "push-disturbance", "file": "push-disturbance.json", "title": "공 밀기·빔 충격 외란", "topic": "외란 응답" },
+    { "id": "param-shift", "file": "param-shift.json", "title": "파라미터 변동 (속찬 공 + 느린 서보)", "topic": "모델 불일치·강건성" },
+    { "id": "sensor-fault", "file": "sensor-fault.json", "title": "센서 고장 (이상값·유실·멈춤)", "topic": "센서 고장 대응" },
+    { "id": "sensor-fault-gate", "file": "sensor-fault-gate.json", "title": "센서 고장 + 펌웨어 이상값 제거 gate (1.1.0 기본)", "topic": "센서 고장 대응" },
+    { "id": "estop-drill", "file": "estop-drill.json", "title": "비상 정지 연습", "topic": "안전 장치" }
+  ]
+}

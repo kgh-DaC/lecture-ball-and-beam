@@ -1,0 +1,49 @@
+{
+  "schema_ver": 1,
+  "id": "06-realtime-pid",
+  "title": "실시간 PID 실습",
+  "part": "B",
+  "order": 6,
+  "status": "ready",
+  "requires": ["04-root-locus", "05-nyquist"],
+  "est_minutes": 70,
+  "objectives": [
+    "Kp, Kd, Ki가 응답에 주는 영향을 실측(또는 시뮬레이션)으로 설명한다",
+    "미분 킥과 적분 와인드업을 재현하고 대책(측정값 미분, 포화 중 적분 정지)을 설명한다",
+    "예측과 실측의 차이를 정량화하고 그 원인에 대한 가설을 세운다"
+  ],
+  "keywords": ["PID", "디지털 제어", "미분 킥", "와인드업", "게인 단위", "시도 이력", "샘플 승격"],
+  "slides": [62, 63, 64, 48],
+  "widgets": ["controller-panel", "live-plot", "attempt-log", "overlay-plot", "promote-sample"],
+  "predictions": [
+    { "id": "p1", "type": "numeric", "q": "안전 기본값 PD(Kp 1.0, Kd 1.5, 측정값 미분)의 표준 스텝 오버슈트는?", "unit": "%" },
+    { "id": "p2", "type": "short", "q": "d_on을 error로 바꾸면 스텝 직후 u 그래프에 어떤 모양이 생길까?" },
+    { "id": "p3", "type": "choice", "q": "Ki를 1.0으로 키우면 오버슈트는? 각도 한계가 작을수록?", "choices": ["커진다 / 한계가 작을수록 더 나빠진다", "커진다 / 한계와 무관하다", "작아진다 / 한계가 작을수록 더 좋아진다", "변화 없다"] }
+  ],
+  "practice": {
+    "modes": ["device", "virtual", "sample"],
+    "controller": "pid",
+    "controllers_allowed": ["pid"],
+    "safe_defaults": { "kp": 1.0, "ki": 0, "kd": 1.5, "n_filt": 8, "d_on": "measurement" },
+    "param_limits": { "kp": [0, 6], "ki": [0, 1], "kd": [0, 6] },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 20,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ { "slot": "pid-best" }, "sim-pid-p1", "sim-pid-slide48" ],
+  "promote_slots": ["pid-best"],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "아두이노 코드에서 쓴 Kp = 2.5 °/cm를 SI(rad/m)로 바꾸면? (소수 둘째 자리)", "answer": 4.36, "tol_abs": 0.01, "unit": "rad/m", "explain": "1 °/cm = (π/180 rad)/(0.01 m) = 1.7453 rad/m → 2.5 × 1.7453 ≈ 4.36 rad/m. 기존 게인을 단위 확인 없이 옮기면 다른 제어기가 된다.", "answer_source": "analytic: 단위 환산 π/180/0.01" },
+    { "id": "q2", "type": "numeric", "q": "Kp = 1 rad/m, 오차 50 mm일 때 P 항이 내는 명령각(°)은? (소수 둘째 자리)", "answer": 2.86, "tol_abs": 0.01, "unit": "°", "explain": "u = 1 × 0.05 = 0.05 rad = 2.86°.", "answer_source": "analytic: u = Kp·e, rad→deg" },
+    { "id": "q3", "type": "choice", "q": "미분 킥을 없애는 가장 직접적인 방법은?", "choices": ["Kd를 0으로", "미분을 오차 대신 측정값에 건다(d_on = measurement)", "샘플 주기를 늘린다", "Ki를 키운다"], "answer": 1, "explain": "설정값의 계단 변화가 미분 항에 들어가지 않으므로 스텝 순간의 튐이 사라진다. 되먹임 루프는 같아 안정성은 그대로다(04장)." },
+    { "id": "q4", "type": "choice", "q": "적분 와인드업이 일어나는 조건은?", "choices": ["출력이 포화된 동안 적분이 계속 쌓일 때", "미분 필터가 없을 때", "설정값이 일정할 때", "Kp가 0일 때"], "answer": 0, "explain": "포화 중에는 명령이 더 커지지 못하는데 적분은 계속 커져, 목표에 도달한 뒤에도 쌓인 적분이 풀릴 때까지 반대 방향으로 돌아오지 않아 크게 지나친다." },
+    { "id": "q5", "type": "numeric", "q": "표준 스텝의 hold 구간 8 s 동안 60 ms 주기로 제어기가 계산되는 횟수는? (정수)", "answer": 133, "tol_abs": 1, "unit": "회", "explain": "8/0.06 ≈ 133회. 1초에 약 17번만 공 위치를 알고 명령을 바꾼다.", "answer_source": "analytic: 8/0.06" },
+    { "id": "q6", "type": "short", "q": "실측 응답이 서보 무시 모델 예측보다 더 진동했다. 원인 가설 두 가지와, 각 가설을 이 화면의 데이터로 확인하는 방법을 쓰라.", "model_answer": "(1) 서보가 명령각을 늦게 따라간다(지연·시정수·속도 한계) → live-plot에서 u_cdeg와 servo_pot_cdeg를 겹쳐 실제 각도의 늦음을 본다. (2) 센서 필터·샘플링 지연으로 위상여유가 준다 → y_mm와 y_filt_mm의 시간차를 보고 05장 여유 계산과 비교한다. 그 밖에 K_b 오차(R 25/26 mm, 공 모양), 마찰.", "rubric": ["서보 지연(포텐쇼미터 각도와 명령 비교) 언급", "센서 필터·샘플링 지연 언급", "각 가설의 확인 방법 제시"] }
+  ],
+  "instructor_notes": "worksheets/06-realtime-pid.md"
+}

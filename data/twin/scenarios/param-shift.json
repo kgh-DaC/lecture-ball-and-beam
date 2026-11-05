@@ -1,0 +1,19 @@
+{
+  "schema_ver": 1,
+  "id": "param-shift",
+  "title": "파라미터 변동 (속찬 공 + 느린 서보)",
+  "description": "공을 속이 찬 공(κ = 2/5, 트윈 공칭 2/3 의 0.6배 → K_b 약 +19 %)으로 바꾸고 서보가 느려진(τ ×1.5, Td ×2) 상황. 8 s 에 레일이 더러워져 마찰이 3배가 된다. 설계 모델은 이 변화를 모른다.",
+  "seed": 11,
+  "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 12 },
+  "duration_s": 14,
+  "param_scale": { "inertia_ratio": 0.6, "tau_servo": 1.5, "delay_servo": 2.0 },
+  "disturbance": [
+    { "t": 8, "type": "param_step", "key": "friction", "scale": 3 }
+  ],
+  "sensor_fault": [],
+  "param_variation": { "inertia_ratio": 0.4, "tau_servo": 0.5, "delay_servo": 1.0, "friction": 1.0, "deadband": 1.0, "backlash": 1.0, "level_offset_deg": 0.15, "latency": 0.5 },
+  "loop": { "fs_ms": 60, "alpha_milli": 200, "lim_cdeg": 3000, "y_source": "filt" },
+  "success": { "tol_mm": 10, "window_s": 2 },
+  "design_model": "ball_servo",
+  "notes": "param_scale 은 이 시나리오의 고정 변화(결정론), param_variation 은 몬테카를로 범위(param_scale 위에 곱함)"
+}

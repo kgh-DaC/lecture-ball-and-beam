@@ -1,0 +1,113 @@
+{
+ "schema_ver": 1,
+ "kind": "twin_sensor_stats",
+ "note": "실측(조건 불명, 시간축 추정 50 ms, 클램프 규칙으로 일부 lost 처리)과 트윈(60 ms)에 같은 추정기를 적용. 동특성 충실도 비교가 아니다.",
+ "real": [
+  {
+   "id": "real-xlsx-adaptive_control",
+   "n": 755,
+   "lost_ratio": 0.015894039735099338,
+   "spike_ratio": 0.010596026490066225,
+   "noise_mad_mm": 2.4210756617668934
+  },
+  {
+   "id": "real-xlsx-fil_pd_ex1",
+   "n": 1439,
+   "lost_ratio": 0.021542738012508687,
+   "spike_ratio": 0.006254343293954135,
+   "noise_mad_mm": 4.842151323533787
+  },
+  {
+   "id": "real-xlsx-filtering_pd_f1-s010",
+   "n": 652,
+   "lost_ratio": 0.05368098159509203,
+   "spike_ratio": 0.01687116564417178,
+   "noise_mad_mm": 4.842151323533787
+  },
+  {
+   "id": "real-xlsx-filtering_pd_f1-s020",
+   "n": 1157,
+   "lost_ratio": 0.005185825410544511,
+   "spike_ratio": 0.00432152117545376,
+   "noise_mad_mm": 2.4210756617668934
+  },
+  {
+   "id": "real-xlsx-pd_f1",
+   "n": 458,
+   "lost_ratio": 0.010917030567685589,
+   "spike_ratio": 0.006550218340611353,
+   "noise_mad_mm": 4.236882408092064
+  },
+  {
+   "id": "real-xlsx-pd_f2",
+   "n": 932,
+   "lost_ratio": 0.004291845493562232,
+   "spike_ratio": 0.0075107296137339056,
+   "noise_mad_mm": 3.0263445772086164
+  },
+  {
+   "id": "real-xlsx-pid_f1",
+   "n": 1624,
+   "lost_ratio": 0.005541871921182266,
+   "spike_ratio": 0.007389162561576354,
+   "noise_mad_mm": 3.6316134926503403
+  },
+  {
+   "id": "real-xlsx-pid_f2",
+   "n": 1106,
+   "lost_ratio": 0.013562386980108499,
+   "spike_ratio": 0.011754068716094032,
+   "noise_mad_mm": 3.0263445772086164
+  }
+ ],
+ "twin": [
+  {
+   "id": "twin PD 슬라이드48(SI 해석) seed 1",
+   "status": "ok",
+   "n": 498,
+   "lost_ratio": 0,
+   "spike_ratio": 0.010040160642570281,
+   "noise_mad_mm": 1.8158067463251701
+  },
+  {
+   "id": "twin PD 슬라이드48(SI 해석) seed 2",
+   "status": "ok",
+   "n": 498,
+   "lost_ratio": 0.012048192771084338,
+   "spike_ratio": 0.014056224899598393,
+   "noise_mad_mm": 1.8158067463251701
+  },
+  {
+   "id": "twin PD 슬라이드48(SI 해석) seed 3",
+   "status": "ok",
+   "n": 498,
+   "lost_ratio": 0.01606425702811245,
+   "spike_ratio": 0.010040160642570281,
+   "noise_mad_mm": 2.4210756617668934
+  },
+  {
+   "id": "twin PD 서보 재설계 seed 1",
+   "status": "ok",
+   "n": 498,
+   "lost_ratio": 0,
+   "spike_ratio": 0.010040160642570281,
+   "noise_mad_mm": 1.8158067463251701
+  },
+  {
+   "id": "twin PD 서보 재설계 seed 2",
+   "status": "ok",
+   "n": 498,
+   "lost_ratio": 0.012048192771084338,
+   "spike_ratio": 0.014056224899598393,
+   "noise_mad_mm": 2.4210756617668934
+  },
+  {
+   "id": "twin PD 서보 재설계 seed 3",
+   "status": "ok",
+   "n": 498,
+   "lost_ratio": 0.01606425702811245,
+   "spike_ratio": 0.010040160642570281,
+   "noise_mad_mm": 2.4210756617668934
+  }
+ ]
+}

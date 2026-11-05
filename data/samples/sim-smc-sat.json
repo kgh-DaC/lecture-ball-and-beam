@@ -1,0 +1,159 @@
+{
+  "schema_ver": 1,
+  "session_id": "sim-smc-sat",
+  "kind": "control",
+  "created_at": "2026-11-03T00:00:00+09:00",
+  "chapter_id": "14-sliding-mode",
+  "source": "bundle_sim",
+  "provenance": "simulated",
+  "title": "슬라이딩모드 (sat 경계층 Φ 0.05)",
+  "device": {
+    "proto_ver": 1,
+    "fw_ver": "virtual-1.0.0",
+    "servo_model": "HS5645MG",
+    "servo_pin": 9,
+    "fs_ms": 60,
+    "alpha": 200,
+    "lim_cdeg": 3000,
+    "trim_cdeg": 0,
+    "dir": 1,
+    "pmin_us": 544,
+    "pmax_us": 2400
+  },
+  "controller": {
+    "id": "smc",
+    "params": {
+      "lambda": 1,
+      "eta": 0.1,
+      "phi": 0.05,
+      "switch": "sat",
+      "kb_nominal": 0.8709,
+      "observer": "luenberger"
+    },
+    "y_source": "filt"
+  },
+  "plant_params": {
+    "m_kg": 0.012482,
+    "R_m": 0.025,
+    "L_m": 0.34,
+    "d_m": 0.052,
+    "J_kgm2": 0.000005625,
+    "g": 9.8,
+    "K_b": 0.8708833113358925
+  },
+  "model_kind": "ball_servo",
+  "servo_tf": {
+    "type": "fo_slew",
+    "K": 1,
+    "tau_s": 0.06,
+    "Td_s": 0.02,
+    "wn_rad_s": null,
+    "zeta": null,
+    "vmax_rad_s": 6.981317007977318,
+    "fit_pct": null,
+    "valid_fit_pct": null,
+    "assumed": true
+  },
+  "calibration": {
+    "source": "preset",
+    "ref": null,
+    "order": 1,
+    "a_cdeg_per_lsb": -36.42987249544626,
+    "b_cdeg": 11218.579234972676,
+    "c": 0
+  },
+  "setpoint_profile": {
+    "type": "step",
+    "from_mm": 150,
+    "to_mm": 200,
+    "pre_s": 2,
+    "hold_s": 8
+  },
+  "sample_period_ms": 60,
+  "conditions": {
+    "status": "known"
+  },
+  "run_group": null,
+  "attempt": null,
+  "notes": "simulate.js 번들 시뮬레이션: 모델 ball_servo (가정 서보 fo_slew K=1, τ=0.06 s, Td=0.02 s, vmax=400°/s — 실측 아님), K_b=0.87088, Ts 60 ms, 센서 잡음 σ=1 mm, 양자화 1 mm, 유실 1 %, 재귀 필터 α=0.2, seed 1, RK4 substeps 10, 빔 끝 비탄성 정지.",
+  "stats": {
+    "n": 167,
+    "n_lost": 2,
+    "lost_ratio": 0.011976,
+    "dt_mean_ms": 60,
+    "dt_max_ms": 60
+  },
+  "csv_columns": [
+    "t_s",
+    "ref_mm",
+    "y_mm",
+    "y_filt_mm",
+    "u_cdeg",
+    "cmd_echo_cdeg",
+    "servo_pot_cdeg",
+    "pot_raw",
+    "mode",
+    "dt_ms",
+    "lost",
+    "dbg_s",
+    "dbg_u_eq",
+    "dbg_u_sw",
+    "dbg_saturated"
+  ],
+  "complete": true,
+  "end_hit": false,
+  "metrics": {
+    "def_ver": 1,
+    "ts_band": 0.05,
+    "segments": [
+      {
+        "t0_s": 2.04,
+        "t1_s": 9.96,
+        "ref_from_mm": 150,
+        "ref_to_mm": 200,
+        "y_initial_mm": 151,
+        "computable": true,
+        "reason": null,
+        "tr": 2.286,
+        "tp": 7.680000000000001,
+        "po": 3.924646781789661,
+        "ts": 6.6000000000000005,
+        "ts_settled": true,
+        "ess": 0.07692307692306599,
+        "iae": 73.38000000000011,
+        "ise": 2200.139999999995,
+        "itae": 94.60080000000005,
+        "u_rms": 1.524373654191775,
+        "u_sat_ratio": 0,
+        "u_tv": 139.62,
+        "lost_ratio": 0.015037593984962405,
+        "y_final_mm": 200.07692307692307
+      }
+    ],
+    "summary": {
+      "t0_s": 2.04,
+      "t1_s": 9.96,
+      "ref_from_mm": 150,
+      "ref_to_mm": 200,
+      "y_initial_mm": 151,
+      "computable": true,
+      "reason": null,
+      "tr": 2.286,
+      "tp": 7.680000000000001,
+      "po": 3.924646781789661,
+      "ts": 6.6000000000000005,
+      "ts_settled": true,
+      "ess": 0.07692307692306599,
+      "iae": 73.38000000000011,
+      "ise": 2200.139999999995,
+      "itae": 94.60080000000005,
+      "u_rms": 1.524373654191775,
+      "u_sat_ratio": 0,
+      "u_tv": 139.62,
+      "lost_ratio": 0.015037593984962405,
+      "y_final_mm": 200.07692307692307
+    },
+    "y_col": "y_mm",
+    "u_sat_lim_cdeg": 3000
+  }
+}

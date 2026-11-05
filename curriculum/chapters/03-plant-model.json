@@ -1,0 +1,47 @@
+{
+  "schema_ver": 1,
+  "id": "03-plant-model",
+  "title": "기구부 전달함수",
+  "part": "A",
+  "order": 3,
+  "status": "ready",
+  "requires": ["02-hardware"],
+  "est_minutes": 50,
+  "objectives": [
+    "공의 병진·회전 운동과 레버 관계로부터 P(s) = K_b/s²를 유도한다",
+    "K_b가 기구 값(R, J, d, L)에 따라 어떻게 바뀌는지 계산하고 R 25/26 mm 표기 차이의 영향을 설명한다",
+    "이중 적분기의 개루프 응답을 예측하고 실측(또는 시뮬레이션)과 비교한다"
+  ],
+  "keywords": ["운동방정식", "선형화", "이중 적분기", "K_b", "상태공간", "관성모멘트", "개루프"],
+  "slides": [38, 39, 40, 41, 42, 44, 45],
+  "widgets": ["ball-beam-sim", "controller-panel", "live-plot", "overlay-plot"],
+  "predictions": [
+    { "id": "p1", "type": "numeric", "q": "빔 +2°, 정지한 공이 100 mm 굴러가는 데 걸리는 시간은?", "unit": "s" },
+    { "id": "p2", "type": "choice", "q": "J 고정, R을 0.025→0.026 m로 바꾸면 K_b는?", "choices": ["약 3% 커진다", "약 3% 작아진다", "약 20% 커진다", "변하지 않는다"] }
+  ],
+  "practice": {
+    "modes": ["device", "virtual", "sample"],
+    "controller": "openloop",
+    "safe_defaults": { "theta": 0.0349 },
+    "param_limits": { "theta": [-0.0873, 0.0873] },
+    "setpoint_profile": { "type": "const", "ref_mm": 170, "duration_s": 5 },
+    "angle_limit_deg": 5,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ { "slot": "openloop-roll" } ],
+  "promote_slots": ["openloop-roll"],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "m = 0.012482 kg, R = 0.025 m, J = 5.625e-6 kg·m², L = 0.34 m, d = 0.052 m, g = 9.8 m/s²일 때 K_b (m/s²/rad)는? (소수 넷째 자리)", "answer": 0.8709, "tol_rel": 0.002, "unit": "m/s²/rad", "explain": "K_b = mgd / (L(J/R² + m)) = 0.012482·9.8·0.052 / (0.34·(0.009 + 0.012482)) ≈ 0.8709 [슬라이드 45].", "answer_source": "analytic: plantParams 식(controller-interface.md §2) — plant.plantParams 대조 완료(0.870883)" },
+    { "id": "q2", "type": "numeric", "q": "J = 5.625e-6을 그대로 두고 R만 0.026 m로 바꾸면 K_b는? (소수 셋째 자리)", "answer": 0.899, "tol_rel": 0.003, "unit": "m/s²/rad", "explain": "J/R² = 5.625e-6/0.026² = 0.00832 → K_b ≈ 0.8993. 슬라이드 44의 J는 R = 26 mm, 속 빈 공(2/3·mR²)으로 계산한 값이므로 이 경우 K_b = (3/5)gd/L과 같다.", "answer_source": "analytic: plantParams 식, R = 0.026 — plant.plantParams 대조 완료(0.899308)" },
+    { "id": "q3", "type": "numeric", "q": "속이 찬 공(J = 2/5·mR²)이라면 K_b = (5/7)·gd/L은? (소수 셋째 자리)", "answer": 1.071, "tol_rel": 0.003, "unit": "m/s²/rad", "explain": "J/R² = (2/5)m이므로 K_b = mgd/(L·(7/5)m) = (5/7)·9.8·0.052/0.34 ≈ 1.071. 공 반지름과 질량은 약분되고 질량 분포(모양)만 남는다.", "answer_source": "analytic: plantParams 식에 J = 0.4mR² 대입" },
+    { "id": "q4", "type": "numeric", "q": "K_b = 0.8709, 빔(명령각) 2° = 0.0349 rad로 고정, 정지 상태에서 출발한 공이 100 mm 이동하는 시간(s)은? (마찰 무시)", "answer": 2.565, "tol_rel": 0.01, "unit": "s", "explain": "가속도 a = K_b·θ = 0.0304 m/s², y = a t²/2 → t = √(2·0.1/0.0304) ≈ 2.565 s. 실측이 이보다 느리면 마찰·trim·K_b 차이를 의심한다.", "answer_source": "analytic: y = K_b θ t²/2 — control.simulate(openloop, noise:false, 1 ms) 대조 완료(2.566 s)" },
+    { "id": "q5", "type": "choice", "q": "P(s) = K_b/s²에 비례 제어 Kp만 써서 단위 되먹임하면 폐루프 극점은?", "choices": ["s평면 왼쪽 실수축 위", "허수축 위 ±j√(K_b·Kp)", "오른쪽 반평면", "원점에 두 개 그대로"], "answer": 1, "explain": "특성방정식 s² + K_b·Kp = 0 → s = ±j√(K_b·Kp). 감쇠가 없어 계속 진동한다. Kp를 바꿔도 허수축을 벗어나지 못하므로 D 항(영점)이 필요하다(04장)." },
+    { "id": "q6", "type": "short", "q": "개루프 실험에서 1°일 때는 공이 거의 움직이지 않았고 3°일 때는 모델보다 약간 느리게 굴러갔다. 모델에 없는 어떤 효과가 의심되며, 이것이 나중의 폐루프 제어에 어떤 영향을 줄 수 있는가?", "model_answer": "정지 마찰(구름 저항)과 수평 보정 오차가 의심된다. 작은 각도에서는 마찰을 이기지 못해 움직이지 않는다. 폐루프에서는 목표 근처에서 제어 입력이 작아질 때 공이 멈춰 버려 정상상태 오차가 남거나, 적분 항이 쌓였다가 갑자기 움직이는 현상(스틱-슬립)이 생길 수 있다.", "rubric": ["정지 마찰 또는 구름 저항 언급", "trim(수평) 오차 가능성 언급", "목표 근처 정상상태 오차나 스틱-슬립 등 폐루프 영향 언급"] }
+  ],
+  "instructor_notes": "worksheets/03-plant-model.md"
+}

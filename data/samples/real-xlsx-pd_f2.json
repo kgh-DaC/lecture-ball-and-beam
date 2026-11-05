@@ -1,0 +1,79 @@
+{
+  "schema_ver": 1,
+  "session_id": "real-xlsx-pd_f2",
+  "kind": "control",
+  "created_at": null,
+  "chapter_id": null,
+  "source": "import_xlsx",
+  "provenance": "real",
+  "title": "PD_f2 (기존 실측, 조건 불명)",
+  "device": null,
+  "controller": {
+    "id": "pid",
+    "params": {
+      "kp": 0.6,
+      "kd": 1.05,
+      "ki": 0.0
+    },
+    "y_source": "unknown"
+  },
+  "plant_params": null,
+  "model_kind": "unknown",
+  "servo_tf": null,
+  "calibration": null,
+  "setpoint_profile": {
+    "type": "const",
+    "ref_mm": 220,
+    "duration_s": 46.6
+  },
+  "sample_period_ms": null,
+  "conditions": {
+    "status": "unknown",
+    "date": null,
+    "sample_period_ms": null,
+    "period_assumed": true,
+    "assumed_period_ms": 50,
+    "gains_status": "annotated",
+    "gain_units": "unknown",
+    "servo_model": "unknown",
+    "filter": "no filter",
+    "clamp_rule": "raw ≤ 0 또는 raw ≥ 35.0 → lost",
+    "notes": "시트 'PD_f2' / 시트 메모 지표(출처 미상, metrics 에 쓰지 않음): tr 1.26, ts 9.43, po 24.3 / 유실 처리: 클램프 의심 3개, 숫자 아님 0개, 빈 칸 1개 / 중복 의심: A열 932행 중 932행이 PID_f1 A열 앞부분과 같음"
+  },
+  "run_group": null,
+  "attempt": null,
+  "notes": "",
+  "stats": {
+    "n": 932,
+    "n_lost": 4,
+    "lost_ratio": 0.0043
+  },
+  "csv_columns": [
+    "t_s",
+    "ref_mm",
+    "y_mm",
+    "y_filt_mm",
+    "u_cdeg",
+    "cmd_echo_cdeg",
+    "servo_pot_cdeg",
+    "pot_raw",
+    "mode",
+    "dt_ms",
+    "lost"
+  ],
+  "complete": true,
+  "xlsx": {
+    "file": "data/raw/PID_test_data.xlsx",
+    "sheet": "PD_f2",
+    "columns": "y=A(cm), ref=B(cm)",
+    "first_row": 1,
+    "slots": [
+      "pid-legacy"
+    ],
+    "badges": [
+      "조건 불명",
+      "시간축 추정",
+      "중복 의심"
+    ]
+  }
+}
