@@ -54,7 +54,7 @@ export function mount(el, props, ctx) {
   const cfg = h('div');
   const ctl = h('div', { class: 'row' });
   const prog = h('div');
-  const plot = new Plot(el, { height: 210, xLabel: '스텝 후 시간 (s)', yLabel: '위치 (mm)' });
+  const plot = new Plot(el, { height: 210, xLabel: '스텝 후 시간 (s)', yLabel: '측정 거리(표면) (mm)' });
   const res = h('div');
   el.append(cfg, ctl, prog, res);
   let stop = false, running = false, current = null;

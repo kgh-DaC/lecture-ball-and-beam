@@ -5,7 +5,7 @@
   "part": "B",
   "order": 4,
   "status": "ready",
-  "requires": ["03-plant-model"],
+  "requires": ["a2-pid-intro"],
   "est_minutes": 60,
   "objectives": [
     "이중 적분기에 P, PD, PID를 걸었을 때의 근궤적을 그리고 차이를 설명한다",
@@ -37,8 +37,8 @@
   },
   "sample_sessions": [ { "slot": "pd-design" } ],
   "quiz": [
-    { "id": "q1", "type": "numeric", "q": "K_b = 0.8709에서 ζ = 0.8, ωn = 2 rad/s가 되도록 하는 PD의 Kp (rad/m)는?", "answer": 4.593, "tol_rel": 0.005, "unit": "rad/m", "explain": "Kp = ωn²/K_b = 4/0.8709 ≈ 4.593.", "answer_source": "analytic: 특성방정식 s² + K_b·Kd·s + K_b·Kp (pid.designPD, python-control 대조 완료: tests/control/check_chapters.mjs)" },
-    { "id": "q2", "type": "numeric", "q": "같은 조건(ζ = 0.8, ωn = 2)에서 Kd (rad·s/m)는?", "answer": 3.674, "tol_rel": 0.005, "unit": "rad·s/m", "explain": "Kd = 2ζωn/K_b = 3.2/0.8709 ≈ 3.674.", "answer_source": "analytic: 특성방정식 계수 비교 (pid.designPD, python-control 대조 완료: tests/control/check_chapters.mjs)" },
+    { "id": "q1", "type": "numeric", "q": "K_b = 0.8993에서 ζ = 0.8, ωn = 2 rad/s가 되도록 하는 PD의 Kp (rad/m)는?", "answer": 4.448, "tol_rel": 0.005, "unit": "rad/m", "explain": "Kp = ωn²/K_b = 4/0.8993 ≈ 4.448. (슬라이드 값 기준 K_b = 0.8709면 4.593)", "answer_source": "analytic: 특성방정식 s² + K_b·Kd·s + K_b·Kp (pid.designPD, python-control 대조 완료: tests/control/check_chapters.mjs)" },
+    { "id": "q2", "type": "numeric", "q": "같은 조건(ζ = 0.8, ωn = 2)에서 Kd (rad·s/m)는?", "answer": 3.558, "tol_rel": 0.005, "unit": "rad·s/m", "explain": "Kd = 2ζωn/K_b = 3.2/0.8993 ≈ 3.558. (슬라이드 값 기준 K_b = 0.8709면 3.674)", "answer_source": "analytic: 특성방정식 계수 비교 (pid.designPD, python-control 대조 완료: tests/control/check_chapters.mjs)" },
     { "id": "q3", "type": "numeric", "q": "슬라이드 47의 PD(Kp = 0.574, Kd = 0.994)가 만드는 영점의 위치 s는? (실수)", "answer": -0.5775, "tol_abs": 0.001, "unit": "rad/s", "explain": "C(s) = Kd(s + Kp/Kd) → 영점 s = −0.574/0.994 = −0.5775. 슬라이드 47의 rlocus 결과 z = −0.5775와 같다 [슬라이드 47].", "answer_source": "analytic: −Kp/Kd, 슬라이드 47 출력과 일치" },
     { "id": "q4", "type": "choice", "q": "PD 설계에서 극점의 ζ가 0.61인데 오버슈트가 24%로 나온 주된 이유는?", "choices": ["샘플링 지연 때문에", "폐루프 전달함수 분자의 영점(−Kp/Kd)이 극점 근처에 있어서", "서보 속도 한계 때문에", "K_b 값이 틀려서"], "answer": 1, "explain": "슬라이드 47의 결과는 서보·샘플링이 없는 연속 모델이다. 미분을 오차에 걸면 T(s) 분자에 영점이 남고, PD에서는 그 영점이 ωn/(2ζ)로 극점과 묶여 있어 항상 오버슈트를 키운다." },
     { "id": "q5", "type": "choice", "q": "미분을 오차 대신 측정값에 걸면(d_on = measurement) 바뀌는 것은?", "choices": ["폐루프 극점(안정성)", "설정값→출력 전달함수의 영점(오버슈트)", "개루프 L(s)의 이득교차주파수", "K_b"], "answer": 1, "explain": "되먹임 루프는 같으므로 극점과 안정여유는 그대로이고, 설정값 경로에서 영점만 사라진다." },

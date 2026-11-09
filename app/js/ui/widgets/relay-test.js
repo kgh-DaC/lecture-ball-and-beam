@@ -64,7 +64,7 @@ export function mount(el, props, ctx) {
   const msg = h('div');
   const read = h('div', { class: 'readout' });
   el.append(ctl, btns, msg, read);
-  const pY = new Plot(el, { height: props.height_px || 220, xLabel: '시간 (s)', yLabel: '위치 (mm)' });
+  const pY = new Plot(el, { height: props.height_px || 220, xLabel: '시간 (s)', yLabel: '측정 거리(표면) (mm)' });
   const pU = new Plot(el, { height: 140, xLabel: '시간 (s)', yLabel: '명령각 (°)' });
   const offs = [];
 

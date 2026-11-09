@@ -8,6 +8,7 @@ import { head } from './_util.js';
 import { meanSd } from '../../store/compare.js';
 import { DistFilter, DESPIKE_LABEL } from '../../sim/dist-filter.js';
 import { robustDistStats } from './signal-monitor.js';
+import { radiusOf, centerMm } from '../coord.js';
 
 export const accepts = ['duration_s', 'alphas', 'show_pot'];
 
@@ -46,7 +47,7 @@ export function mount(el, props, ctx) {
   el.appendChild(head('장치 점검(정지 노이즈)', h('span', { class: 'muted' }, `공을 빔 가운데에 고정하고 ${dur} s 동안 측정`)));
   const ctl = h('div', { class: 'row' });
   const out = h('div');
-  const plot = new Plot(el, { height: 200, xLabel: '시간 (s)', yLabel: '거리 (mm)', minYSpan: 6 });
+  const plot = new Plot(el, { height: 200, xLabel: '시간 (s)', yLabel: '측정 거리(표면) (mm)', minYSpan: 6 });
   el.append(ctl, out);
   let off = null, timer = null;
   const run = async () => {
@@ -83,7 +84,8 @@ export function mount(el, props, ctx) {
         ['원측정 평균 ± σ (raw, 이상값 포함)', `${fmt(r.raw.mean, 1)} ± ${fmt(r.raw.sd, 2)} mm`],
         ['원측정 중앙값 · σ(MAD)', `${fmt(rb.median, 1)} mm · ${fmt(rb.mad_sd, 2)} mm`],
         ['튄 값(중앙값 ±50 mm 밖)', `${rb.n_outlier} / ${rb.n} (${fmt(rb.outlier_ratio * 100, 1)}%)`],
-        ['정상값 평균 ± σ (튄 값 제외)', `${fmt(rb.inlier_mean, 1)} ± ${fmt(rb.inlier_sd, 2)} mm`],
+        ['정상값 평균 ± σ (튄 값 제외, 측정 거리 = 센서 → 공 표면)', `${fmt(rb.inlier_mean, 1)} ± ${fmt(rb.inlier_sd, 2)} mm`],
+        [`공 중심 위치 = 측정 + ${radiusOf(ctx)} mm (참고)`, `${fmt(centerMm(rb.inlier_mean, radiusOf(ctx)), 1)} mm`],
         [`장치 filt_mm 평균 ± σ (이상값 제거: ${dspName})`, `${fmt(df.mean, 1)} ± ${fmt(df.sd, 2)} mm, 치우침 ${df.bias == null ? '-' : `${df.bias >= 0 ? '+' : ''}${fmt(df.bias, 1)} mm`}`],
         ...r.filters.map((f) => [`재필터 α=${f.alpha} σ (호스트, 이상값 제거 ${DESPIKE_LABEL[f.despike] ?? f.despike} 후)`, `${fmt(f.stat.sd, 2)} mm`]),
         ['샘플 간격', `${fmt(r.dt.mean, 1)} ms (σ ${fmt(r.dt.sd, 1)})`],

@@ -6,6 +6,9 @@
 //  - 제어기는 TwinPlant 를 직접 보지 않는다. 호출자(scenario.js TwinLoop, twin-device.js)가
 //    measure() 결과(센서 출력)만 제어기에 넘기고 truth() 는 화면·채점에만 쓴다.
 //  - 결정론: 같은 params·seed·명령열이면 비트 단위로 같은 궤적.
+//  - 좌표: 내부 y 는 '측정 거리 좌표' = 센서 면에서 공의 **가까운 표면**까지 거리(HC-SR04 의 첫 반사가
+//    재는 값). 공 중심은 center = y + R (R = ball.R_m, 실측 26 mm). 동역학·멈춤판·시나리오·센서는 모두 y 로
+//    적고, center 는 참 상태 출력(truth().center_mm, record.truth.center_mm, record.dense.center_mm)에만 파생값으로 붙인다.
 import { beamAngle, ballAccel, applyStops, applyStiction, kbEffective, V_REST_M_S } from './ball-beam.js';
 import { ServoModel } from './servo.js';
 import { UltrasonicSensor, makeRng, subSeed, potRaw, PRESET_POT_CAL, checkDespike } from './sensor.js';
@@ -161,6 +164,12 @@ export function linearLimitParams(model) {
   });
 }
 
+/**
+ * 측정 거리 좌표 y [m] → 공 중심 위치 [mm] = y·1000 + R·1000 (plant.centerFromMeasuredMm 와 같은 규약).
+ * 화면·보고용 파생값. 동역학에는 쓰지 않는다.
+ */
+export function centerMm(p, y_m) { return y_m * 1000 + p.ball.R_m * 1000; }
+
 // ------------------------------------------------------------------ 플랜트
 export class TwinPlant {
   /**
@@ -178,6 +187,9 @@ export class TwinPlant {
 
   /** 소신호 등가 K_b (보고용) */
   get kbEffective() { return kbEffective(this.p); }
+
+  /** 공 반지름 [mm] (center_mm = y_mm + R) */
+  get ballRadiusMm() { return this.p.ball.R_m * 1000; }
 
   reset(init = {}) {
     this.t = init.t_s ?? 0;
@@ -344,6 +356,7 @@ export class TwinPlant {
     const sv = this.servo;
     return {
       t_s: this.t, y_m: this.st.y, ydot_m_s: this.st.ydot,
+      center_mm: centerMm(this.p, this.st.y),
       theta_servo_rad: sv.theta_m, theta_link_rad: sv.theta_b, alpha_rad: this.alpha,
       target_rad: sv.targetAt(this.t + 1e-9),
       at_stop: this.at_stop, end_hits: this.end_hits, stuck: this.stuck,

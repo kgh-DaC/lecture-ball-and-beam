@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" width="700" height="320" role="img" aria-labelledby="t d">
+<title id="t">아두이노 스케치 구조</title>
+<desc id="d">스케치는 전처리(라이브러리 포함, 상수), 전원을 켜면 한 번 실행되는 setup(), 끝없이 반복되는 loop()로 이루어진다. 오른쪽: loop() 한 번은 센서 읽기 → 계산 → 명령 쓰기 → 보고하기의 제어 한 주기이며, delay()보다 millis()로 주기를 지키는 것이 좋다.</desc>
+<style>text{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:14px;fill:#2f3640}
+.s{font-size:12px}.xs{font-size:11px}.l{font-size:16px}.b{font-weight:700}.it{font-style:italic}
+.ln{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.thin{stroke-width:1.2}.thick{stroke-width:3}
+.dash{stroke-dasharray:7 5}.dot{stroke-dasharray:2 4}
+.box{fill:#7f8c99;fill-opacity:.10;stroke:#2f3640;stroke-width:1.6}
+.boxd{fill:none;stroke:#2f3640;stroke-width:1.6;stroke-dasharray:6 4}
+.grid{stroke:#8a949f;stroke-opacity:.35;stroke-width:1;fill:none}
+.zone{fill:#1f8a55;fill-opacity:.15}.zone2{fill:#d0611a;fill-opacity:.13}.zone3{fill:#2276c9;fill-opacity:.13}
+.solid{fill:#7f8c99;fill-opacity:.35}
+.c-k{stroke:#2f3640}.f-k{fill:#2f3640}.c-m{stroke:#66707c}.f-m{fill:#66707c}.c-blue{stroke:#2276c9}.f-blue{fill:#2276c9}.c-org{stroke:#d0611a}.f-org{fill:#d0611a}.c-grn{stroke:#1f8a55}.f-grn{fill:#1f8a55}.c-red{stroke:#c8323f}.f-red{fill:#c8323f}.c-pur{stroke:#8050c0}.f-pur{fill:#8050c0}
+text.f-k{fill:#2f3640}text.f-m{fill:#66707c}</style>
+<rect x="0.5" y="0.5" width="699" height="319" rx="10" fill="#fbfcfd" stroke="#c9d0d8"/>
+<rect x="30" y="40" width="200" height="56" rx="6" class="box"/><text x="130" y="65" class="b" text-anchor="middle">전처리</text><text x="130" y="83" class="s" text-anchor="middle">#include &lt;Servo.h&gt;, 상수</text><line x1="130" y1="96" x2="130" y2="124" class="ln c-k "/><polygon points="130,130 126.5,121.7 133.5,121.7" class="f-k"/><rect x="30" y="130" width="200" height="56" rx="6" class="box"/><text x="130" y="155" class="b" text-anchor="middle">setup()</text><text x="130" y="173" class="s" text-anchor="middle">전원 켜면 한 번: 핀·통신 설정</text><line x1="130" y1="186" x2="130" y2="214" class="ln c-k "/><polygon points="130,220 126.5,211.7 133.5,211.7" class="f-k"/><rect x="30" y="220" width="200" height="56" rx="6" class="box"/><text x="130" y="245" class="b" text-anchor="middle">loop()</text><text x="130" y="263" class="s" text-anchor="middle">끝없이 반복: 읽기 → 계산 → 쓰기</text><path d="M230 248L270 248L270 300L130 300L130 288" class="ln c-m "/><polygon points="130,282 133.5,290.3 126.5,290.3" class="f-m"/><text x="280" y="290" class="s" text-anchor="start">다시 처음부터</text><rect x="330" y="40" width="340" height="236" rx="8" class="boxd"/><text x="345" y="66" class="b" text-anchor="start">loop() 한 번 = 제어 한 주기</text><text x="345" y="96" class="s" text-anchor="start">① 센서 읽기   (pulseIn, analogRead)</text><text x="345" y="122" class="s" text-anchor="start">② 계산         (거리 환산, 필터, 제어 법칙)</text><text x="345" y="148" class="s" text-anchor="start">③ 명령 쓰기   (Servo.write, digitalWrite)</text><text x="345" y="174" class="s" text-anchor="start">④ 보고하기     (Serial.print → PC)</text><text x="345" y="206" class="s b" text-anchor="start">주기를 일정하게 지키는 것이 중요하다:</text><text x="345" y="228" class="s" text-anchor="start">delay()로 멈추면 그동안 아무것도 못 한다.</text><text x="345" y="250" class="s" text-anchor="start">millis()로 시간을 재며 돌리는 방식(실습 ⑤)</text>
+</svg>

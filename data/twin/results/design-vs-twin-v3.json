@@ -1,0 +1,259 @@
+{
+ "schema_ver": 1,
+ "kind": "twin_design_vs_twin",
+ "provenance": "simulated",
+ "results_ver": 3,
+ "supersedes": "v1",
+ "change_reason": "공 반지름 R=26 실측 → 설계 K_b 갱신 (0.8709 → 0.89931, 트윈 소신호 K_b 0.89929 와 같아짐)",
+ "created_at": "2026-11-05",
+ "kb_design": 0.8993082715361691,
+ "kb_twin": 0.8992941176470589,
+ "ball_radius_mm": 26,
+ "scenario_id": "step-nominal",
+ "seed": 1,
+ "params_ref": "twin-nominal-v1",
+ "design_model": "ball_servo (ASSUMED_SERVO, α 0.2, Ts 0.06, noise off)",
+ "rows": [
+  {
+   "label": "PD 슬라이드47",
+   "id": "pid",
+   "params": {
+    "kp": 0.574,
+    "ki": 0,
+    "kd": 0.994,
+    "n_filt": 10,
+    "d_on": "error"
+   },
+   "design": {
+    "po": 54.470903082998326,
+    "ts": 7.079999999999999,
+    "ess_mm": 0.7113490275038048,
+    "itae": 0.23659808739421057,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 67.44344381998951,
+    "ts": 8.255,
+    "ess_mm": 8.58159278904047,
+    "itae": 0.5891091969571322,
+    "final_err_mm": 13.044829532614614,
+    "success": false,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 5.7058638987451875
+   }
+  },
+  {
+   "label": "PD 슬라이드48",
+   "id": "pid",
+   "params": {
+    "kp": 2.3884,
+    "ki": 0,
+    "kd": 2.0684,
+    "n_filt": 10,
+    "d_on": "error"
+   },
+   "design": {
+    "po": 92.75197942692955,
+    "ts": null,
+    "ess_mm": 1.954544733908048,
+    "itae": 0.3981441527726048,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 115.9603187786991,
+    "ts": null,
+    "ess_mm": 2.626649773385364,
+    "itae": 0.624921257771626,
+    "final_err_mm": 12.929953794545781,
+    "success": false,
+    "status": "ok",
+    "u_sat_ratio": 0.005,
+    "meas_err_rms_mm": 9.468874431034047
+   }
+  },
+  {
+   "label": "PD p1",
+   "id": "pid",
+   "params": {
+    "kp": 1,
+    "ki": 0,
+    "kd": 1.5,
+    "n_filt": 8,
+    "d_on": "measurement"
+   },
+   "design": {
+    "po": 10.397185887351442,
+    "ts": 5.159999999999999,
+    "ess_mm": 0.38607084828243265,
+    "itae": 0.10493238090590037,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 41.28696601071884,
+    "ts": null,
+    "ess_mm": 0.27577752274776657,
+    "itae": 0.3156522311662666,
+    "final_err_mm": 6.97532296289171,
+    "success": true,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 5.63434170585207
+   }
+  },
+  {
+   "label": "PD 서보 재설계",
+   "id": "pid",
+   "params": {
+    "kp": 0.5,
+    "ki": 0,
+    "kd": 1.25,
+    "n_filt": 8,
+    "d_on": "measurement"
+   },
+   "design": {
+    "po": 0.1014481452512594,
+    "ts": 6.419999999999999,
+    "ess_mm": 0.4941949055074779,
+    "itae": 0.20338373704960055,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 15.156554026539135,
+    "ts": null,
+    "ess_mm": 3.445302365932573,
+    "itae": 0.272727148204301,
+    "final_err_mm": 5.969698168027634,
+    "success": true,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 4.751969131209967
+   }
+  },
+  {
+   "label": "PID TL",
+   "id": "pid",
+   "params": {
+    "kp": 1.435,
+    "ki": 0.1627,
+    "kd": 2.413,
+    "n_filt": 8,
+    "d_on": "measurement"
+   },
+   "design": {
+    "po": 11.714372745760977,
+    "ts": 8.34,
+    "ess_mm": 4.760499314194034,
+    "itae": 0.2827555754235708,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 42.773442803247214,
+    "ts": null,
+    "ess_mm": 3.834240455358268,
+    "itae": 0.41320661194099356,
+    "final_err_mm": 13.370378365107939,
+    "success": false,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 6.784011848042278
+   }
+  },
+  {
+   "label": "LQR",
+   "id": "lqr",
+   "params": {
+    "q_e": 400,
+    "q_edot": 25,
+    "q_theta": 33,
+    "r": 3.65,
+    "integral": false,
+    "q_i": 50,
+    "observer": "luenberger",
+    "obs_speed": 3,
+    "theta_meas": true
+   },
+   "design": {
+    "po": 3.1503367925259638,
+    "ts": 1.7999999999999998,
+    "ess_mm": 0.0006181716586395325,
+    "itae": 0.03541359892295323,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 9.940905981205757,
+    "ts": null,
+    "ess_mm": 4.04245833455813,
+    "itae": 0.24605281328826978,
+    "final_err_mm": 8.715433776634029,
+    "success": true,
+    "status": "ok",
+    "u_sat_ratio": 0.01,
+    "meas_err_rms_mm": 5.645706730659412
+   }
+  },
+  {
+   "label": "LQI",
+   "id": "lqr",
+   "params": {
+    "q_e": 400,
+    "q_edot": 25,
+    "q_theta": 33,
+    "r": 3.65,
+    "integral": true,
+    "q_i": 50,
+    "observer": "luenberger",
+    "obs_speed": 3,
+    "theta_meas": true
+   },
+   "design": {
+    "po": 21.922414527341942,
+    "ts": 5.04,
+    "ess_mm": 0.9610105650672551,
+    "itae": 0.15782457449292442,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 37.22720793009499,
+    "ts": null,
+    "ess_mm": 0.6898688935538799,
+    "itae": 0.3627254204425834,
+    "final_err_mm": 6.013815079977178,
+    "success": true,
+    "status": "ok",
+    "u_sat_ratio": 0,
+    "meas_err_rms_mm": 5.506744828604255
+   }
+  },
+  {
+   "label": "SMC sat",
+   "id": "smc",
+   "params": {
+    "lambda": 1,
+    "eta": 0.1,
+    "phi": 0.05,
+    "switch": "sat",
+    "kb_nominal": 0.8993,
+    "observer": "luenberger"
+   },
+   "design": {
+    "po": 0.03181840556132352,
+    "ts": 3.7199999999999998,
+    "ess_mm": 0.024794859472904163,
+    "itae": 0.0881431513396834,
+    "end_hit": false
+   },
+   "twin": {
+    "po": 10.043506720500561,
+    "ts": null,
+    "ess_mm": 10.771885810450382,
+    "itae": 0.32004335685633317,
+    "final_err_mm": 15.38967221618796,
+    "success": false,
+    "status": "ok",
+    "u_sat_ratio": 0.005,
+    "meas_err_rms_mm": 4.961078099479911
+   }
+  }
+ ]
+}

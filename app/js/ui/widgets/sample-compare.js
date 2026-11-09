@@ -39,7 +39,7 @@ export function renderCompare(el, { cand, targets, metrics = DEF_METRICS, weight
   }
   const cmp = ctx.samples.compare(cmpObj(cand), targets.map(cmpObj), { weights, metrics });
   // 그래프: 후보·대표 굵게, 나머지 옅게. 스텝 시작 정렬
-  const plot = new Plot(el, { height: 220, xLabel: '스텝 후 시간 (s)', yLabel: '위치 (mm)' });
+  const plot = new Plot(el, { height: 220, xLabel: '스텝 후 시간 (s)', yLabel: '측정 거리(표면) (mm)' });
   const ser = [];
   const add = (s, i, strong) => {
     const t0 = stepTime(s.rows);

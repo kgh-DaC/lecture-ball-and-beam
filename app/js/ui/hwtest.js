@@ -130,6 +130,80 @@ export function analyzeSensorPositions(rows) {
   return { rows: out, fit, checks, pass: checks.every((c) => c.ok) };
 }
 
+/**
+ * 실제 거리 vs 초음파 측정 거리 검증 기준([제안] — 사용자 확정 전 제안값).
+ * - DV_BIAS_MAX_MM 5: 위치별 '실제 − 측정' 오차의 평균 |오차|. 줄자 읽기(±1~2 mm) + 공 놓기(±1~2 mm) + HC-SR04 분해능(약 3 mm, 343 m/s 에서
+ *   1 µs ≈ 0.17 mm 지만 펌웨어 pulseIn·반사 위치 때문에 수 mm)를 합친 크기. 넘으면 센서 장착 위치·줄자 기준점·반지름 가정을 확인한다.
+ * - DV_SLOPE_MIN/MAX 0.98~1.02: 측정 = 기울기·실제 + 절편의 기울기. 펌웨어는 음속 343 m/s(약 20 °C)를 가정한다.
+ *   음속 c ≈ 331.3 + 0.606·T(°C) m/s 이므로 기울기 = 343 / c(T): 1 °C 당 약 0.18 %. ±2 % ≈ 약 8~32 °C 밖의 실온이다.
+ * - 위치별 σ 기준은 SPT_SD_MAX_MM(3 mm), 튄 값 비율은 경고만(SPT_OUTLIER_*).
+ */
+export const DV_BIAS_MAX_MM = 5;
+export const DV_SLOPE_MIN = 0.98;
+export const DV_SLOPE_MAX = 1.02;
+/** 펌웨어가 가정한 음속(firmware ball_beam.ino: mm = us·343/2000) */
+export const FW_SOUND_M_S = 343;
+/** 기울기 → 그 기울기를 만드는 실온 추정(°C, 순수). 측정 = (343/c)·실제 → c = 343/기울기 */
+export const tempFromSlope = (slope) => (Number.isFinite(slope) && slope > 0 ? (FW_SOUND_M_S / slope - 331.3) / 0.606 : NaN);
+/** 기준 방식 이름 */
+export const REF_BASIS_LABEL = Object.freeze({ surface: '공 표면(센서 쪽 면)까지', center: '공 중심까지' });
+
+/**
+ * 기대 측정 거리(순수): 초음파는 공의 가까운 표면까지 잰다. 줄자로 표면까지 쟀으면 그대로, 중심까지 쟀으면 − 반지름.
+ */
+export function expectedMeasuredMm(actual_mm, basis = 'surface', radius_mm = 26) {
+  return basis === 'center' ? actual_mm - radius_mm : actual_mm;
+}
+
+/**
+ * 실제 거리(줄자) vs 초음파 측정 거리 검증(순수).
+ * rows: [{ actual_mm, dist: number[] (원측정 dist_mm, −1 유실 포함), filt: number[] }]  (actual_mm 대신 ref_mm 도 받는다)
+ * opts: { basis: 'surface'|'center', radius_mm }
+ * 반환 analyzeSensorPositions 결과(rows 의 ref_mm = 기대 측정 거리) 에 더해
+ *   rows[i]: actual_mm, expected_mm(= ref_mm), err_mm(= 기대 − 측정 평균 = '실제 − 측정', 표면 환산), center_mm(= 측정 + R)
+ *   bias_mm(평균 오차), err_abs_max, checks(단조·평균 오차·기울기·σ·튄 값·직선 잔차), diagnosis: [{ kind: 'ok'|'offset'|'basis'|'scale', text }], pass, verdict
+ */
+export function analyzeDistanceVerification(rows, opts = {}) {
+  const basis = opts.basis === 'center' ? 'center' : 'surface';
+  const R = Number.isFinite(opts.radius_mm) ? opts.radius_mm : 26;
+  const src = rows.filter((r) => r && r.dist && r.dist.length).map((r) => {
+    const actual = Number.isFinite(r.actual_mm) ? r.actual_mm : r.ref_mm;
+    return { ...r, actual_mm: actual, ref_mm: expectedMeasuredMm(actual, basis, R) };
+  });
+  const base = analyzeSensorPositions(src);
+  const actOf = new Map(src.map((r) => [r.ref_mm, r.actual_mm]));
+  const out = base.rows.map((r) => ({ ...r, actual_mm: actOf.get(r.ref_mm), expected_mm: r.ref_mm, err_mm: r.ref_mm - r.mean, center_mm: Number.isFinite(r.mean) ? r.mean + R : NaN }));
+  const E = out.map((r) => r.err_mm).filter(Number.isFinite);
+  const bias = E.length ? mean(E) : NaN;
+  const errAbsMax = E.length ? Math.max(...E.map(Math.abs)) : NaN;
+  const fit = base.fit;
+  const pick = (k) => base.checks.find((c) => c.key === k);
+  const checks = [pick('mono')];
+  checks.push({ key: 'bias', ok: E.length > 0 && Math.abs(bias) <= DV_BIAS_MAX_MM, label: '평균 오차 |실제 − 측정| [제안]', value: bias,
+    text: E.length ? `${bias >= 0 ? '+' : ''}${fmtN(bias, 1)} mm (기준 |평균| ≤ ${DV_BIAS_MAX_MM} mm, 위치별 최대 |오차| ${fmtN(errAbsMax, 1)} mm)` : '측정 없음' });
+  checks.push({ key: 'slope', ok: !!fit && fit.slope >= DV_SLOPE_MIN && fit.slope <= DV_SLOPE_MAX, label: '기울기(측정/실제) [제안]', value: fit ? fit.slope : null,
+    text: fit ? `${fmtN(fit.slope, 4)} (기준 ${DV_SLOPE_MIN}~${DV_SLOPE_MAX}), 절편 ${fit.intercept >= 0 ? '+' : ''}${fmtN(fit.intercept, 1)} mm` : '위치 2곳 이상 필요' });
+  checks.push(pick('sd'), pick('outlier'), pick('resid'));
+  for (const c of checks) if (!c.level) c.level = c.ok ? 'ok' : 'bad';
+  const pass = checks.every((c) => c.ok);
+  // 해석
+  const diagnosis = [];
+  const slopeBad = !!fit && !(fit.slope >= DV_SLOPE_MIN && fit.slope <= DV_SLOPE_MAX);
+  const biasBad = E.length > 0 && Math.abs(bias) > DV_BIAS_MAX_MM;
+  if (slopeBad) {
+    const T = tempFromSlope(fit.slope);
+    diagnosis.push({ kind: 'scale', text: `기울기 ${fmtN(fit.slope, 3)} — 거리에 비례하는 오차입니다. 음속·온도 보정을 확인하세요: 펌웨어는 음속 ${FW_SOUND_M_S} m/s(약 20 °C)를 가정하고, 음속 c ≈ 331.3 + 0.606·T m/s 라 1 °C 당 약 0.18 % 달라집니다. 이 기울기는 실온 약 ${fmtN(T, 0)} °C 에 해당합니다 — 실온이 그와 다르면 센서가 빔과 평행하지 않거나(비스듬한 경로), 반사점이 공이 아닌지 확인하세요.${biasBad ? ` 기울기를 바로잡은 뒤에도 절편(${fmtN(fit.intercept, 1)} mm)이 남으면 영점 오프셋도 확인합니다.` : ''}` });
+  } else if (biasBad) {
+    const nearR = Math.abs(Math.abs(bias) - R) <= DV_BIAS_MAX_MM;
+    if (nearR) diagnosis.push({ kind: 'basis', text: `평균 오차 ${fmtN(bias, 1)} mm 가 반지름(${R} mm)과 거의 같습니다 — 줄자로 잰 기준(${REF_BASIS_LABEL[basis]})을 반대로 고른 것 같습니다. "무엇까지 쟀는지"를 다시 확인하세요.` });
+    diagnosis.push({ kind: 'offset', text: `오차가 위치와 관계없이 거의 일정합니다(평균 ${bias >= 0 ? '+' : ''}${fmtN(bias, 1)} mm, 절편 ${fit ? `${fit.intercept >= 0 ? '+' : ''}${fmtN(fit.intercept, 1)} mm` : '–'}) — 센서 위치·영점 오프셋(상수 오차)입니다. 확인: ① 센서 장착 위치(줄자 0 점을 센서 앞면 망 끝에 맞췄는지), ② 줄자 기준점(빔 끝·멈춤판이 아닌 센서 앞면), ③ 공 반지름 가정(${R} mm, #/settings 공 크기 기록), ④ 기준 방식 선택(${REF_BASIS_LABEL[basis]}). 상수 오차는 제어 동역학을 바꾸지 않지만 설정값의 실제 위치가 그만큼 어긋납니다.` });
+  } else if (E.length) {
+    diagnosis.push({ kind: 'ok', text: `실제 거리와 측정 거리가 맞습니다(평균 오차 ${bias >= 0 ? '+' : ''}${fmtN(bias, 1)} mm${fit ? `, 기울기 ${fmtN(fit.slope, 3)}` : ''}). 공 중심 위치 = 측정 거리 + ${R} mm 로 읽으면 됩니다.` });
+  }
+  const verdict = !pass ? 'fail' : checks.some((c) => c.level === 'warn') ? 'warn' : 'pass';
+  return { ...base, basis, radius_mm: R, rows: out, bias_mm: bias, err_abs_max: errAbsMax, checks, diagnosis, pass, verdict };
+}
+
 /** 수평 trim 조정 방향(순수): 공이 센서에서 멀어지면(v > 0, 센서 쪽이 높음) 명령 − 쪽 = trim −dir 쪽 */
 export function levelTrimHint(v_mm_s, dir = 1) {
   if (v_mm_s == null || !Number.isFinite(v_mm_s)) return null;

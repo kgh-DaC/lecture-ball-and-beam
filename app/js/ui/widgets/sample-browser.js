@@ -35,7 +35,7 @@ export function mount(el, props, ctx) {
         plot.setSeries(['cmd_cdeg', 'theta_cdeg'].map((k, i) => ({ label: k, x: full.rows.map((r) => r.t_s), y: full.rows.map((r) => r[k] / 100), ...styleOf(i), step: k === 'cmd_cdeg' })));
       } else {
         const t0 = stepTime(full.rows);
-        plot = new Plot(prev, { height: 200, xLabel: '스텝 후 시간 (s)', yLabel: '위치 (mm)' });
+        plot = new Plot(prev, { height: 200, xLabel: '스텝 후 시간 (s)', yLabel: '측정 거리(표면) (mm)' });
         plot.setSeries(['y_mm', 'y_filt_mm', 'ref_mm'].filter((k) => full.rows.some((r) => Number.isFinite(r[k]))).map((k, i) => ({ label: k, x: full.rows.map((r) => r.t_s - t0), y: full.rows.map((r) => r[k]), ...styleOf(i), step: k === 'ref_mm', alpha: k === 'y_mm' ? 0.6 : 1 })));
         const m = (full.meta.metrics && full.meta.metrics.summary) || {};
         prev.appendChild(h('div', { class: 'readout' }, ['tr', 'po', 'ts', 'ess', 'itae', 'u_tv'].map((k) => h('span', { class: 'kv' }, `${k} `, h('b', null, k === 'ts' && m.ts == null && m.computable !== false ? '미정착' : fmt(m[k], 3))))));

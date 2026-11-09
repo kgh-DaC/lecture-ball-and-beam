@@ -22,7 +22,7 @@ export async function mount(el, props, ctx) {
   const grid = h('div', { class: 'grid2' });
   const tbl = h('div', { class: 'tbl-wrap' });
   el.append(pick, msg, grid, tbl);
-  const pY = new Plot(el, { height: props.height_px || 230, xLabel: '시간 (s)', yLabel: '위치 y (mm)' });
+  const pY = new Plot(el, { height: props.height_px || 230, xLabel: '시간 (s)', yLabel: '측정 거리 y(표면) (mm)' });
   let charts = [], cur = null, testTraj = null;
 
   const ensureTraj = () => {

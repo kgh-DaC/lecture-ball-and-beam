@@ -11,17 +11,39 @@
 // ■ K_b 유도 (docs/theory/model-derivation.md)
 //   구름 운동: (J/R² + m) ÿ = m g sin α,  레버: sin α ≈ (d/L) θ  ⇒  ÿ = m g d / (L (J/R² + m)) · θ
 //
-// ■ 기구 파라미터 불일치 기록 (2026-11-03)
-//   슬라이드 값 J = 5.625e-6 kg·m² 은 R = 0.026 m 중공구 (2/3)mR² 와 정확히 같고,
-//   R = 0.025 m 에서는 J/(mR²) = 0.721 이다. 즉 슬라이드의 K_b = 0.8709 는 R=25 mm 와
-//   R=26 mm 로 계산한 J 를 섞은 값이다. 기본값은 슬라이드와 같은 값(J=5.625e-6, R=0.025 →
-//   K_b = 0.87088)을 유지한다(기존 MATLAB 결과·회귀 기준과 비교 가능하도록).
-//   J/R² 를 중공구로 일관되게 쓰면 K_b = (3/5) g d / L = 0.89929 (R 과 무관) — 차이 3.3 %.
-//   `J_kgm2: null` 을 주면 중공구 (2/3) m R² 를 쓴다.
+// ■ 공 반지름 R = 26 mm 로 일관됨 (2026-11-05, 사용자 실측: 공 지름 52 mm → R = 0.026 m)
+//   기본값 R = 0.026 m, J = 5.625e-6 kg·m². 이 J 는 R = 26 mm 중공구 (2/3)mR² 와 정확히 같다
+//   ((2/3)·0.012482·0.026² = 5.6252e-6, 차이 0.004 %). 그래서 J/R² ≈ (2/3)m 이고
+//   K_b = m g d / (L (J/R² + m)) = 0.899308 m/s²/rad (≈ 0.8993) ≈ (3/5) g d / L = 0.899294 (J 반올림 차이 1.4e-5).
+//   예전 기본값 R = 0.025 m 는 슬라이드의 혼용이었다: 슬라이드 44 의 J 는 R = 26 mm 로 계산했는데 슬라이드 45 의
+//   MATLAB 코드는 J/R² 에 R = 25 mm 를 넣어 K_b = 0.87088 ("0.8709")을 얻었다. 새 K_b 는 그보다 +3.264 % 크다.
+//   슬라이드 K_b 0.8709 는 "출처 값"으로만 남긴다: SLIDE_PLANT_PARAMS / SLIDE_KB 로 재현하며, 교재에서는
+//   "슬라이드 값(K_b 0.8709)" 으로 출처를 구분한다(슬라이드 45·47·48·50 인용 수치). 앱의 모든 계산·교재 설계 수치는
+//   DEFAULT_PLANT_PARAMS(K_b 0.89931)로 한다. `J_kgm2: null` 을 주면 중공구 (2/3)mR² 를 쓴다(R 26 mm 에서 기본값과 같다).
+//
+// ■ 초음파 측정 규약 (사용자, 2026-11-05)
+//   센서가 재는 거리 = 센서 면에서 공의 **가까운 표면**까지. 공 중심 위치 = 측정 거리 + R (26 mm).
+//   제어 좌표 y 는 지금처럼 "측정 거리"를 쓴다. 상수 오프셋이므로 동역학 ÿ = K_b θ 는 변하지 않는다.
+//   중심 좌표가 필요한 곳(기구 그림, 레버 위치, 트윈 기하)은 centerFromMeasuredMm / measuredFromCenterMm 을 쓴다.
 
+/** 공 반지름 [mm]. [실측] 사용자 실측 2026-11-05: 공 지름 52 mm. */
+export const BALL_RADIUS_MM = 26;
+export const BALL_RADIUS = Object.freeze({ mm: BALL_RADIUS_MM, m: BALL_RADIUS_MM / 1000, provenance: 'measured', source: '사용자 실측 2026-11-05 (공 지름 52 mm)' });
+/** 측정 거리(센서 → 공 가까운 표면, mm) → 공 중심 위치(센서 → 공 중심, mm) = y + 26 */
+export function centerFromMeasuredMm(y_mm) { return y_mm + BALL_RADIUS_MM; }
+/** 공 중심 위치(mm) → 측정 거리(mm) = c − 26 */
+export function measuredFromCenterMm(c_mm) { return c_mm - BALL_RADIUS_MM; }
+
+/** 기구 파라미터 기본값. R = 26 mm(실측 2026-11-05), J = 5.625e-6 (= 중공구 (2/3)mR²) → K_b = 0.89931 */
 export const DEFAULT_PLANT_PARAMS = Object.freeze({
-  m_kg: 0.012482, R_m: 0.025, L_m: 0.34, d_m: 0.052, J_kgm2: 5.625e-6, g: 9.8,
+  m_kg: 0.012482, R_m: BALL_RADIUS_MM / 1000, L_m: 0.34, d_m: 0.052, J_kgm2: 5.625e-6, g: 9.8,
 });
+
+/**
+ * 슬라이드(250102 PPT 45) 파라미터: R = 0.025 m 와 R = 26 mm 로 구한 J 를 섞은 값 → K_b = 0.87088 ("0.8709").
+ * 슬라이드 인용 수치(슬라이드 45 K_b, 47·48 PD 설계 결과, 50 게인 스케줄링 근거)를 재현·대조할 때만 쓴다. 앱 계산에는 쓰지 않는다.
+ */
+export const SLIDE_PLANT_PARAMS = Object.freeze({ ...DEFAULT_PLANT_PARAMS, R_m: 0.025 });
 
 /**
  * 서보 가정값 (식별 전 가상 장치·번들 샘플용). assumed: true — 실측이 아니다.
@@ -50,6 +72,11 @@ export function plantParams(p = {}) {
   const K_b = (q.m_kg * q.g * q.d_m) / (q.L_m * (J / q.R_m ** 2 + q.m_kg));
   return { K_b, J_used: J };
 }
+
+/** 앱 기본 K_b (= plantParams(DEFAULT_PLANT_PARAMS).K_b = 0.899308 m/s²/rad, 4자리 0.8993) */
+export const DEFAULT_KB = plantParams().K_b;
+/** 슬라이드 K_b (= plantParams(SLIDE_PLANT_PARAMS).K_b = 0.87088, 슬라이드 표기 0.8709). 출처 구분용 — 앱 계산에 쓰지 않는다 */
+export const SLIDE_KB = plantParams(SLIDE_PLANT_PARAMS).K_b;
 
 function normServo(s) {
   if (s == null) return null;

@@ -1,0 +1,3620 @@
+{
+ "format": "textbook-numbers",
+ "version": 2,
+ "provenance": "simulated",
+ "generator": "tests/control/textbook_numbers.mjs",
+ "root": ".",
+ "K_b": 0.8993082715361691,
+ "kb_label": "K_b 0.8993",
+ "plant_params": {
+  "m_kg": 0.012482,
+  "R_m": 0.026,
+  "L_m": 0.34,
+  "d_m": 0.052,
+  "J_kgm2": 0.000005625,
+  "g": 9.8
+ },
+ "method": "서보 포함 값 = 가정 서보(ASSUMED_SERVO) 해석·시뮬레이션. AI 공칭 = evaluate.runOne(seed 1000, 잡음 켬), 무작위 = compareControllers(domain, 8, seed 1). 단위는 각 행 unit.",
+ "rows": [
+  {
+   "ch": "03",
+   "key": "03.R_m",
+   "label": "공 반지름 R",
+   "value": 0.026,
+   "unit": "m",
+   "src": "plant.DEFAULT_PLANT_PARAMS",
+   "digits": 3
+  },
+  {
+   "ch": "03",
+   "key": "03.J",
+   "label": "J (기본값)",
+   "value": 0.000005625,
+   "unit": "kg·m²",
+   "src": "plant.DEFAULT_PLANT_PARAMS",
+   "digits": 9
+  },
+  {
+   "ch": "03",
+   "key": "03.J_over_R2",
+   "label": "J/R²",
+   "value": 0.008321005917159764,
+   "unit": "kg",
+   "src": "K_b 식",
+   "digits": 6
+  },
+  {
+   "ch": "03",
+   "key": "03.J_ratio",
+   "label": "J/(mR²) (중공구 = 0.6667)",
+   "value": 0.6666404356000452,
+   "unit": "–",
+   "src": "K_b 식",
+   "digits": 4
+  },
+  {
+   "ch": "03",
+   "key": "03.Kb",
+   "label": "K_b (앱 기본)",
+   "value": 0.8993082715361691,
+   "unit": "m/s²/rad",
+   "src": "plant.plantParams",
+   "digits": 5
+  },
+  {
+   "ch": "03",
+   "key": "03.Kb_hollow",
+   "label": "K_b 중공구 (3/5)gd/L",
+   "value": 0.8992941176470587,
+   "unit": "m/s²/rad",
+   "src": "plant.plantParams(J null)",
+   "digits": 5
+  },
+  {
+   "ch": "03",
+   "key": "03.Kb_per_deg",
+   "label": "빔 1° 당 가속도 K_b·π/180",
+   "value": 0.015695890328725353,
+   "unit": "m/s²/°",
+   "src": "",
+   "digits": 5
+  },
+  {
+   "ch": "03",
+   "key": "03.q4_t",
+   "label": "q4: 빔 2°(0.0349 rad) 100 mm 이동 시간",
+   "value": 2.5243408214850884,
+   "unit": "s",
+   "src": "y = K_b θ t²/2",
+   "digits": 3
+  },
+  {
+   "ch": "03",
+   "key": "03.q4_a",
+   "label": "q4: 가속도 K_b·0.0349",
+   "value": 0.031385858676612303,
+   "unit": "m/s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.q1_kp",
+   "label": "q1: ζ 0.8, ωn 2 설계 Kp = ωn²/K_b",
+   "value": 4.447863014945176,
+   "unit": "rad/m",
+   "src": "pid.designPD",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.q2_kd",
+   "label": "q2: 같은 설계 Kd = 2ζωn/K_b",
+   "value": 3.5582904119561407,
+   "unit": "rad·s/m",
+   "src": "pid.designPD",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.d75_kp",
+   "label": "ζ 0.75, ωn 1.5 설계 Kp",
+   "value": 2.5019229459066614,
+   "unit": "rad/m",
+   "src": "pid.designPD",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.d75_kd",
+   "label": "ζ 0.75, ωn 1.5 설계 Kd",
+   "value": 2.5019229459066614,
+   "unit": "rad·s/m",
+   "src": "pid.designPD",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.pole_re",
+   "label": "PD(0.574, 0.994) 폐루프 극점 실수부 (서보 무시, 연속)",
+   "value": -0.4469562116453618,
+   "unit": "1/s",
+   "src": "analysis.closedLoop",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.pole_im",
+   "label": "PD(0.574, 0.994) 폐루프 극점 허수부",
+   "value": 0.5625238604116868,
+   "unit": "rad/s",
+   "src": "analysis.closedLoop",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.zeta",
+   "label": "PD(0.574, 0.994) ζ",
+   "value": 0.6220921724783145,
+   "unit": "–",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.wn",
+   "label": "PD(0.574, 0.994) ωn",
+   "value": 0.7184726499045321,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.os_err",
+   "label": "PD(0.574, 0.994) OS (오차 미분, 2% 띠)",
+   "value": 23.949536602188736,
+   "unit": "%",
+   "src": "metrics.stepInfo",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.tr",
+   "label": "PD(0.574, 0.994) tr (오차 미분)",
+   "value": 1.230181300100482,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.ts2",
+   "label": "PD(0.574, 0.994) ts 2% (오차 미분)",
+   "value": 6.635,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.ts5",
+   "label": "PD(0.574, 0.994) ts 5% (오차 미분)",
+   "value": 6.065,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.os_meas",
+   "label": "PD(0.574, 0.994) OS (측정값 미분)",
+   "value": 8.240020903026757,
+   "unit": "%",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.ts2_meas",
+   "label": "PD(0.574, 0.994) ts 2% (측정값 미분)",
+   "value": 8.324,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.slide47.zero",
+   "label": "PD(0.574, 0.994) T(s) 영점 −Kp/Kd (K_b 무관)",
+   "value": -0.5774647887323944,
+   "unit": "1/s",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.pole_re",
+   "label": "PD(2.3884, 2.0684) 폐루프 극점 실수부 (서보 무시, 연속)",
+   "value": -0.9300646159209541,
+   "unit": "1/s",
+   "src": "analysis.closedLoop",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.pole_im",
+   "label": "PD(2.3884, 2.0684) 폐루프 극점 허수부",
+   "value": 1.1326463214123266,
+   "unit": "rad/s",
+   "src": "analysis.closedLoop",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.zeta",
+   "label": "PD(2.3884, 2.0684) ζ",
+   "value": 0.6346076403735647,
+   "unit": "–",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.wn",
+   "label": "PD(2.3884, 2.0684) ωn",
+   "value": 1.4655742489539954,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.os_err",
+   "label": "PD(2.3884, 2.0684) OS (오차 미분, 2% 띠)",
+   "value": 23.4424171970818,
+   "unit": "%",
+   "src": "metrics.stepInfo",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.tr",
+   "label": "PD(2.3884, 2.0684) tr (오차 미분)",
+   "value": 0.5992170823103555,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.ts2",
+   "label": "PD(2.3884, 2.0684) ts 2% (오차 미분)",
+   "value": 3.265,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.ts5",
+   "label": "PD(2.3884, 2.0684) ts 5% (오차 미분)",
+   "value": 2.972,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.os_meas",
+   "label": "PD(2.3884, 2.0684) OS (측정값 미분)",
+   "value": 7.579696890252285,
+   "unit": "%",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.ts2_meas",
+   "label": "PD(2.3884, 2.0684) ts 2% (측정값 미분)",
+   "value": 4.0920000000000005,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.slide48.zero",
+   "label": "PD(2.3884, 2.0684) T(s) 영점 −Kp/Kd (K_b 무관)",
+   "value": -1.1547089537807,
+   "unit": "1/s",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.pole_re",
+   "label": "PD(1, 1.5) 폐루프 극점 실수부 (서보 무시, 연속)",
+   "value": -0.6744812050169015,
+   "unit": "1/s",
+   "src": "analysis.closedLoop",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.pole_im",
+   "label": "PD(1, 1.5) 폐루프 극점 허수부",
+   "value": 0.6666208648360904,
+   "unit": "rad/s",
+   "src": "analysis.closedLoop",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.zeta",
+   "label": "PD(1, 1.5) ζ",
+   "value": 0.7112389920151145,
+   "unit": "–",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.wn",
+   "label": "PD(1, 1.5) ωn",
+   "value": 0.9483186560201525,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.os_err",
+   "label": "PD(1, 1.5) OS (오차 미분, 2% 띠)",
+   "value": 20.650023720426567,
+   "unit": "%",
+   "src": "metrics.stepInfo",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.tr",
+   "label": "PD(1, 1.5) tr (오차 미분)",
+   "value": 0.8902999607432374,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.ts2",
+   "label": "PD(1, 1.5) ts 2% (오차 미분)",
+   "value": 5.168,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.ts5",
+   "label": "PD(1, 1.5) ts 5% (오차 미분)",
+   "value": 4.571,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.os_meas",
+   "label": "PD(1, 1.5) OS (측정값 미분)",
+   "value": 4.164239989527396,
+   "unit": "%",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.ts2_meas",
+   "label": "PD(1, 1.5) ts 2% (측정값 미분)",
+   "value": 6.276,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "04.safe.zero",
+   "label": "PD(1, 1.5) T(s) 영점 −Kp/Kd (K_b 무관)",
+   "value": -0.6666666666666666,
+   "unit": "1/s",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "05",
+   "key": "05.q1_db",
+   "label": "q1: |P(j1)| = 20 log10 K_b",
+   "value": -0.9218282414607128,
+   "unit": "dB",
+   "src": "analysis.bode",
+   "digits": 2
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.none.wgc",
+   "label": "4.1 표 슬라이드 48 순수 PD, 지연 없음: ωgc",
+   "value": 2.1184988699957628,
+   "unit": "rad/s",
+   "src": "analysis.margins",
+   "digits": 3
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.none.pm",
+   "label": "4.1 표 지연 없음: PM",
+   "value": 61.40696636009602,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.none.dm",
+   "label": "4.1 표 지연 없음: 지연여유",
+   "value": 0.5059024396115053,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a02.wgc",
+   "label": "4.1 표 슬라이드 48 순수 PD, α 0.2: ωgc",
+   "value": 1.9555427166806705,
+   "unit": "rad/s",
+   "src": "analysis.margins",
+   "digits": 3
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a02.pm",
+   "label": "4.1 표 α 0.2: PM",
+   "value": 34.296911198044086,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a02.dm",
+   "label": "4.1 표 α 0.2: 지연여유",
+   "value": 0.3061012263061341,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a01.wgc",
+   "label": "4.1 표 슬라이드 48 순수 PD, α 0.1: ωgc",
+   "value": 1.6753237438355375,
+   "unit": "rad/s",
+   "src": "analysis.margins",
+   "digits": 3
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a01.pm",
+   "label": "4.1 표 α 0.1: PM",
+   "value": 13.288779350752407,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a01.dm",
+   "label": "4.1 표 α 0.1: 지연여유",
+   "value": 0.13844067697069073,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a02d.wgc",
+   "label": "4.1 표 슬라이드 48 순수 PD, α 0.2 + 0.04 s: ωgc",
+   "value": 1.9555427166806705,
+   "unit": "rad/s",
+   "src": "analysis.margins",
+   "digits": 3
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a02d.pm",
+   "label": "4.1 표 α 0.2 + 0.04 s: PM",
+   "value": 29.815137425110038,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a02d.dm",
+   "label": "4.1 표 α 0.2 + 0.04 s: 지연여유",
+   "value": 0.2661012263061336,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "05",
+   "key": "05.t41.a02d.gm",
+   "label": "4.1 표 α 0.2 + 0.04 s: GM",
+   "value": 19.737340035762667,
+   "unit": "dB",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "05",
+   "key": "05.p1.pm_n8",
+   "label": "p1: 슬라이드 48 PD, N 8, 필터 없음 PM",
+   "value": 51.74238158690923,
+   "unit": "°",
+   "src": "analysis.margins",
+   "digits": 2
+  },
+  {
+   "ch": "05",
+   "key": "05.p1.pm_n8_f",
+   "label": "p1: 같은 PD + 센서 필터 α 0.2 PM",
+   "value": 24.6940283103595,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "05",
+   "key": "05.p1.wgc_n8_f",
+   "label": "p1: 같은 PD + 센서 필터 ωgc",
+   "value": 2.0500170897913828,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "05",
+   "key": "05.servo_pm",
+   "label": "참고: 같은 PD + 가정 서보 + ZOH PM",
+   "value": 15.441122311517347,
+   "unit": "°",
+   "src": "analysis.closedLoop",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.pole_re",
+   "label": "안전 기본 PD(1, 1.5, N8, 측정 미분) 서보 무시+필터+ZOH 우세극 실수부",
+   "value": -0.7817719774558002,
+   "unit": "1/s",
+   "src": "analysis.closedLoop",
+   "digits": 3
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.pole_im",
+   "label": "같은 조건 우세극 허수부",
+   "value": 1.5076527481112336,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.zeta",
+   "label": "같은 조건 우세극 ζ (서보 무시)",
+   "value": 0.46032928012516033,
+   "unit": "–",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.pm",
+   "label": "같은 조건 PM (서보 무시)",
+   "value": 33.08546426115629,
+   "unit": "°",
+   "src": "analysis.margins",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.gm",
+   "label": "같은 조건 GM (서보 무시)",
+   "value": 13.393959989461077,
+   "unit": "dB",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.wgc",
+   "label": "같은 조건 ωgc (서보 무시)",
+   "value": 1.483275600019016,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h8.po",
+   "label": "p1 표준 스텝 OS, 서보 무시, 유지 8 s(앱 표시)",
+   "value": 3.4124973403664147,
+   "unit": "%",
+   "src": "simulate + metrics",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h8.tp",
+   "label": "p1 tp, 서보 무시, 유지 8 s(앱 표시)",
+   "value": 2.8199999999999994,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h8.tr",
+   "label": "p1 tr, 서보 무시, 유지 8 s(앱 표시)",
+   "value": 1.4679864817951613,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h8.ts5",
+   "label": "p1 ts 5%, 서보 무시, 유지 8 s(앱 표시)",
+   "value": 2.16,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h8.yfinal",
+   "label": "p1 y_final, 서보 무시, 유지 8 s(앱 표시)",
+   "value": 200.21030719107915,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h30.po",
+   "label": "p1 표준 스텝 OS, 서보 무시, 유지 30 s(수렴, 교재 기준)",
+   "value": 3.8331133366840118,
+   "unit": "%",
+   "src": "simulate + metrics",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h30.tp",
+   "label": "p1 tp, 서보 무시, 유지 30 s(수렴, 교재 기준)",
+   "value": 2.8199999999999994,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h30.tr",
+   "label": "p1 tr, 서보 무시, 유지 30 s(수렴, 교재 기준)",
+   "value": 1.4679864817951613,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h30.ts5",
+   "label": "p1 ts 5%, 서보 무시, 유지 30 s(수렴, 교재 기준)",
+   "value": 2.16,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.ball.h30.yfinal",
+   "label": "p1 y_final, 서보 무시, 유지 30 s(수렴, 교재 기준)",
+   "value": 199.99999919292037,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.pole_re",
+   "label": "안전 기본 PD(1, 1.5, N8, 측정 미분) 가정 서보+필터+ZOH 우세극 실수부",
+   "value": -0.5708945078495389,
+   "unit": "1/s",
+   "src": "analysis.closedLoop",
+   "digits": 3
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.pole_im",
+   "label": "같은 조건 우세극 허수부",
+   "value": 1.5779476652697906,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.zeta",
+   "label": "같은 조건 우세극 ζ (가정 서보)",
+   "value": 0.340213800428152,
+   "unit": "–",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.pm",
+   "label": "같은 조건 PM (가정 서보)",
+   "value": 26.358892685010233,
+   "unit": "°",
+   "src": "analysis.margins",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.gm",
+   "label": "같은 조건 GM (가정 서보)",
+   "value": 8.91864552228345,
+   "unit": "dB",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.wgc",
+   "label": "같은 조건 ωgc (가정 서보)",
+   "value": 1.4788816308780357,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h8.po",
+   "label": "p1 표준 스텝 OS, 가정 서보, 유지 8 s(앱 표시)",
+   "value": 8.103307237432963,
+   "unit": "%",
+   "src": "simulate + metrics",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h8.tp",
+   "label": "p1 tp, 가정 서보, 유지 8 s(앱 표시)",
+   "value": 2.7,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h8.tr",
+   "label": "p1 tr, 가정 서보, 유지 8 s(앱 표시)",
+   "value": 1.3170119075228044,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h8.ts5",
+   "label": "p1 ts 5%, 가정 서보, 유지 8 s(앱 표시)",
+   "value": 5.3999999999999995,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h8.yfinal",
+   "label": "p1 y_final, 가정 서보, 유지 8 s(앱 표시)",
+   "value": 200.76086847667682,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h30.po",
+   "label": "p1 표준 스텝 OS, 가정 서보, 유지 30 s(수렴, 교재 기준)",
+   "value": 9.625219523432147,
+   "unit": "%",
+   "src": "simulate + metrics",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h30.tp",
+   "label": "p1 tp, 가정 서보, 유지 30 s(수렴, 교재 기준)",
+   "value": 2.7,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h30.tr",
+   "label": "p1 tr, 가정 서보, 유지 30 s(수렴, 교재 기준)",
+   "value": 1.3170119075228044,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h30.ts5",
+   "label": "p1 ts 5%, 가정 서보, 유지 30 s(수렴, 교재 기준)",
+   "value": 5.22,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "06.p1.servo.h30.yfinal",
+   "label": "p1 y_final, 가정 서보, 유지 30 s(수렴, 교재 기준)",
+   "value": 199.99991233367723,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.safe.ball.pm",
+   "label": "PD(1, 1.5) PM (서보 무시, α 0.2, ZOH)",
+   "value": 33.08546426115629,
+   "unit": "°",
+   "src": "analysis.closedLoop+margins",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.safe.servo.pm",
+   "label": "PD(1, 1.5) PM (가정 서보, α 0.2, ZOH)",
+   "value": 26.358892685010233,
+   "unit": "°",
+   "src": "analysis.closedLoop+margins",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.safe.servo_d03.pm",
+   "label": "PD(1, 1.5) PM (가정 서보, α 0.2, ZOH + 0.03 s, build_samples 재설계 조건)",
+   "value": 23.81688240954827,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.safe.servo_d03.gm",
+   "label": "PD(1, 1.5) GM (같은 조건)",
+   "value": 7.649870974509991,
+   "unit": "dB",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.safe.servo_d03.wgc",
+   "label": "PD(1, 1.5) ωgc (같은 조건)",
+   "value": 1.4788816308780357,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "08",
+   "key": "08.s48.ball.pm",
+   "label": "슬라이드 48 PD PM (서보 무시, α 0.2, ZOH)",
+   "value": 24.6940283103595,
+   "unit": "°",
+   "src": "analysis.closedLoop+margins",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.s48.servo.pm",
+   "label": "슬라이드 48 PD PM (가정 서보, α 0.2, ZOH)",
+   "value": 15.441122311517347,
+   "unit": "°",
+   "src": "analysis.closedLoop+margins",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.s48.servo_d03.pm",
+   "label": "슬라이드 48 PD PM (가정 서보, α 0.2, ZOH + 0.03 s, build_samples 재설계 조건)",
+   "value": 11.935515086641317,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.s48.servo_d03.gm",
+   "label": "슬라이드 48 PD GM (같은 조건)",
+   "value": 4.594873928781523,
+   "unit": "dB",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.s48.servo_d03.wgc",
+   "label": "슬라이드 48 PD ωgc (같은 조건)",
+   "value": 2.0394796118596386,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "08",
+   "key": "08.red.ball.pm",
+   "label": "서보 포함 재설계 PD(0.5, 1.25) PM (서보 무시, α 0.2, ZOH)",
+   "value": 37.031580409279286,
+   "unit": "°",
+   "src": "analysis.closedLoop+margins",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.red.servo.pm",
+   "label": "서보 포함 재설계 PD(0.5, 1.25) PM (가정 서보, α 0.2, ZOH)",
+   "value": 31.63205959036111,
+   "unit": "°",
+   "src": "analysis.closedLoop+margins",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.red.servo_d03.pm",
+   "label": "서보 포함 재설계 PD(0.5, 1.25) PM (가정 서보, α 0.2, ZOH + 0.03 s, build_samples 재설계 조건)",
+   "value": 29.591236505571487,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.red.servo_d03.gm",
+   "label": "서보 포함 재설계 PD(0.5, 1.25) GM (같은 조건)",
+   "value": 8.667039621928158,
+   "unit": "dB",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.red.servo_d03.wgc",
+   "label": "서보 포함 재설계 PD(0.5, 1.25) ωgc (같은 조건)",
+   "value": 1.18730274267622,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "08",
+   "key": "08.q3.s48_drop",
+   "label": "q3: 서보를 넣을 때 PM 감소 — 슬라이드 48 PD",
+   "value": 9.252905998842152,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "08.q3.safe_drop",
+   "label": "q3: 서보를 넣을 때 PM 감소 — 안전 기본 PD",
+   "value": 6.726571576146057,
+   "unit": "°",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "03",
+   "key": "sample.sim-openloop-2deg.po",
+   "label": "샘플 sim-openloop-2deg po",
+   "value": 3.0690537084399074,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "03",
+   "key": "sample.sim-openloop-2deg.ts",
+   "label": "샘플 sim-openloop-2deg ts",
+   "value": 3.9,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "03",
+   "key": "sample.sim-openloop-2deg.tr",
+   "label": "샘플 sim-openloop-2deg tr",
+   "value": 1.3449999999999998,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "03",
+   "key": "sample.sim-openloop-2deg.itae",
+   "label": "샘플 sim-openloop-2deg itae",
+   "value": 1374.0048000000004,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "03",
+   "key": "sample.sim-openloop-2deg.ess",
+   "label": "샘플 sim-openloop-2deg ess",
+   "value": 169.88235294117646,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "03",
+   "key": "sample.sim-openloop-2deg.u_tv",
+   "label": "샘플 sim-openloop-2deg u_tv",
+   "value": 0,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "03",
+   "key": "sample.sim-openloop-2deg.u_sat_ratio",
+   "label": "샘플 sim-openloop-2deg u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "03",
+   "key": "sample.sim-openloop-2deg.score_rank",
+   "label": "샘플 sim-openloop-2deg 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide47.po",
+   "label": "샘플 sim-pid-slide47 po",
+   "value": 48.923076923076906,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide47.ts",
+   "label": "샘플 sim-pid-slide47 ts",
+   "value": 6.6000000000000005,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide47.tr",
+   "label": "샘플 sim-pid-slide47 tr",
+   "value": 0.8400000000000003,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide47.itae",
+   "label": "샘플 sim-pid-slide47 itae",
+   "value": 180.02880000000005,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide47.ess",
+   "label": "샘플 sim-pid-slide47 ess",
+   "value": 1.4615384615384528,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide47.u_tv",
+   "label": "샘플 sim-pid-slide47 u_tv",
+   "value": 24.08,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide47.u_sat_ratio",
+   "label": "샘플 sim-pid-slide47 u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide47.score_rank",
+   "label": "샘플 sim-pid-slide47 슬롯 순위",
+   "value": 2,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide48.po",
+   "label": "샘플 sim-pid-slide48 po",
+   "value": 71.58555729984299,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide48.ts",
+   "label": "샘플 sim-pid-slide48 ts",
+   "value": 6.6000000000000005,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide48.tr",
+   "label": "샘플 sim-pid-slide48 tr",
+   "value": 0.41474999999999973,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide48.itae",
+   "label": "샘플 sim-pid-slide48 itae",
+   "value": 148.29119999999998,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide48.ess",
+   "label": "샘플 sim-pid-slide48 ess",
+   "value": 0.923076923076934,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide48.u_tv",
+   "label": "샘플 sim-pid-slide48 u_tv",
+   "value": 80.85,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide48.u_sat_ratio",
+   "label": "샘플 sim-pid-slide48 u_sat_ratio",
+   "value": 0.015037593984962405,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "04",
+   "key": "sample.sim-pid-slide48.score_rank",
+   "label": "샘플 sim-pid-slide48 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "06",
+   "key": "sample.sim-pid-p1.po",
+   "label": "샘플 sim-pid-p1 po",
+   "value": 10,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "sample.sim-pid-p1.ts",
+   "label": "샘플 sim-pid-p1 ts",
+   "value": 5.64,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "sample.sim-pid-p1.tr",
+   "label": "샘플 sim-pid-p1 tr",
+   "value": 1.2999999999999998,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "sample.sim-pid-p1.itae",
+   "label": "샘플 sim-pid-p1 itae",
+   "value": 98.8488,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "06",
+   "key": "sample.sim-pid-p1.ess",
+   "label": "샘플 sim-pid-p1 ess",
+   "value": 1,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "sample.sim-pid-p1.u_tv",
+   "label": "샘플 sim-pid-p1 u_tv",
+   "value": 14.82,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "06",
+   "key": "sample.sim-pid-p1.u_sat_ratio",
+   "label": "샘플 sim-pid-p1 u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "06",
+   "key": "sample.sim-pid-p1.score_rank",
+   "label": "샘플 sim-pid-p1 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "08",
+   "key": "sample.sim-pid-servo-redesign.po",
+   "label": "샘플 sim-pid-servo-redesign po",
+   "value": 5.230769230769226,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "sample.sim-pid-servo-redesign.ts",
+   "label": "샘플 sim-pid-servo-redesign ts",
+   "value": null,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "sample.sim-pid-servo-redesign.tr",
+   "label": "샘플 sim-pid-servo-redesign tr",
+   "value": 2.31,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "sample.sim-pid-servo-redesign.itae",
+   "label": "샘플 sim-pid-servo-redesign itae",
+   "value": 198.0864,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "08",
+   "key": "sample.sim-pid-servo-redesign.ess",
+   "label": "샘플 sim-pid-servo-redesign ess",
+   "value": 1.6153846153846132,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "sample.sim-pid-servo-redesign.u_tv",
+   "label": "샘플 sim-pid-servo-redesign u_tv",
+   "value": 7.2,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "08",
+   "key": "sample.sim-pid-servo-redesign.u_sat_ratio",
+   "label": "샘플 sim-pid-servo-redesign u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "08",
+   "key": "sample.sim-pid-servo-redesign.score_rank",
+   "label": "샘플 sim-pid-servo-redesign 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-relay.po",
+   "label": "샘플 sim-relay po",
+   "value": null,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-relay.ts",
+   "label": "샘플 sim-relay ts",
+   "value": null,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-relay.tr",
+   "label": "샘플 sim-relay tr",
+   "value": null,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-relay.itae",
+   "label": "샘플 sim-relay itae",
+   "value": null,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-relay.ess",
+   "label": "샘플 sim-relay ess",
+   "value": null,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-relay.u_tv",
+   "label": "샘플 sim-relay u_tv",
+   "value": 617.62,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-relay.u_sat_ratio",
+   "label": "샘플 sim-relay u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-relay.score_rank",
+   "label": "샘플 sim-relay 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.po",
+   "label": "샘플 sim-pid-zn po",
+   "value": 55.965463108320264,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.ts",
+   "label": "샘플 sim-pid-zn ts",
+   "value": null,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.tr",
+   "label": "샘플 sim-pid-zn tr",
+   "value": 0.75,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.itae",
+   "label": "샘플 sim-pid-zn itae",
+   "value": 247.0716000000002,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.ess",
+   "label": "샘플 sim-pid-zn ess",
+   "value": 0.576923076923066,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.u_tv",
+   "label": "샘플 sim-pid-zn u_tv",
+   "value": 40.75,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.u_sat_ratio",
+   "label": "샘플 sim-pid-zn u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.kp",
+   "label": "sim-pid-zn 게인 kp",
+   "value": 1.895,
+   "unit": "",
+   "src": "build_samples relay → applyRule",
+   "digits": 4
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.ki",
+   "label": "sim-pid-zn 게인 ki",
+   "value": 0.9451,
+   "unit": "",
+   "src": "build_samples relay → applyRule",
+   "digits": 4
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.kd",
+   "label": "sim-pid-zn 게인 kd",
+   "value": 2.449,
+   "unit": "",
+   "src": "build_samples relay → applyRule",
+   "digits": 4
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-zn.score_rank",
+   "label": "샘플 sim-pid-zn 슬롯 순위",
+   "value": 2,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.po",
+   "label": "샘플 sim-pid-tl po",
+   "value": 10.047095761381499,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.ts",
+   "label": "샘플 sim-pid-tl ts",
+   "value": null,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.tr",
+   "label": "샘플 sim-pid-tl tr",
+   "value": 1.0290000000000004,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.itae",
+   "label": "샘플 sim-pid-tl itae",
+   "value": 200.48040000000003,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.ess",
+   "label": "샘플 sim-pid-tl ess",
+   "value": 6.076923076923066,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.u_tv",
+   "label": "샘플 sim-pid-tl u_tv",
+   "value": 28.14,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.u_sat_ratio",
+   "label": "샘플 sim-pid-tl u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.kp",
+   "label": "sim-pid-tl 게인 kp",
+   "value": 1.435,
+   "unit": "",
+   "src": "build_samples relay → applyRule",
+   "digits": 4
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.ki",
+   "label": "sim-pid-tl 게인 ki",
+   "value": 0.1627,
+   "unit": "",
+   "src": "build_samples relay → applyRule",
+   "digits": 4
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.kd",
+   "label": "sim-pid-tl 게인 kd",
+   "value": 2.413,
+   "unit": "",
+   "src": "build_samples relay → applyRule",
+   "digits": 4
+  },
+  {
+   "ch": "11",
+   "key": "sample.sim-pid-tl.score_rank",
+   "label": "샘플 sim-pid-tl 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-gs-slide50.po",
+   "label": "샘플 sim-gs-slide50 po",
+   "value": 33.10000000000002,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-gs-slide50.ts",
+   "label": "샘플 sim-gs-slide50 ts",
+   "value": null,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-gs-slide50.tr",
+   "label": "샘플 sim-gs-slide50 tr",
+   "value": 0.7599999999999998,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-gs-slide50.itae",
+   "label": "샘플 sim-gs-slide50 itae",
+   "value": 147.08880000000002,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-gs-slide50.ess",
+   "label": "샘플 sim-gs-slide50 ess",
+   "value": 4.449999999999989,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-gs-slide50.u_tv",
+   "label": "샘플 sim-gs-slide50 u_tv",
+   "value": 38.33,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-gs-slide50.u_sat_ratio",
+   "label": "샘플 sim-gs-slide50 u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-gs-slide50.score_rank",
+   "label": "샘플 sim-gs-slide50 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-mrac.po",
+   "label": "샘플 sim-mrac po",
+   "value": 13.5,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-mrac.ts",
+   "label": "샘플 sim-mrac ts",
+   "value": 4.74,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-mrac.tr",
+   "label": "샘플 sim-mrac tr",
+   "value": 1.7700000000000014,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-mrac.itae",
+   "label": "샘플 sim-mrac itae",
+   "value": 108.61559999999999,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-mrac.ess",
+   "label": "샘플 sim-mrac ess",
+   "value": 1.25,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-mrac.u_tv",
+   "label": "샘플 sim-mrac u_tv",
+   "value": 82.3,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-mrac.u_sat_ratio",
+   "label": "샘플 sim-mrac u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "12",
+   "key": "sample.sim-mrac.score_rank",
+   "label": "샘플 sim-mrac 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqr.po",
+   "label": "샘플 sim-lqr po",
+   "value": 7.613814756671891,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqr.ts",
+   "label": "샘플 sim-lqr ts",
+   "value": 5.04,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqr.tr",
+   "label": "샘플 sim-lqr tr",
+   "value": 1.3094999999999999,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqr.itae",
+   "label": "샘플 sim-lqr itae",
+   "value": 55.06200000000005,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqr.ess",
+   "label": "샘플 sim-lqr ess",
+   "value": 0.2692307692307736,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqr.u_tv",
+   "label": "샘플 sim-lqr u_tv",
+   "value": 72.7,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqr.u_sat_ratio",
+   "label": "샘플 sim-lqr u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqr.score_rank",
+   "label": "샘플 sim-lqr 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqi.po",
+   "label": "샘플 sim-lqi po",
+   "value": 21.769230769230774,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqi.ts",
+   "label": "샘플 sim-lqi ts",
+   "value": 4.62,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqi.tr",
+   "label": "샘플 sim-lqi tr",
+   "value": 0.9420000000000002,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqi.itae",
+   "label": "샘플 sim-lqi itae",
+   "value": 138.62520000000006,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqi.ess",
+   "label": "샘플 sim-lqi ess",
+   "value": 2.115384615384613,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqi.u_tv",
+   "label": "샘플 sim-lqi u_tv",
+   "value": 40.94,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqi.u_sat_ratio",
+   "label": "샘플 sim-lqi u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "13",
+   "key": "sample.sim-lqi.score_rank",
+   "label": "샘플 sim-lqi 슬롯 순위",
+   "value": 2,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sat.po",
+   "label": "샘플 sim-smc-sat po",
+   "value": 1.962323390894802,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sat.ts",
+   "label": "샘플 sim-smc-sat ts",
+   "value": 6.6000000000000005,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sat.tr",
+   "label": "샘플 sim-smc-sat tr",
+   "value": 2.286,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sat.itae",
+   "label": "샘플 sim-smc-sat itae",
+   "value": 94.16520000000004,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sat.ess",
+   "label": "샘플 sim-smc-sat ess",
+   "value": 0.03846153846154721,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sat.u_tv",
+   "label": "샘플 sim-smc-sat u_tv",
+   "value": 131.3,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sat.u_sat_ratio",
+   "label": "샘플 sim-smc-sat u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sat.score_rank",
+   "label": "샘플 sim-smc-sat 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sign.po",
+   "label": "샘플 sim-smc-sign po",
+   "value": 4.751131221719478,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sign.ts",
+   "label": "샘플 sim-smc-sign ts",
+   "value": 6.6000000000000005,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sign.tr",
+   "label": "샘플 sim-smc-sign tr",
+   "value": 2.295,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sign.itae",
+   "label": "샘플 sim-smc-sign itae",
+   "value": 94.71959999999996,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sign.ess",
+   "label": "샘플 sim-smc-sign ess",
+   "value": 0.423076923076934,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sign.u_tv",
+   "label": "샘플 sim-smc-sign u_tv",
+   "value": 1003.73,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "sample.sim-smc-sign.u_sat_ratio",
+   "label": "샘플 sim-smc-sign u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "18",
+   "key": "sample.sim-ai-es.po",
+   "label": "샘플 sim-ai-es po",
+   "value": 11.68929110105579,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "18",
+   "key": "sample.sim-ai-es.ts",
+   "label": "샘플 sim-ai-es ts",
+   "value": 6.420000000000001,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "18",
+   "key": "sample.sim-ai-es.tr",
+   "label": "샘플 sim-ai-es tr",
+   "value": 0.8805000000000001,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "18",
+   "key": "sample.sim-ai-es.itae",
+   "label": "샘플 sim-ai-es itae",
+   "value": 121.89959999999996,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "18",
+   "key": "sample.sim-ai-es.ess",
+   "label": "샘플 sim-ai-es ess",
+   "value": 1.9615384615384528,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "18",
+   "key": "sample.sim-ai-es.u_tv",
+   "label": "샘플 sim-ai-es u_tv",
+   "value": 751.27,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "18",
+   "key": "sample.sim-ai-es.u_sat_ratio",
+   "label": "샘플 sim-ai-es u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "18",
+   "key": "sample.sim-ai-es.score_rank",
+   "label": "샘플 sim-ai-es 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "17",
+   "key": "sample.sim-ai-q.po",
+   "label": "샘플 sim-ai-q po",
+   "value": 62.872841444270044,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "17",
+   "key": "sample.sim-ai-q.ts",
+   "label": "샘플 sim-ai-q ts",
+   "value": null,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "17",
+   "key": "sample.sim-ai-q.tr",
+   "label": "샘플 sim-ai-q tr",
+   "value": 2.3322000000000007,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "17",
+   "key": "sample.sim-ai-q.itae",
+   "label": "샘플 sim-ai-q itae",
+   "value": 672.4296000000003,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "17",
+   "key": "sample.sim-ai-q.ess",
+   "label": "샘플 sim-ai-q ess",
+   "value": 18.80769230769232,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "17",
+   "key": "sample.sim-ai-q.u_tv",
+   "label": "샘플 sim-ai-q u_tv",
+   "value": 172.37,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "17",
+   "key": "sample.sim-ai-q.u_sat_ratio",
+   "label": "샘플 sim-ai-q u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "17",
+   "key": "sample.sim-ai-q.score_rank",
+   "label": "샘플 sim-ai-q 슬롯 순위",
+   "value": 1,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-bc.po",
+   "label": "샘플 sim-ai-bc po",
+   "value": 6.200941915227647,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-bc.ts",
+   "label": "샘플 sim-ai-bc ts",
+   "value": 6.6000000000000005,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-bc.tr",
+   "label": "샘플 sim-ai-bc tr",
+   "value": 2.275,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-bc.itae",
+   "label": "샘플 sim-ai-bc itae",
+   "value": 136.31399999999994,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-bc.ess",
+   "label": "샘플 sim-ai-bc ess",
+   "value": 0.03846153846154721,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-bc.u_tv",
+   "label": "샘플 sim-ai-bc u_tv",
+   "value": 6.76,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-bc.u_sat_ratio",
+   "label": "샘플 sim-ai-bc u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-bc.score_rank",
+   "label": "샘플 sim-ai-bc 슬롯 순위",
+   "value": 2,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-dagger.po",
+   "label": "샘플 sim-ai-dagger po",
+   "value": 4.552590266875972,
+   "unit": "%",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-dagger.ts",
+   "label": "샘플 sim-ai-dagger ts",
+   "value": 6.6000000000000005,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-dagger.tr",
+   "label": "샘플 sim-ai-dagger tr",
+   "value": 3.549000000000001,
+   "unit": "s",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-dagger.itae",
+   "label": "샘플 sim-ai-dagger itae",
+   "value": 197.26199999999994,
+   "unit": "mm·s²",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 1
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-dagger.ess",
+   "label": "샘플 sim-ai-dagger ess",
+   "value": 1.2307692307692264,
+   "unit": "mm",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-dagger.u_tv",
+   "label": "샘플 sim-ai-dagger u_tv",
+   "value": 7.96,
+   "unit": "deg",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-dagger.u_sat_ratio",
+   "label": "샘플 sim-ai-dagger u_sat_ratio",
+   "value": 0,
+   "unit": "–",
+   "src": "data/samples/index.json metrics_summary",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "sample.sim-ai-dagger.score_rank",
+   "label": "샘플 sim-ai-dagger 슬롯 순위",
+   "value": 3,
+   "unit": "",
+   "src": "pick_best_sample",
+   "digits": 0
+  },
+  {
+   "ch": "11",
+   "key": "11.relay.Ku",
+   "label": "릴레이 Ku (sim-relay 재현)",
+   "value": 3.157672684184987,
+   "unit": "rad/m",
+   "src": "autotune.relayAnalyze",
+   "digits": 3
+  },
+  {
+   "ch": "11",
+   "key": "11.relay.Tu",
+   "label": "릴레이 Tu",
+   "value": 4.009173744884754,
+   "unit": "s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "11",
+   "key": "11.relay.a",
+   "label": "릴레이 진폭 a",
+   "value": 21.034915887665512,
+   "unit": "mm",
+   "src": "",
+   "digits": 1
+  },
+  {
+   "ch": "13",
+   "key": "13.lqr.ball.K1",
+   "label": "LQR 기본 Q/R, 서보 무시 K1",
+   "value": 9.028913949644481,
+   "unit": "",
+   "src": "lqr.lqrDesign (Ts 0.06)",
+   "digits": 4
+  },
+  {
+   "ch": "13",
+   "key": "13.lqr.ball.K2",
+   "label": "LQR 기본 Q/R, 서보 무시 K2",
+   "value": 5.01744622843255,
+   "unit": "",
+   "src": "lqr.lqrDesign (Ts 0.06)",
+   "digits": 4
+  },
+  {
+   "ch": "13",
+   "key": "13.lqr.ball.dom_re",
+   "label": "LQR ball 폐루프 우세극 실수부(s 평면 환산)",
+   "value": -2.4656100152635827,
+   "unit": "1/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "13",
+   "key": "13.lqr.ball.dom_im",
+   "label": "LQR ball 우세극 허수부",
+   "value": 1.8241111304900828,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "13",
+   "key": "13.lqr.servo.K1",
+   "label": "LQR 기본 Q/R, 가정 서보 K1",
+   "value": 4.465641242655644,
+   "unit": "",
+   "src": "lqr.lqrDesign (Ts 0.06)",
+   "digits": 4
+  },
+  {
+   "ch": "13",
+   "key": "13.lqr.servo.K2",
+   "label": "LQR 기본 Q/R, 가정 서보 K2",
+   "value": 4.099482909197715,
+   "unit": "",
+   "src": "lqr.lqrDesign (Ts 0.06)",
+   "digits": 4
+  },
+  {
+   "ch": "13",
+   "key": "13.lqr.servo.K3",
+   "label": "LQR 기본 Q/R, 가정 서보 K3",
+   "value": 0.5667051712154759,
+   "unit": "",
+   "src": "lqr.lqrDesign (Ts 0.06)",
+   "digits": 4
+  },
+  {
+   "ch": "13",
+   "key": "13.lqr.servo.dom_re",
+   "label": "LQR servo 폐루프 우세극 실수부(s 평면 환산)",
+   "value": -1.2735104266496093,
+   "unit": "1/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "13",
+   "key": "13.lqr.servo.dom_im",
+   "label": "LQR servo 우세극 허수부",
+   "value": 1.1618515874384399,
+   "unit": "rad/s",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "13",
+   "key": "13.lqi.servo.K1",
+   "label": "LQI 가정 서보 K1",
+   "value": 5.880206214751026,
+   "unit": "",
+   "src": "lqr.lqrDesign integral",
+   "digits": 4
+  },
+  {
+   "ch": "13",
+   "key": "13.lqi.servo.K2",
+   "label": "LQI 가정 서보 K2",
+   "value": 4.627490815620373,
+   "unit": "",
+   "src": "lqr.lqrDesign integral",
+   "digits": 4
+  },
+  {
+   "ch": "13",
+   "key": "13.lqi.servo.K3",
+   "label": "LQI 가정 서보 K3",
+   "value": 0.580124589597158,
+   "unit": "",
+   "src": "lqr.lqrDesign integral",
+   "digits": 4
+  },
+  {
+   "ch": "13",
+   "key": "13.lqi.servo.K4",
+   "label": "LQI 가정 서보 K4",
+   "value": 1.5634647985033752,
+   "unit": "",
+   "src": "lqr.lqrDesign integral",
+   "digits": 4
+  },
+  {
+   "ch": "13",
+   "key": "13.q3_k1",
+   "label": "q3: 연속 서보 무시 LQR k₁ = √(q_e/r) (K_b 무관)",
+   "value": 10.468478451804273,
+   "unit": "rad/m",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "14",
+   "key": "14.kb_nominal",
+   "label": "SMC K̂_b 기본값",
+   "value": 0.8993,
+   "unit": "m/s²/rad",
+   "src": "smc meta default",
+   "digits": 4
+  },
+  {
+   "ch": "14",
+   "key": "14.q1_kp",
+   "label": "q1: 등가 PD Kp = ηλ/(ΦK̂_b)",
+   "value": 2.223951962637607,
+   "unit": "rad/m",
+   "src": "Smc.equivalentPD",
+   "digits": 3
+  },
+  {
+   "ch": "14",
+   "key": "14.q1_kd",
+   "label": "등가 PD Kd = (λ + η/Φ)/K̂_b",
+   "value": 3.3359279439564107,
+   "unit": "rad·s/m",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "21",
+   "key": "21.p1.design_os_h10",
+   "label": "p1: 설계 모델(가정 서보) PD(1, 1.5) OS, 유지 10 s",
+   "value": 10.397185887351442,
+   "unit": "%",
+   "src": "simulate + metrics",
+   "digits": 2
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.best_epoch",
+   "label": "nn-id 최적 에폭",
+   "value": 100,
+   "unit": "",
+   "src": "data/ai/index.json",
+   "digits": 0
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.best_val",
+   "label": "nn-id 최소 검증 손실",
+   "value": 0.001237,
+   "unit": "",
+   "src": "",
+   "digits": 6
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.nn.h1",
+   "label": "nn-id 1 스텝 예측 RMSE (nn)",
+   "value": 0.09369000000000001,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.phys_servo.h1",
+   "label": "nn-id 1 스텝 예측 RMSE (phys_servo)",
+   "value": 0.01447,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.phys_ball.h1",
+   "label": "nn-id 1 스텝 예측 RMSE (phys_ball)",
+   "value": 0.08949,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.nn.h5",
+   "label": "nn-id 5 스텝 예측 RMSE (nn)",
+   "value": 0.4172,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.phys_servo.h5",
+   "label": "nn-id 5 스텝 예측 RMSE (phys_servo)",
+   "value": 0.3606,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.phys_ball.h5",
+   "label": "nn-id 5 스텝 예측 RMSE (phys_ball)",
+   "value": 1.488,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.nn.h20",
+   "label": "nn-id 20 스텝 예측 RMSE (nn)",
+   "value": 3.054,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.phys_servo.h20",
+   "label": "nn-id 20 스텝 예측 RMSE (phys_servo)",
+   "value": 3.934,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.phys_ball.h20",
+   "label": "nn-id 20 스텝 예측 RMSE (phys_ball)",
+   "value": 9.162,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.nn.h50",
+   "label": "nn-id 50 스텝 예측 RMSE (nn)",
+   "value": 14.11,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.phys_servo.h50",
+   "label": "nn-id 50 스텝 예측 RMSE (phys_servo)",
+   "value": 18.62,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.nnid.rmse.phys_ball.h50",
+   "label": "nn-id 50 스텝 예측 RMSE (phys_ball)",
+   "value": 28.580000000000002,
+   "unit": "mm",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "16",
+   "key": "16.overfit.val_min_epoch",
+   "label": "과적합 시연 검증 최소 에폭",
+   "value": 8,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "16",
+   "key": "16.overfit.val_rise",
+   "label": "과적합 시연 검증 손실 상승비",
+   "value": 2.069,
+   "unit": "배",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "17",
+   "key": "17.q.best_episode",
+   "label": "Q 최적 에피소드",
+   "value": 8000,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "17",
+   "key": "17.q.best_greedy",
+   "label": "Q 최적 탐욕 리턴",
+   "value": -61.75,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "17",
+   "key": "17.q.eval_return",
+   "label": "Q 평가 평균 리턴 (20 에피소드)",
+   "value": -68.23,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "17",
+   "key": "17.q.eval_rmse",
+   "label": "Q 평가 RMSE",
+   "value": 30.13,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "17",
+   "key": "17.q.eval_fail",
+   "label": "Q 평가 실패율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "18",
+   "key": "18.es.seed",
+   "label": "ES 선택 seed",
+   "value": 1,
+   "unit": "",
+   "src": "data/ai/index.json selection",
+   "digits": 0
+  },
+  {
+   "ch": "18",
+   "key": "18.es.best_iter",
+   "label": "ES 최적 세대",
+   "value": 56,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "18",
+   "key": "18.es.best_center",
+   "label": "ES 최적 중심 리턴",
+   "value": -44.06,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "18",
+   "key": "18.es.eval_return",
+   "label": "ES 평가 평균 리턴",
+   "value": -25.59,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "18",
+   "key": "18.es.eval_rmse",
+   "label": "ES 평가 RMSE",
+   "value": 17.4,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "18",
+   "key": "18.es.eval_fail",
+   "label": "ES 평가 실패율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.bc.eval_return",
+   "label": "bc 평가 평균 리턴",
+   "value": -62.86,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.bc.eval_rmse",
+   "label": "bc 평가 RMSE",
+   "value": 26.44,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.bc.eval_fail",
+   "label": "bc 평가 실패율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.bc.round1",
+   "label": "bc 1라운드 평가 리턴",
+   "value": -412.2,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.bc.dataset",
+   "label": "bc 데이터 크기",
+   "value": 4342,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "19",
+   "key": "19.expert.eval_return",
+   "label": "전문가 PD(0.5, 1.25) 평가 평균 리턴",
+   "value": -53.73,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.expert.eval_rmse",
+   "label": "전문가 PD 평가 RMSE",
+   "value": 24.38,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.dagger.eval_return",
+   "label": "dagger 평가 평균 리턴",
+   "value": -53.61,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.dagger.eval_rmse",
+   "label": "dagger 평가 RMSE",
+   "value": 24.95,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.dagger.eval_fail",
+   "label": "dagger 평가 실패율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.dagger.round1",
+   "label": "dagger 1라운드 평가 리턴",
+   "value": -412.2,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.dagger.dataset",
+   "label": "dagger 데이터 크기",
+   "value": 4342,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "19",
+   "key": "19.expert.eval_return",
+   "label": "전문가 PD(0.5, 1.25) 평가 평균 리턴",
+   "value": -53.73,
+   "unit": "",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.expert.eval_rmse",
+   "label": "전문가 PD 평가 RMSE",
+   "value": 24.38,
+   "unit": "mm",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.pid.nom.po",
+   "label": "ai-compare 공칭 PID(1, 0, 1.5) OS",
+   "value": 7.340135690434224,
+   "unit": "%",
+   "src": "evaluate.runOne(P1, seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.pid.nom.ts",
+   "label": "ai-compare 공칭 PID(1, 0, 1.5) ts",
+   "value": 5.279999999999999,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.pid.nom.itae",
+   "label": "ai-compare 공칭 PID(1, 0, 1.5) ITAE",
+   "value": 0.10205059917108371,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.pid.nom.utv",
+   "label": "ai-compare 공칭 PID(1, 0, 1.5) u_tv",
+   "value": 0.3708712530454523,
+   "unit": "rad",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.pid.nom.success",
+   "label": "ai-compare 공칭 PID(1, 0, 1.5) 성공",
+   "value": 1,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "20",
+   "key": "20.pid.rnd.success",
+   "label": "ai-compare 무작위 8 PID(1, 0, 1.5) 성공률",
+   "value": 1,
+   "unit": "",
+   "src": "evaluate.compareControllers(domain, 8, seed 1)",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.pid.rnd.itae",
+   "label": "ai-compare 무작위 8 PID(1, 0, 1.5) 평균 ITAE",
+   "value": 0.12506019031870735,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.pid.rnd.po",
+   "label": "ai-compare 무작위 8 PID(1, 0, 1.5) 평균 OS",
+   "value": 10.897317224880315,
+   "unit": "%",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.pid.rnd.fallback",
+   "label": "ai-compare 무작위 8 PID(1, 0, 1.5) 평균 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.lqr.nom.po",
+   "label": "ai-compare 공칭 LQR OS",
+   "value": 3.905967911711855,
+   "unit": "%",
+   "src": "evaluate.runOne(P1, seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.lqr.nom.ts",
+   "label": "ai-compare 공칭 LQR ts",
+   "value": 1.7999999999999998,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.lqr.nom.itae",
+   "label": "ai-compare 공칭 LQR ITAE",
+   "value": 0.04115911509750246,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.lqr.nom.utv",
+   "label": "ai-compare 공칭 LQR u_tv",
+   "value": 1.7085273302167514,
+   "unit": "rad",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.lqr.nom.success",
+   "label": "ai-compare 공칭 LQR 성공",
+   "value": 1,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "20",
+   "key": "20.lqr.rnd.success",
+   "label": "ai-compare 무작위 8 LQR 성공률",
+   "value": 1,
+   "unit": "",
+   "src": "evaluate.compareControllers(domain, 8, seed 1)",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.lqr.rnd.itae",
+   "label": "ai-compare 무작위 8 LQR 평균 ITAE",
+   "value": 0.047191135584127346,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.lqr.rnd.po",
+   "label": "ai-compare 무작위 8 LQR 평균 OS",
+   "value": 5.293028672308884,
+   "unit": "%",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.lqr.rnd.fallback",
+   "label": "ai-compare 무작위 8 LQR 평균 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.smc.nom.po",
+   "label": "ai-compare 공칭 SMC OS",
+   "value": 0.9026083908240353,
+   "unit": "%",
+   "src": "evaluate.runOne(P1, seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.smc.nom.ts",
+   "label": "ai-compare 공칭 SMC ts",
+   "value": 3.5999999999999996,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.smc.nom.itae",
+   "label": "ai-compare 공칭 SMC ITAE",
+   "value": 0.09184971327517653,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.smc.nom.utv",
+   "label": "ai-compare 공칭 SMC u_tv",
+   "value": 3.1450280519531657,
+   "unit": "rad",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.smc.nom.success",
+   "label": "ai-compare 공칭 SMC 성공",
+   "value": 1,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "20",
+   "key": "20.smc.rnd.success",
+   "label": "ai-compare 무작위 8 SMC 성공률",
+   "value": 1,
+   "unit": "",
+   "src": "evaluate.compareControllers(domain, 8, seed 1)",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.smc.rnd.itae",
+   "label": "ai-compare 무작위 8 SMC 평균 ITAE",
+   "value": 0.08988190030443374,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.smc.rnd.po",
+   "label": "ai-compare 무작위 8 SMC 평균 OS",
+   "value": 0.9180391224355688,
+   "unit": "%",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.smc.rnd.fallback",
+   "label": "ai-compare 무작위 8 SMC 평균 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.q.nom.po",
+   "label": "ai-compare 공칭 Q 정책 OS",
+   "value": 103.68610250414496,
+   "unit": "%",
+   "src": "evaluate.runOne(P1, seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.q.nom.ts",
+   "label": "ai-compare 공칭 Q 정책 ts",
+   "value": null,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.q.nom.itae",
+   "label": "ai-compare 공칭 Q 정책 ITAE",
+   "value": 0.5172207828959533,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.q.nom.utv",
+   "label": "ai-compare 공칭 Q 정책 u_tv",
+   "value": 2.909999999999999,
+   "unit": "rad",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.q.nom.success",
+   "label": "ai-compare 공칭 Q 정책 성공",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "20",
+   "key": "20.q.rnd.success",
+   "label": "ai-compare 무작위 8 Q 정책 성공률",
+   "value": 0,
+   "unit": "",
+   "src": "evaluate.compareControllers(domain, 8, seed 1)",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.q.rnd.itae",
+   "label": "ai-compare 무작위 8 Q 정책 평균 ITAE",
+   "value": 0.6141039613404538,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.q.rnd.po",
+   "label": "ai-compare 무작위 8 Q 정책 평균 OS",
+   "value": 74.5141658936564,
+   "unit": "%",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.q.rnd.fallback",
+   "label": "ai-compare 무작위 8 Q 정책 평균 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.es.nom.po",
+   "label": "ai-compare 공칭 ES 정책 OS",
+   "value": 5.445812247157416,
+   "unit": "%",
+   "src": "evaluate.runOne(P1, seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.es.nom.ts",
+   "label": "ai-compare 공칭 ES 정책 ts",
+   "value": 4.02,
+   "unit": "s",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.es.nom.itae",
+   "label": "ai-compare 공칭 ES 정책 ITAE",
+   "value": 0.09244153177223115,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.es.nom.utv",
+   "label": "ai-compare 공칭 ES 정책 u_tv",
+   "value": 23.25160682214422,
+   "unit": "rad",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.es.nom.success",
+   "label": "ai-compare 공칭 ES 정책 성공",
+   "value": 1,
+   "unit": "",
+   "src": "",
+   "digits": 0
+  },
+  {
+   "ch": "20",
+   "key": "20.es.rnd.success",
+   "label": "ai-compare 무작위 8 ES 정책 성공률",
+   "value": 0.625,
+   "unit": "",
+   "src": "evaluate.compareControllers(domain, 8, seed 1)",
+   "digits": 3
+  },
+  {
+   "ch": "20",
+   "key": "20.es.rnd.itae",
+   "label": "ai-compare 무작위 8 ES 정책 평균 ITAE",
+   "value": 0.1519498909887299,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "20",
+   "key": "20.es.rnd.po",
+   "label": "ai-compare 무작위 8 ES 정책 평균 OS",
+   "value": 9.514471720362783,
+   "unit": "%",
+   "src": "",
+   "digits": 2
+  },
+  {
+   "ch": "20",
+   "key": "20.es.rnd.fallback",
+   "label": "ai-compare 무작위 8 ES 정책 평균 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "18",
+   "key": "18.es_emax01.nom.po",
+   "label": "ES (e_max 0.10, 18장 안전 기본값) 공칭 OS",
+   "value": 5.445812247157416,
+   "unit": "%",
+   "src": "evaluate.runOne",
+   "digits": 2
+  },
+  {
+   "ch": "18",
+   "key": "18.es_emax01.nom.itae",
+   "label": "ES (e_max 0.10) 공칭 ITAE",
+   "value": 0.09244153177223115,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "18",
+   "key": "18.es_emax01.rnd.success",
+   "label": "ES (e_max 0.10) 무작위 8 성공률",
+   "value": 0.625,
+   "unit": "",
+   "src": "evaluate.compareControllers",
+   "digits": 3
+  },
+  {
+   "ch": "18",
+   "key": "18.es_emax01.rnd.fallback",
+   "label": "ES (e_max 0.10) 무작위 8 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.in.pd.po",
+   "label": "과제 2 안 150→160: PD 선생님(0.5, 1.25) OS",
+   "value": 0.9901608074465335,
+   "unit": "%",
+   "src": "evaluate.runOne(seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.in.pd.itae",
+   "label": "과제 2 안 150→160: PD 선생님(0.5, 1.25) ITAE",
+   "value": 0.045270899325162324,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.in.pd.fallback",
+   "label": "과제 2 안 150→160: PD 선생님(0.5, 1.25) 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.in.bc.po",
+   "label": "과제 2 안 150→160: BC (e_max 0.10) OS",
+   "value": 3.82942523845013,
+   "unit": "%",
+   "src": "evaluate.runOne(seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.in.bc.itae",
+   "label": "과제 2 안 150→160: BC (e_max 0.10) ITAE",
+   "value": 0.02423035744020895,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.in.bc.fallback",
+   "label": "과제 2 안 150→160: BC (e_max 0.10) 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.in.dagger.po",
+   "label": "과제 2 안 150→160: DAgger (e_max 0.10) OS",
+   "value": 1.4648356889680458,
+   "unit": "%",
+   "src": "evaluate.runOne(seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.in.dagger.itae",
+   "label": "과제 2 안 150→160: DAgger (e_max 0.10) ITAE",
+   "value": 0.03884645680160013,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.in.dagger.fallback",
+   "label": "과제 2 안 150→160: DAgger (e_max 0.10) 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.p1.pd.po",
+   "label": "과제 2 P1 150→200: PD 선생님(0.5, 1.25) OS",
+   "value": 1.8484080717727323,
+   "unit": "%",
+   "src": "evaluate.runOne(seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.p1.pd.itae",
+   "label": "과제 2 P1 150→200: PD 선생님(0.5, 1.25) ITAE",
+   "value": 0.209295231951315,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.p1.pd.fallback",
+   "label": "과제 2 P1 150→200: PD 선생님(0.5, 1.25) 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.p1.bc.po",
+   "label": "과제 2 P1 150→200: BC (e_max 0.10) OS",
+   "value": 2.685329657204307,
+   "unit": "%",
+   "src": "evaluate.runOne(seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.p1.bc.itae",
+   "label": "과제 2 P1 150→200: BC (e_max 0.10) ITAE",
+   "value": 0.13000624286156723,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.p1.bc.fallback",
+   "label": "과제 2 P1 150→200: BC (e_max 0.10) 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.p1.dagger.po",
+   "label": "과제 2 P1 150→200: DAgger (e_max 0.10) OS",
+   "value": 1.08007057185246,
+   "unit": "%",
+   "src": "evaluate.runOne(seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.p1.dagger.itae",
+   "label": "과제 2 P1 150→200: DAgger (e_max 0.10) ITAE",
+   "value": 0.21016853544651157,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.p1.dagger.fallback",
+   "label": "과제 2 P1 150→200: DAgger (e_max 0.10) 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.far.pd.po",
+   "label": "과제 2 멀리 120→270: PD 선생님(0.5, 1.25) OS",
+   "value": 1.9712389134735857,
+   "unit": "%",
+   "src": "evaluate.runOne(seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.far.pd.itae",
+   "label": "과제 2 멀리 120→270: PD 선생님(0.5, 1.25) ITAE",
+   "value": 0.6184117821536967,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.far.pd.fallback",
+   "label": "과제 2 멀리 120→270: PD 선생님(0.5, 1.25) 폴백 비율",
+   "value": 0,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.far.bc.po",
+   "label": "과제 2 멀리 120→270: BC (e_max 0.10) OS",
+   "value": 0.38916225924948916,
+   "unit": "%",
+   "src": "evaluate.runOne(seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.far.bc.itae",
+   "label": "과제 2 멀리 120→270: BC (e_max 0.10) ITAE",
+   "value": 0.4040611821205641,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.far.bc.fallback",
+   "label": "과제 2 멀리 120→270: BC (e_max 0.10) 폴백 비율",
+   "value": 0.25748502994011974,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.far.dagger.po",
+   "label": "과제 2 멀리 120→270: DAgger (e_max 0.10) OS",
+   "value": 1.2310530940177935,
+   "unit": "%",
+   "src": "evaluate.runOne(seed 1000)",
+   "digits": 2
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.far.dagger.itae",
+   "label": "과제 2 멀리 120→270: DAgger (e_max 0.10) ITAE",
+   "value": 0.544200861862631,
+   "unit": "m·s²",
+   "src": "",
+   "digits": 4
+  },
+  {
+   "ch": "19",
+   "key": "19.t2.far.dagger.fallback",
+   "label": "과제 2 멀리 120→270: DAgger (e_max 0.10) 폴백 비율",
+   "value": 0.25748502994011974,
+   "unit": "",
+   "src": "",
+   "digits": 3
+  }
+ ]
+}

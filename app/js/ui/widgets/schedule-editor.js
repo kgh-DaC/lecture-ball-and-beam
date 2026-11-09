@@ -43,7 +43,7 @@ export function mount(el, props, ctx) {
   const msg = h('div');
   el.append(edBox, tblBox, read, msg, acts);
   const pG = new Plot(el, { height: 170, xLabel: '|오차| (mm)', yLabel: '게인 (SI)' });
-  const pY = new Plot(el, { height: props.height_px || 210, xLabel: '시간 (s)', yLabel: '위치 (mm)' });
+  const pY = new Plot(el, { height: props.height_px || 210, xLabel: '시간 (s)', yLabel: '측정 거리(표면) (mm)' });
   const pK = new Plot(el, { height: 130, xLabel: '시간 (s)', yLabel: '적용 Kp, Kd' });
 
   if (props.editable !== false) {

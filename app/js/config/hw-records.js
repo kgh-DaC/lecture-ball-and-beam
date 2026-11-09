@@ -7,6 +7,10 @@
 // - level: 수평(trim) 실측 기록 { id, date, servo_model, level_servo_deg, dir, trim_cdeg(= (서보각 − 90)·100), method, source, provenance }.
 //   번들 기본 기록 = 사용자 장치 실측(servo-presets.js LEVEL_MEASURED_USER: 수평 서보각 83° → trim −700, dir 1). 지울 수 없고 고치면 level_override.
 //   이 기록은 '사용자 장치 프로필'(userDeviceProfile)로 장치 설정에 한 번 클릭으로 적용한다(번들 DEFAULT_DEVICE.trim 은 0 그대로).
+// - ball_override: 공 크기 기록(번들 기본 = 사용자 실측 2026-11-05 지름 52 mm → 반지름 26 mm, BALL_MEASURED_USER)을 고친 값. 지울 수 없고 '수정 취소'로 되돌림.
+//   초음파 좌표 규약(sonarConvention): 센서가 재는 거리 = 센서 앞면 → 공의 가까운 표면, 공 중심 = 측정 거리 + 반지름.
+//   제어 좌표는 '측정 거리' 그대로(상수 오프셋이라 동역학 불변) — 반지름은 화면 표시·세션 메타(ball_radius_mm)에만 쓴다.
+// - dist_verify: 거리 검증 기록(sensor-position-test: 줄자로 잰 실제 거리 vs 초음파 측정 거리). 최근 30개.
 // 모든 값은 이 브라우저 안에만 있다(외부 전송 없음).
 
 import { POT_MEASURED_HS5645MG, LEVEL_MEASURED_USER, SERVO_PRESETS, fitPotLine, levelDegToTrim, rawAtServoDeg, TRIM_LIMIT_CDEG } from './servo-presets.js';
@@ -15,7 +19,51 @@ export const HW_KEY = 'ballbeam.hw_records';
 export const HW_SCHEMA_VER = 1;
 export const BUNDLE_POT_ID = 'bundle-hs5645mg-2026-11-04';
 export const BUNDLE_LEVEL_ID = 'bundle-level-hs5645mg-2026-11-04';
+export const BUNDLE_BALL_ID = 'bundle-ball-2026-11-05';
 const MAX_LOGS = 60;
+const MAX_DIST_VERIFY = 30;
+
+/**
+ * 공 크기 실측(사용자 제공, 2026-11-05): 지름 52 mm → 반지름 26 mm. control/plant.js BALL_RADIUS_MM(= 26)과 같은 측정이다
+ * (이 파일은 설정 모듈이라 제어 모듈을 정적으로 불러오지 않는다 — 같은 값인지는 tests/web/sonar.test.mjs 가 확인).
+ */
+export const BALL_MEASURED_USER = Object.freeze({
+  date: '2026-11-05', diameter_mm: 52, radius_mm: 26, method: '직접 측정(공 지름을 자·캘리퍼스로 잼)', source: '사용자 실측(2026-11-05, 지름 52 mm)', provenance: 'measured',
+});
+/** 초음파 거리 규약 이름(세션 메타 distance_convention) */
+export const DISTANCE_CONVENTION = 'surface';
+/** 반지름으로 받아들이는 범위(mm). 밖이면 기록은 남기되 표시·메타에는 번들 값(26)을 쓴다 */
+export const BALL_RADIUS_RANGE_MM = [5, 60];
+
+/** 공 크기 기록 정리(순수): 지름이 있으면 반지름 = 지름/2, 없으면 반지름 → 지름 = 2·반지름. valid = 반지름이 받아들이는 범위 안 */
+export function normalizeBallRecord(r) {
+  const num = (v) => (v === '' || v == null || !Number.isFinite(Number(v)) ? NaN : Number(v));
+  let d = num(r.diameter_mm), R = num(r.radius_mm);
+  if (Number.isFinite(d)) R = d / 2; else if (Number.isFinite(R)) d = 2 * R;
+  const valid = Number.isFinite(R) && R >= BALL_RADIUS_RANGE_MM[0] && R <= BALL_RADIUS_RANGE_MM[1];
+  return { ...r, diameter_mm: Number.isFinite(d) ? d : null, radius_mm: Number.isFinite(R) ? R : null, valid };
+}
+
+/** 번들 기본 공 크기 기록(사용자 실측) */
+export function bundleBallRecord() {
+  const m = BALL_MEASURED_USER;
+  return normalizeBallRecord({ id: BUNDLE_BALL_ID, bundle: true, created_at: `${m.date}T00:00:00+09:00`, date: m.date, diameter_mm: m.diameter_mm, method: m.method, source: m.source, provenance: m.provenance,
+    notes: '번들 기본값(사용자 제공 실측). 초음파는 공의 가까운 표면까지 재므로 공 중심 = 측정 거리 + 반지름.' });
+}
+
+/** 초음파 좌표 규약 기록(순수, 공 크기 기록에서 만든다 — 따로 저장하지 않음) */
+export function sonarConvention(ball = bundleBallRecord()) {
+  const R = ball && ball.valid ? ball.radius_mm : BALL_MEASURED_USER.radius_mm;
+  return { distance_convention: DISTANCE_CONVENTION, radius_mm: R,
+    measured: '측정 거리 = 센서 앞면 → 공의 가까운 표면(센서 쪽 면)', center: `공 중심 위치 = 측정 거리 + 반지름(${R} mm)`,
+    control: '제어 좌표 = 측정 거리(상수 오프셋이라 동역학 불변). 세션 CSV 의 y_mm·y_filt_mm·ref_mm 도 측정 거리', ball_record_id: ball ? ball.id : null };
+}
+
+/** 세션 메타 조각(data-schema §2.1 1.5.0): 반지름·거리 규약. records 없으면 번들 실측 */
+export function geometryMeta(records) {
+  const R = records && records.ballRadiusMm ? records.ballRadiusMm() : BALL_MEASURED_USER.radius_mm;
+  return { ball_radius_mm: R, distance_convention: DISTANCE_CONVENTION };
+}
 
 /** 번들 기본 포텐쇼미터 기록(사용자 실측) */
 export function bundlePotRecord() {
@@ -91,7 +139,8 @@ export class HwRecords {
     try { d = JSON.parse(this.storage?.getItem(HW_KEY) || 'null'); } catch { d = null; }
     if (!d || typeof d !== 'object') d = {};
     return { schema_ver: HW_SCHEMA_VER, pot: Array.isArray(d.pot) ? d.pot : [], bundle_override: d.bundle_override || null, active_pot: d.active_pot || {}, results: d.results || {}, steps: d.steps || {}, logs: Array.isArray(d.logs) ? d.logs : [],
-      level: Array.isArray(d.level) ? d.level : [], level_override: d.level_override || null };
+      level: Array.isArray(d.level) ? d.level : [], level_override: d.level_override || null,
+      ball_override: d.ball_override || null, dist_verify: Array.isArray(d.dist_verify) ? d.dist_verify : [] };
   }
   _save() {
     try { this.storage?.setItem(HW_KEY, JSON.stringify(this.data)); } catch { /* 저장 불가(사생활 보호 모드 등) */ }
@@ -184,6 +233,37 @@ export class HwRecords {
     this._save();
     return true;
   }
+
+  /** 공 크기 기록(번들 기본 = 사용자 실측, 고쳤으면 덮어쓴 값) */
+  ballRecord() {
+    return this.data.ball_override ? normalizeBallRecord({ ...bundleBallRecord(), ...this.data.ball_override, id: BUNDLE_BALL_ID, bundle: true, edited: true }) : bundleBallRecord();
+  }
+  /** 화면 표시·세션 메타에 쓸 반지름(mm). 기록 값이 범위 밖이면 번들 실측(26) */
+  ballRadiusMm() { const b = this.ballRecord(); return b.valid ? b.radius_mm : BALL_MEASURED_USER.radius_mm; }
+  /** 공 크기 수정(덮어쓴 값으로 저장). 지름을 주면 반지름은 지름/2 로 다시 계산 */
+  updateBall(partial) {
+    const p = { ...partial };
+    if (p.diameter_mm !== undefined && p.diameter_mm !== '' && p.diameter_mm != null) delete p.radius_mm;
+    else if (p.radius_mm !== undefined) p.diameter_mm = null;
+    this.data.ball_override = { ...(this.data.ball_override || {}), ...p, edited_at: new Date().toISOString() };
+    this._save();
+    return this.ballRecord();
+  }
+  resetBallBundle() { this.data.ball_override = null; this._save(); }
+  /** 초음파 좌표 규약(공 크기 기록에서) */
+  sonarConvention() { return sonarConvention(this.ballRecord()); }
+
+  /** 거리 검증 기록(실제 거리 vs 초음파 측정 거리). 최신이 뒤 */
+  distVerifyRecords() { return this.data.dist_verify.slice(); }
+  lastDistVerify() { const L = this.data.dist_verify; return L.length ? L[L.length - 1] : null; }
+  addDistVerify(rec) {
+    const r = { created_at: new Date().toISOString(), date: new Date().toISOString().slice(0, 10), ...rec, id: rec.id || `dv-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e4)}` };
+    this.data.dist_verify.push(r);
+    if (this.data.dist_verify.length > MAX_DIST_VERIFY) this.data.dist_verify.splice(0, this.data.dist_verify.length - MAX_DIST_VERIFY);
+    this._save();
+    return r;
+  }
+  removeDistVerify(id) { this.data.dist_verify = this.data.dist_verify.filter((r) => r.id !== id); this._save(); }
 
   /** 위젯 판정 기록 */
   recordResult(widget, res) {

@@ -123,7 +123,7 @@ export function stepTime(rows) {
 
 /** 신호 → 단위 묶음(같은 그래프에 단위가 같은 것만) */
 export const SIGNAL_INFO = {
-  y_mm: { label: '위치 y', unit: 'mm' }, y_filt_mm: { label: '필터 위치', unit: 'mm' }, ref_mm: { label: '설정값', unit: 'mm' },
+  y_mm: { label: '측정 거리 y(표면)', unit: 'mm' }, y_filt_mm: { label: '필터 측정 거리', unit: 'mm' }, ref_mm: { label: '설정값(측정 거리)', unit: 'mm' },
   u_cdeg: { label: '명령각 u', unit: 'cdeg' }, servo_pot_cdeg: { label: '서보 실제각(pot)', unit: 'cdeg' }, cmd_echo_cdeg: { label: '적용 명령', unit: 'cdeg' },
   cmd_cdeg: { label: '명령각', unit: 'cdeg' }, theta_cdeg: { label: '실제각(pot)', unit: 'cdeg' }, pot_raw: { label: 'pot 원값', unit: 'LSB' },
 };

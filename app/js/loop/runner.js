@@ -10,7 +10,7 @@ import { refAt, durationOf } from '../store/profile.js';
 import { newSessionId } from '../store/session.js';
 import { cmd } from '../serial/writer.js';
 import { HEARTBEAT_MS, AUTOSAVE_MS, RING_SIZE } from '../config/defaults.js';
-import { withTrimDir } from '../config/hw-records.js';
+import { withTrimDir, geometryMeta } from '../config/hw-records.js';
 
 const RAD2CDEG = 18000 / Math.PI;
 const CDEG2RAD = Math.PI / 18000;
@@ -188,6 +188,8 @@ export class Runner {
         model_kind: model ? model.kind : (modelKind === 'ball+servo' ? 'ball_servo' : 'ball_only'),
         servo_tf: model && model.servo ? model.servo : null,
         calibration: calibrationMeta(cal),
+        // data-schema 1.5.0: 거리 규약(측정 거리 = 센서 → 공 표면, CSV 위치 값은 원 측정 좌표 그대로)과 공 반지름(공 중심 = 측정 + R)
+        ...geometryMeta(dev.deps && dev.deps.settings ? dev.deps.settings.hw : null),
         setpoint_profile: profile,
         sample_period_ms: fs,
         conditions: { status: 'known' },

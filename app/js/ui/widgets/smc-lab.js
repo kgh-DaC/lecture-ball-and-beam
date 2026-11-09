@@ -34,7 +34,7 @@ export function mount(el, props, ctx) {
   const msg = h('div');
   const acts = h('div', { class: 'row' });
   el.append(ctl, read, msg, tblBox, acts);
-  const pY = new Plot(el, { height: props.height_px || 190, xLabel: '시간 (s)', yLabel: '위치 (mm)' });
+  const pY = new Plot(el, { height: props.height_px || 190, xLabel: '시간 (s)', yLabel: '측정 거리(표면) (mm)' });
   const pU = new Plot(el, { height: 140, xLabel: '시간 (s)', yLabel: '명령각 (°)' });
   const sendBtn = h('button', { class: 'btn', onclick: () => {
     const p = cur();

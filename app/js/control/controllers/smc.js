@@ -11,6 +11,10 @@
 // 60 ms 샘플링에서는 이상적인 슬라이딩이 안 되고 이산 채터링이 생긴다(docs/theory).
 // ė 추정: 'diff' = 필터된 후진 차분(Tf 0.1 s), 'luenberger' = [y, ẏ] 2차 관측기(극점 −10, −10 rad/s, K̂_b 사용)
 import { mergeParams, saturate, dtValid, FilteredDiff } from './common.js';
+import { DEFAULT_KB } from '../plant.js';
+
+// 공칭 K̂_b 기본값 = 앱 기본 플랜트의 K_b(R 26 mm → 0.8993, 4자리 반올림). 2026-11-05 이전에는 슬라이드 값 0.8709 였다.
+export const KB_NOMINAL_DEFAULT = Math.round(DEFAULT_KB * 1e4) / 1e4;
 
 const OBS_POLE = 10; // rad/s
 
@@ -30,8 +34,8 @@ export default class Smc {
       { key: 'switch', label: '스위칭 함수', unit: '–', type: 'enum', default: 'sat',
         options: [{ value: 'sat', label: 'sat (경계층)' }, { value: 'sign', label: 'sign (시뮬레이션 전용)' }],
         device_allowed: ['sat'], help: 'sign 은 서보를 고주파로 떨게 해 기어를 손상시킨다 — 실기 금지' },
-      { key: 'kb_nominal', label: 'K̂_b (공칭)', unit: 'm/s²/rad', type: 'number', min: 0.3, max: 2, step: 0.01, default: 0.8709,
-        help: '제어기가 믿는 플랜트 이득. 실제와 다르게 두고 강인성을 시험해 볼 수 있다' },
+      { key: 'kb_nominal', label: 'K̂_b (공칭)', unit: 'm/s²/rad', type: 'number', min: 0.3, max: 2, step: 0.01, default: KB_NOMINAL_DEFAULT,
+        help: '제어기가 믿는 플랜트 이득(기본 = 공칭 모델 K_b 0.8993, R 26 mm; 슬라이드 값은 0.8709). 실제와 다르게 두고 강인성을 시험해 볼 수 있다' },
       { key: 'observer', label: 'ė 추정', unit: '–', type: 'enum', default: 'luenberger',
         options: [{ value: 'diff', label: '필터 차분' }, { value: 'luenberger', label: 'Luenberger' }],
         help: '속도는 측정되지 않는다' },

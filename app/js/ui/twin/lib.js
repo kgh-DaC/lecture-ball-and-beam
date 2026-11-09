@@ -20,10 +20,12 @@ export const CONTROLLER_PRESETS = Object.freeze([
   { key: 'pd-servo', label: 'PD 서보 재설계', id: 'pid', params: { kp: 0.5, ki: 0, kd: 1.25, n_filt: 8, d_on: 'measurement' } },
   { key: 'pd-s47', label: 'PD 슬라이드47', id: 'pid', params: { kp: 0.574, ki: 0, kd: 0.994, n_filt: 10, d_on: 'error' } },
   { key: 'pd-s48', label: 'PD 슬라이드48', id: 'pid', params: { kp: 2.3884, ki: 0, kd: 2.0684, n_filt: 10, d_on: 'error' } },
-  { key: 'pid-tl', label: 'PID TL', id: 'pid', params: { kp: 1.46, ki: 0.1637, kd: 2.439, n_filt: 8, d_on: 'measurement' } },
+  // PID TL·SMC sat: 값 복사(출처 tests/twin/controllers.mjs — 앱은 tests 를 import 하지 않는다). R=26 mm 실측 → 설계 K_b 0.8709 → 0.89931 갱신(2026-11-05):
+  //   PID TL v1 (1.46, 0.1637, 2.439) → (1.435, 0.1627, 2.413), SMC kb_nominal v1 0.8709 → 0.8993. 번들 샘플·data/twin/results/design-vs-twin-v3.json 과 같다.
+  { key: 'pid-tl', label: 'PID TL', id: 'pid', params: { kp: 1.435, ki: 0.1627, kd: 2.413, n_filt: 8, d_on: 'measurement' } },
   { key: 'lqr', label: 'LQR', id: 'lqr', params: { q_e: 400, q_edot: 25, q_theta: 33, r: 3.65, integral: false, q_i: 50, observer: 'luenberger', obs_speed: 3, theta_meas: true } },
   { key: 'lqi', label: 'LQI', id: 'lqr', params: { q_e: 400, q_edot: 25, q_theta: 33, r: 3.65, integral: true, q_i: 50, observer: 'luenberger', obs_speed: 3, theta_meas: true } },
-  { key: 'smc-sat', label: 'SMC sat', id: 'smc', params: { lambda: 1, eta: 0.1, phi: 0.05, switch: 'sat', kb_nominal: 0.8709, observer: 'luenberger' } },
+  { key: 'smc-sat', label: 'SMC sat', id: 'smc', params: { lambda: 1, eta: 0.1, phi: 0.05, switch: 'sat', kb_nominal: 0.8993, observer: 'luenberger' } },
 ]);
 
 /** 실기 전용 파라미터(트윈 비교에서는 빼서 설계 그대로 비교) */

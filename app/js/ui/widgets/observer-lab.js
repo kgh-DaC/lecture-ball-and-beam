@@ -35,7 +35,7 @@ export function mount(el, props, ctx) {
   const read = h('div', { class: 'readout' });
   const msg = h('div');
   el.append(ctl, read, msg);
-  const pY = new Plot(el, { height: 170, xLabel: '시간 (s)', yLabel: '위치 (mm)' });
+  const pY = new Plot(el, { height: 170, xLabel: '시간 (s)', yLabel: '측정 거리(표면) (mm)' });
   const pV = new Plot(el, { height: 170, xLabel: '시간 (s)', yLabel: '속도 ẏ (mm/s)' });
   const pT = new Plot(el, { height: 140, xLabel: '시간 (s)', yLabel: '서보각 θ (°)' });
 

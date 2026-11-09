@@ -29,7 +29,7 @@ export function mount(el, props, ctx) {
   const acts = h('div', { class: 'row' });
   const msg = h('div');
   el.append(src, msg, tbl, acts);
-  const plot = new Plot(el, { height: props.height_px || 220, xLabel: '시간 (s)', yLabel: '위치 (mm)' });
+  const plot = new Plot(el, { height: props.height_px || 220, xLabel: '시간 (s)', yLabel: '측정 거리(표면) (mm)' });
   const bindCh = props.bind && ctx.bus ? ctx.bus.channel(props.bind) : null;
   const relayCh = ctx.bus ? ctx.bus.channel(RELAY_CHANNEL) : null;
   let fallback = null;

@@ -37,7 +37,7 @@ export function mount(el, props, ctx) {
   const cP = h('div'), cY = h('div');
   grid.append(cP, cY);
   const pP = new Plot(cP, { height: 240, xLabel: 'Re(s)', yLabel: 'Im(s)', xy: true, equalAspect: true });
-  const pY = new Plot(cY, { height: 150, xLabel: '시간 (s)', yLabel: '위치 (mm)' });
+  const pY = new Plot(cY, { height: 150, xLabel: '시간 (s)', yLabel: '측정 거리(표면) (mm)' });
   const pU = new Plot(cY, { height: 110, xLabel: '시간 (s)', yLabel: '명령각 (°)' });
   const lim = (k, a, b) => { const l = pp.limits[k]; return l ? [Math.max(a, l[0]), Math.min(b, l[1])] : [a, b]; };
   const mk = (key, label, unit, a, b) => {

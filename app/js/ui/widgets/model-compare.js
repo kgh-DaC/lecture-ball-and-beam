@@ -49,7 +49,7 @@ export function mount(el, props, ctx) {
   const pRL = views.includes('rlocus') ? mk(cRL, { height: 260, xLabel: 'Re(s)', yLabel: 'Im(s)', xy: true, equalAspect: true, title: '근궤적 (K = Kp)' }) : null;
   const pMag = views.includes('bode') ? mk(cB, { height: 130, xLabel: 'ω (rad/s)', yLabel: '|L| (dB)', logX: true, title: '보드 선도(센서 필터·지연 포함)' }) : null;
   const pPh = views.includes('bode') ? mk(cB, { height: 130, xLabel: 'ω (rad/s)', yLabel: '∠L (°)', logX: true }) : null;
-  const pStep = views.includes('step') ? mk(el, { height: props.height_px || 230, xLabel: '스텝 후 시간 (s)', yLabel: '위치 (mm)', title: STEP_TITLE() }) : null;
+  const pStep = views.includes('step') ? mk(el, { height: props.height_px || 230, xLabel: '스텝 후 시간 (s)', yLabel: '측정 거리(표면) (mm)', title: STEP_TITLE() }) : null;
   const measNote = h('div');
   el.appendChild(measNote);
 

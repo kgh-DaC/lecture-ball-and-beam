@@ -1,0 +1,46 @@
+{
+  "schema_ver": 1,
+  "id": "a1-arduino-basics",
+  "title": "아두이노 기초와 사용법",
+  "part": "A",
+  "order": 1.5,
+  "status": "ready",
+  "requires": [
+    "01-intro"
+  ],
+  "est_minutes": 90,
+  "objectives": [
+    "마이크로컨트롤러(아두이노)가 볼앤빔에서 맡는 세 가지 일(센서 읽기, 서보 명령, PC와 통신)을 설명한다",
+    "디지털 입출력, 타이머·PWM, 아날로그 입력(ADC), 시리얼 통신, 인터럽트를 볼앤빔 부품과 짝짓는다",
+    "스케치 구조(전처리, setup, loop)를 이해하고 컴파일·업로드·시리얼 모니터를 쓴다",
+    "자주 쓰는 함수(pinMode, digitalWrite, analogRead, pulseIn, millis, Serial, Servo)로 작은 실험 여섯 개를 직접 해 본다"
+  ],
+  "keywords": [
+    "아두이노",
+    "마이크로컨트롤러",
+    "ATmega328P",
+    "스케치",
+    "setup·loop",
+    "ADC",
+    "PWM",
+    "시리얼 통신",
+    "pulseIn",
+    "millis"
+  ],
+  "slides": [54, 55, 61, 64, 78, 98, 100, 101, 102, 103, 104, 105, 106, 109, 110, 119, 122, 127, 128, 130, 133, 135, 136, 137, 138, 141],
+  "widgets": ["pwm-demo"],
+  "predictions": [
+    { "id": "p1", "type": "choice", "q": "아무 일도 안 하는 loop()는 1초에 몇 번쯤 돌 수 있을까?", "choices": ["약 10번", "약 1000번", "약 10만 번 이상"] },
+    { "id": "p2", "type": "numeric", "q": "A0에 2.5 V를 걸면 analogRead(A0)는 대략 얼마?", "unit": "" },
+    { "id": "p3", "type": "numeric", "q": "에코가 1.2 ms 동안 HIGH였다. 거리(음속 340 m/s)는?", "unit": "mm" }
+  ],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "5 V 기준 10비트 ADC에서 A0에 2.5 V를 걸면 analogRead 값은 대략?", "answer": 512, "tol_abs": 1, "unit": "", "explain": "raw ≈ 2.5/5 × 1024 = 512 (구현에 따라 511~512). 한 단계 = 5/1024 V ≈ 4.9 mV.", "answer_source": "analytic: ATmega328P ADC = V_in·1024/V_ref" },
+    { "id": "q2", "type": "numeric", "q": "HC-SR04의 에코가 1.2 ms 동안 HIGH였다. 음속 340 m/s로 거리(mm)는?", "answer": 204, "tol_rel": 0.01, "unit": "mm", "explain": "거리 = 0.0012 s × 340 m/s ÷ 2 = 0.204 m = 204 mm. 왕복이라 2로 나눈다 [슬라이드 54].", "answer_source": "analytic: 거리 = t × 340 / 2" },
+    { "id": "q3", "type": "short", "q": "setup()과 loop()의 차이는? 핀 방향 설정이나 Serial.begin을 loop()에 넣으면 어떻게 되나?", "model_answer": "setup()은 전원을 켜거나 리셋할 때 한 번, loop()는 끝없이 반복된다. 핀 설정을 loop()에 넣어도 동작은 하지만 매번 반복해 시간을 낭비하고, Serial.begin을 반복하면 통신이 끊길 수 있다. 한 번이면 되는 설정은 setup()에 둔다.", "rubric": ["setup은 한 번, loop는 반복", "설정은 setup에 두는 이유(낭비·통신 재시작)"] },
+    { "id": "q4", "type": "short", "q": "스케치는 Serial.begin(115200)인데 시리얼 모니터가 9600이면 어떤 증상이 보이며 왜 그런가?", "model_answer": "글자가 깨진 기호로 보이거나 아무것도 보이지 않는다. 두 쪽이 비트를 자르는 시간 간격이 달라 같은 신호를 다른 비트로 읽기 때문이다.", "rubric": ["깨진 글자 또는 무출력", "비트 시간 간격(보드레이트) 불일치 설명"] },
+    { "id": "q5", "type": "short", "q": "서보를 보드 5V 핀(USB 전원)에서 바로 구동하면 어떤 일이 생길 수 있나?", "model_answer": "서보가 순간적으로 큰 전류를 끌어 보드 5 V가 처지고, 보드가 리셋되거나 센서·A0 값이 흔들린다. 심하면 USB 포트나 보드가 상한다. 그래서 서보는 별도 5.0 V 전원으로 구동하고 GND만 공통으로 잇는다(02장 6.3절).", "rubric": ["전압 처짐·리셋 언급", "별도 전원 + 공통 GND 해결책"] },
+    { "id": "q6", "type": "short", "q": "loop() 안에서 delay(40)과 시간 제한 없는 pulseIn을 쓰는 코드(슬라이드 64)의 문제는?", "model_answer": "기다리는 동안 다른 일을 못 한다. 공이 범위 밖이면 pulseIn이 최대 1초 기다려 서보 명령이 멈추고, 측정 간격도 들쭉날쭉해진다. millis()로 주기를 지키고 pulseIn에 시간 제한을 둔다.", "rubric": ["블로킹(다른 일 못 함) 언급", "pulseIn 시간 초과 또는 주기 불규칙", "millis·timeout 해결책"] }
+  ],
+  "instructor_notes": "worksheets/a1-arduino-basics.md"
+}

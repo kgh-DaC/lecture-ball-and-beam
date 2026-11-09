@@ -8,7 +8,7 @@
 //                      aux.theta_rad = 포텐쇼미터 프리셋 변환, u = ctrl.update(...), 비유한 → 직전 u, 예외 → 비상 정지,
 //                      u_cdeg = round(u·18000/π) 를 ±lim 으로 자른 뒤 latency 뒤에 장치에 적용
 // 제어기는 TwinPlant 를 모른다. 받는 것은 D 레코드에서 만든 (ref, y, dt, aux) 뿐이다.
-import { TwinPlant, applyVariation, VARIATION_KEYS, OFFSET_KEYS } from './twin.js';
+import { TwinPlant, applyVariation, VARIATION_KEYS, OFFSET_KEYS, centerMm } from './twin.js';
 import { FirmwareFilter, potToCdeg, PRESET_POT_CAL, DESPIKE_MODES } from './sensor.js';
 import { getController } from '../../control/registry.js';
 import { makeModel, ASSUMED_SERVO, DEFAULT_SENSOR } from '../../control/plant.js';
@@ -303,10 +303,10 @@ export function runScenario(args) {
   const R = {
     t_s: [], t_ms: [], ref_mm: [], dist_mm: [], filt_mm: [], y_meas_m: [], lost: [], outlier: [], fault: [], despiked: [],
     u_rad: [], u_cdeg: [], cmd_cdeg: [], pot_raw: [], mode: [], debug: [],
-    truth: { y_m: [], ydot_m_s: [], theta_servo_rad: [], theta_link_rad: [], alpha_rad: [], stuck: [], at_stop: [] },
+    truth: { y_m: [], center_mm: [], ydot_m_s: [], theta_servo_rad: [], theta_link_rad: [], alpha_rad: [], stuck: [], at_stop: [] },
     dense: null,
   };
-  const dense = args.truth_dt_s > 0 ? { t_s: [], y_m: [], theta_servo_rad: [], theta_link_rad: [], alpha_rad: [] } : null;
+  const dense = args.truth_dt_s > 0 ? { t_s: [], y_m: [], center_mm: [], theta_servo_rad: [], theta_link_rad: [], alpha_rad: [] } : null;
   let status = 'ok', error = null;
   let lastU = 0, prevTms = null, t0ms = null;
   loop.host();
@@ -317,7 +317,7 @@ export function runScenario(args) {
   // 상관없이 물리 적분·제어 루프 순서·난수 소비가 같고, 결과(record·metrics)가 비트 단위로 같다.
   let tDense = 0, nDense = 0;
   const pushDenseSample = (t, s) => {
-    dense.t_s.push(+t.toFixed(6)); dense.y_m.push(s.y_m); dense.theta_servo_rad.push(s.theta_servo_rad);
+    dense.t_s.push(+t.toFixed(6)); dense.y_m.push(s.y_m); dense.center_mm.push(centerMm(params, s.y_m)); dense.theta_servo_rad.push(s.theta_servo_rad);
     dense.theta_link_rad.push(s.theta_link_rad); dense.alpha_rad.push(s.alpha_rad);
     nDense++; tDense = nDense * args.truth_dt_s;
   };
@@ -363,7 +363,7 @@ export function runScenario(args) {
     R.y_meas_m.push(y_m); R.lost.push(D.lost ? 1 : 0); R.outlier.push(D.outlier ? 1 : 0); R.fault.push(D.fault); R.despiked.push(D.despiked ? 1 : 0);
     R.u_rad.push(u); R.u_cdeg.push(u_cdeg); R.cmd_cdeg.push(D.cmd_cdeg); R.pot_raw.push(D.pot_raw); R.mode.push(D.mode);
     if (keepDebug) R.debug.push({ ...(ctrl.debug || {}) });
-    R.truth.y_m.push(tr.y_m); R.truth.ydot_m_s.push(tr.ydot_m_s); R.truth.theta_servo_rad.push(tr.theta_servo_rad);
+    R.truth.y_m.push(tr.y_m); R.truth.center_mm.push(tr.center_mm); R.truth.ydot_m_s.push(tr.ydot_m_s); R.truth.theta_servo_rad.push(tr.theta_servo_rad);
     R.truth.theta_link_rad.push(tr.theta_link_rad); R.truth.alpha_rad.push(tr.alpha_rad); R.truth.stuck.push(tr.stuck ? 1 : 0); R.truth.at_stop.push(tr.at_stop);
     if (status === 'controller_error') break;
     tm = plant.t + plant.sensor.nextInterval(loopCfg.fs_ms);
@@ -381,6 +381,7 @@ export function runScenario(args) {
     variation: { scales, offsets },
     params_effective: params,
     kb_twin: plant.kbEffective, kb_design: model.K_b,
+    ball_radius_mm: plant.ballRadiusMm,   // center_mm = y_mm + ball_radius_mm (y = 센서→공 가까운 표면 거리)
     despike: { mode: loop.cfg.despike, n_rejected: loop.filter.despike.nRejected },
     events: applied, safety_events: loop.events,
     record: R, metrics,

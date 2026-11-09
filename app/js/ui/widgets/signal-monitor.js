@@ -10,6 +10,7 @@ import { h, checkProps, clear, errorBox, infoBox, badge, fmt, toast } from '../d
 import { Plot, styleOf } from '../plot.js';
 import { head, kpi } from './_util.js';
 import { GUIDE, hwModeNote } from '../jog.js';
+import { coordToggle, getView, radiusOf, axisLabel, viewMm, centerMm } from '../coord.js';
 
 export const accepts = ['window_s', 'show_pot'];
 const LV = { ok: ['정상', 'b-ok', '●'], warn: ['주의', 'b-assumed', '▲'], bad: ['이상', 'b-bad', '■'], info: ['참고', 'b-unknown', '○'] };
@@ -108,10 +109,12 @@ export function mount(el, props, ctx) {
   const modeTag = h('span');
   el.appendChild(head('신호 수신 확인', modeTag));
   const ctl = h('div', { class: 'row' });
+  const ct = coordToggle(ctx, (v) => { view = v; drawn = -1; });
   const cards = h('div', { class: 'row' });
   const verdict = h('div', { class: 'verdicts' });
   el.append(ctl, cards, verdict);
-  const pD = new Plot(el, { height: props.height_px || 180, xLabel: '시간 (s)', yLabel: '거리 (mm)', minYSpan: 10 });
+  let view = getView();
+  const pD = new Plot(el, { height: props.height_px || 180, xLabel: '시간 (s)', yLabel: axisLabel(view, radiusOf(ctx)), minYSpan: 10 });
   const pP = props.show_pot !== false ? new Plot(el, { height: 130, xLabel: '시간 (s)', yLabel: 'A0 pot_raw (LSB)', yRange: [0, 1023] }) : null;
   let buf = [], hbErr = 0, raf = null, alive = true, offS = null, offE = null, lastDraw = 0, ver = 0, drawn = -1;
 
@@ -145,7 +148,7 @@ export function mount(el, props, ctx) {
   ctl.append(h('button', { class: 'btn primary', onclick: () => start() }, '연결하고 모니터 시작'), h('button', { class: 'btn', onclick: () => { buf = []; hbErr = 0; } }, '기록 지우기'),
     h('button', { class: 'btn', onclick: () => rec('basic') }, '④ 센서 연결 기본 확인 기록'),
     h('button', { class: 'btn', onclick: () => rec('full') }, '⑦ 한 위치 안정성 기록(공 정지)'),
-    h('span', { class: 'muted' }, ` 최근 ${win / 1000} s 기준. 거리 판정은 공을 한 자리에 정지시켜 두고 보세요.`));
+    h('span', { class: 'muted' }, ` 최근 ${win / 1000} s 기준. 거리 판정은 공을 한 자리에 정지시켜 두고 보세요.`), ct.el);
 
   const despikeOf = () => (dev && dev.config && dev.config.despike != null ? dev.config.despike : null);
   let lastForce = 0;
@@ -157,12 +160,17 @@ export function mount(el, props, ctx) {
     if (!n) return;
     const t0 = buf[0].t_ms;
     const x = buf.map((d) => (d.t_ms - t0) / 1000);
-    pD.setSeries([{ label: '원측정 dist', x, y: buf.map((d) => (d.dist_mm >= 0 ? d.dist_mm : NaN)), ...styleOf(6), width: 1 }, { label: '필터 filt', x, y: buf.map((d) => (d.filt_mm >= 0 ? d.filt_mm : NaN)), ...styleOf(0) }]);
+    const R = radiusOf(ctx);
+    const vv = (v) => (v >= 0 ? viewMm(v, view, R) : NaN);
+    const sfx = view === 'center' ? ` → 공 중심(+${R})` : '';
+    pD.setOpts({ yLabel: axisLabel(view, R) });
+    pD.setSeries([{ label: `원측정 dist${sfx}`, x, y: buf.map((d) => vv(d.dist_mm)), ...styleOf(6), width: 1 }, { label: `필터 filt${sfx}`, x, y: buf.map((d) => vv(d.filt_mm)), ...styleOf(0) }]);
     if (pP) pP.setSeries([{ label: 'pot_raw', x, y: buf.map((d) => d.pot_raw), ...styleOf(1) }]);
     const last = buf[n - 1];
     const fs = (dev.config && dev.config.fs) || 60;
     const rs = robustDistStats(buf.map((d) => d.dist_mm));
-    clear(cards).append(kpi('원측정 dist', last.dist_mm >= 0 ? last.dist_mm : '유실', last.dist_mm >= 0 ? 'mm' : ''), kpi('filt', last.filt_mm, 'mm'),
+    clear(cards).append(kpi('원측정 dist(표면)', last.dist_mm >= 0 ? last.dist_mm : '유실', last.dist_mm >= 0 ? 'mm' : ''), kpi('filt(표면)', last.filt_mm, 'mm'),
+      kpi(`공 중심(filt + ${R})`, last.filt_mm >= 0 ? fmt(centerMm(last.filt_mm, R), 1) : '–', last.filt_mm >= 0 ? 'mm' : ''),
       kpi('원측정 중앙값', rs.median, 'mm'), kpi('튄 값 비율', fmt(rs.outlier_ratio * 100, 1), '%'), kpi('despike', despikeOf() == null ? '없음(1.0.0)' : DESPIKE_NAME[despikeOf()] ?? despikeOf()), kpi('pot_raw', last.pot_raw, 'LSB'),
       kpi('cmd', last.cmd_cdeg / 100, '°'), kpi('mode', { 0: '0 IDLE', 1: '1 HOST', 2: '2 ID' }[last.mode] ?? last.mode), kpi('수신', n, `개/${win / 1000}s`));
     const js = judgeSignal(buf, { fs_ms: fs, now_ms: typeof performance !== 'undefined' ? performance.now() : null, hb_errors: hbErr, despike: despikeOf(), resets: dev.resetCount || 0 });
@@ -182,7 +190,7 @@ export function mount(el, props, ctx) {
   loop();
   const offSt = dev && dev.onStatus ? dev.onStatus(() => paintMode()) : null;
   return {
-    unmount() { alive = false; if (raf) cancelAnimationFrame(raf); offS && offS(); offE && offE(); offSt && offSt(); pD.destroy(); pP && pP.destroy(); },
+    unmount() { alive = false; if (raf) cancelAnimationFrame(raf); offS && offS(); offE && offE(); offSt && offSt(); ct.off(); pD.destroy(); pP && pP.destroy(); },
     /** 시험용: 지금 버퍼로 판정 */
     judge: () => judgeSignal(buf, { fs_ms: (dev.config && dev.config.fs) || 60, hb_errors: hbErr, despike: despikeOf(), resets: dev.resetCount || 0 }),
     start,

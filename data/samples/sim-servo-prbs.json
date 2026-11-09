@@ -47,8 +47,8 @@
     "source": "preset",
     "ref": null,
     "order": 1,
-    "a_cdeg_per_lsb": -36.42987249544626,
-    "b_cdeg": 11218.579234972676,
+    "a_cdeg_per_lsb": 33.45724907063197,
+    "b_cdeg": -11018.587360594795,
     "c": 0
   },
   "conditions": {
@@ -59,7 +59,7 @@
     "n_received": 504,
     "n_missing": 0
   },
-  "notes": "identification.simulateServo 로 만든 합성 데이터: 가정 서보 fo_slew(K=1, τ=0.06 s, Td=0.02 s, vmax=400°/s) — 실측 아님. 포텐쇼미터 = HS5645MG 프리셋 캘리브레이션 역변환 + 잡음 σ 0.3 LSB, 정수 양자화. 서보 PWM 프레임(20 ms) 양자화는 넣지 않음. 이 데이터의 적합 결과(시연): fo K=1.001 τ=0.0601 Td=0.0200 fit 94.8%; fo_slew K=1.001 τ=0.0601 Td=0.0200 vmax=3.94 fit 94.8%",
+  "notes": "identification.simulateServo 로 만든 합성 데이터: 가정 서보 fo_slew(K=1, τ=0.06 s, Td=0.02 s, vmax=400°/s) — 실측 아님. 포텐쇼미터 = HS5645MG 프리셋 캘리브레이션 역변환 + 잡음 σ 0.3 LSB, 정수 양자화. 서보 PWM 프레임(20 ms) 양자화는 넣지 않음. 이 데이터의 적합 결과(시연): fo K=0.975 τ=0.0578 Td=0.0204 fit 91.7%; fo_slew K=0.975 τ=0.0578 Td=0.0204 vmax=3.06 fit 91.7%",
   "csv_columns": [
     "idx",
     "t_s",

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 305" width="680" height="305" role="img" aria-labelledby="t d">
+<title id="t">굴림 방식별 가속도 비교</title>
+<desc id="d">같은 기울기에서 미끄러지는 물체의 가속도를 1로 두면 속이 찬 공은 5/7 ≈ 0.714, 속이 빈 공(우리 공)은 3/5 = 0.600이다. K_b는 각각 1.4988, 1.0706, 0.8993 m/s²/rad이고 서보 2°에서 정지한 공이 100 mm 가는 시간은 1.96, 2.31, 2.52 s이다.</desc>
+<style>text{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:14px;fill:#2f3640}
+.s{font-size:12px}.xs{font-size:11px}.l{font-size:16px}.b{font-weight:700}.it{font-style:italic}
+.ln{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.thin{stroke-width:1.2}.thick{stroke-width:3}
+.dash{stroke-dasharray:7 5}.dot{stroke-dasharray:2 4}
+.box{fill:#7f8c99;fill-opacity:.10;stroke:#2f3640;stroke-width:1.6}
+.boxd{fill:none;stroke:#2f3640;stroke-width:1.6;stroke-dasharray:6 4}
+.grid{stroke:#8a949f;stroke-opacity:.35;stroke-width:1;fill:none}
+.zone{fill:#1f8a55;fill-opacity:.15}.zone2{fill:#d0611a;fill-opacity:.13}.zone3{fill:#2276c9;fill-opacity:.13}
+.solid{fill:#7f8c99;fill-opacity:.35}
+.c-k{stroke:#2f3640}.f-k{fill:#2f3640}.c-m{stroke:#66707c}.f-m{fill:#66707c}.c-blue{stroke:#2276c9}.f-blue{fill:#2276c9}.c-org{stroke:#d0611a}.f-org{fill:#d0611a}.c-grn{stroke:#1f8a55}.f-grn{fill:#1f8a55}.c-red{stroke:#c8323f}.f-red{fill:#c8323f}.c-pur{stroke:#8050c0}.f-pur{fill:#8050c0}
+text.f-k{fill:#2f3640}text.f-m{fill:#66707c}</style>
+<rect x="0.5" y="0.5" width="679" height="304" rx="10" fill="#fbfcfd" stroke="#c9d0d8"/>
+<text x="20" y="30" class="b" text-anchor="start">같은 기울기에서 빔 방향 가속도  a = g sin α × 1/(1 + κ)</text><text x="278" y="82" class="s b" text-anchor="end">미끄러지는 물체(마찰 없음)</text><rect x="290" y="64" width="300" height="28" rx="4" class="solid"/><text x="598" y="84" class="b" text-anchor="start">× 1.000</text><text x="278" y="102" class="xs f-m" text-anchor="end">K<tspan dy="0.35em" font-size="72%">b</tspan><tspan dy="-0.35em"> = 1.4988,  서보 2°에서 100 mm: 1.96 s</tspan></text><text x="278" y="146" class="s b" text-anchor="end">속이 찬 공 (κ = 2/5)</text><rect x="290" y="128" width="214.3" height="28" rx="4" class="solid"/><text x="512.3" y="148" class="b" text-anchor="start">× 0.714</text><text x="278" y="166" class="xs f-m" text-anchor="end">K<tspan dy="0.35em" font-size="72%">b</tspan><tspan dy="-0.35em"> = 1.0706,  서보 2°에서 100 mm: 2.31 s</tspan></text><text x="278" y="210" class="s b" text-anchor="end">속이 빈 공 (κ = 2/3), 우리 공</text><rect x="290" y="192" width="180" height="28" rx="4" class="f-blue"/><text x="478" y="212" class="b" text-anchor="start">× 0.600</text><text x="278" y="230" class="xs f-m" text-anchor="end">K<tspan dy="0.35em" font-size="72%">b</tspan><tspan dy="-0.35em"> = 0.8993,  서보 2°에서 100 mm: 2.52 s</tspan></text><line x1="290" y1="54" x2="290" y2="252" class="ln c-k thin"/><text x="20" y="270" class="s" text-anchor="start">회전에 에너지를 나눠 주는 만큼 느리다. 반지름 R과 질량 m은 약분되고 질량 분포(κ)만 남는다.</text><text x="20" y="290" class="xs f-m" text-anchor="start">[시뮬레이션: y = ½ K<tspan dy="0.35em" font-size="72%">b</tspan><tspan dy="-0.35em"> θ t</tspan><tspan dy="-0.45em" font-size="72%">2</tspan><tspan dy="0.45em">, θ = 0.0349 rad, d/L = 0.052/0.34, 마찰·서보 무시]</tspan></text>
+</svg>

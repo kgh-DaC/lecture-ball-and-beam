@@ -25,7 +25,7 @@ export function mount(el, props, ctx) {
   el.append(ctl, msg, read);
   const pJ = new Plot(el, { height: 170, xLabel: '반복', yLabel: `비용 J (${cost})` });
   const pK = new Plot(el, { height: 170, xLabel: '반복', yLabel: '게인 (SI)' });
-  const pY = new Plot(el, { height: props.height_px || 210, xLabel: '시간 (s)', yLabel: '위치 (mm)' });
+  const pY = new Plot(el, { height: props.height_px || 210, xLabel: '시간 (s)', yLabel: '측정 거리(표면) (mm)' });
   let result = null;
 
   const initRun = () => simRun(ctx, { controller: { id: 'pid', params: { ...init, n_filt: 10, d_on: 'measurement' } }, plant, profile });

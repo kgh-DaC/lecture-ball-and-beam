@@ -1,0 +1,62 @@
+{
+  "schema_ver": 1,
+  "id": "a2-pid-intro",
+  "title": "PID 제어기란 무엇인가",
+  "part": "A",
+  "order": 3.5,
+  "status": "ready",
+  "requires": [
+    "03-plant-model"
+  ],
+  "est_minutes": 90,
+  "objectives": [
+    "on/off 제어와 비교해 비례(P) 제어의 생각을 설명하고, 볼앤빔(이중 적분기)에서 P만으로는 진동이 멈추지 않는 이유를 시뮬레이션으로 확인한다",
+    "미분(D) 항이 브레이크 역할로 진동을 줄이는 것과, 적분(I) 항이 수평 오차·마찰로 남는 정상상태 오차를 없애는 대신 오버슈트·와인드업을 부르는 것을 설명한다",
+    "u = Kp·e + Ki·∫e + Kd·de/dt를 이산 코드(dt, 적분 누적, 미분 필터, 출력 제한)로 읽고, 슬라이드의 아두이노 PID 코드를 해석한다",
+    "손으로 튜닝하는 순서(PD 먼저, 필요하면 Ki 조금)를 따라 해 보고 04장의 계산 설계와 연결한다"
+  ],
+  "keywords": [
+    "PID",
+    "on/off 제어",
+    "비례",
+    "적분",
+    "미분",
+    "정상상태 오차",
+    "적분 와인드업",
+    "anti-windup",
+    "설정값 킥",
+    "손 튜닝"
+  ],
+  "slides": [32, 47, 48, 62, 63, 64, 89, 90, 91, 92, 93, 94, 95],
+  "widgets": ["ball-beam-sim", "root-locus", "step-response", "overlay-plot", "controller-panel", "live-plot"],
+  "predictions": [
+    { "id": "p1", "type": "choice", "q": "P 제어만 쓸 때 Kp를 크게 하면 공의 진동은?", "choices": ["줄어든다", "빨라질 뿐 줄지 않는다", "사라진다", "느려진다"] },
+    { "id": "p2", "type": "numeric", "q": "PD(1, 1.5)의 오버슈트는 약 4%. Kd를 3.0으로 두 배 하면 오버슈트는 몇 %?", "unit": "%" },
+    { "id": "p3", "type": "choice", "q": "PD(1, 1.5)에 Ki = 0.2를 더하면 오버슈트는?", "choices": ["줄어든다", "거의 같다", "크게 늘어난다", "0이 된다"] }
+  ],
+  "practice": {
+    "modes": ["device", "virtual", "sample"],
+    "controller": "pid",
+    "controllers_allowed": ["pid"],
+    "safe_defaults": { "kp": 1.0, "ki": 0, "kd": 1.5, "n_filt": 8, "d_on": "measurement" },
+    "param_limits": { "kp": [0, 4], "ki": [0, 0.5], "kd": [0, 4] },
+    "setpoint_profile": { "type": "step", "from_mm": 150, "to_mm": 200, "pre_s": 2, "hold_s": 8 },
+    "angle_limit_deg": 20,
+    "fs_ms": 60,
+    "alpha": 0.2,
+    "y_source": "filt",
+    "model": "ball",
+    "repeat": 1,
+    "done_when": "session_saved"
+  },
+  "sample_sessions": [ { "slot": "pid-best" }, "sim-pid-p1" ],
+  "quiz": [
+    { "id": "q1", "type": "numeric", "q": "K_b = 0.8993일 때 P 제어(Kp = 1)만 쓰면 이상적인 모델에서 공의 진동 주기(s)는?", "answer": 6.63, "tol_rel": 0.01, "unit": "s", "explain": "ω = √(K_b·Kp) = √0.8993 ≈ 0.948 rad/s, 주기 = 2π/0.948 ≈ 6.63 s.", "answer_source": "analytic: s² + K_b·Kp = 0 — control.simulate(이상 센서, 1 ms) 봉우리 간격 6.63 s 대조" },
+    { "id": "q2", "type": "choice", "q": "위에서 Kp를 4로 키우면 진동은?", "choices": ["줄어든다", "주기만 짧아지고 줄지 않는다", "사라진다", "주기가 길어진다"], "answer": 1, "explain": "극점 ±j√(K_b·Kp)는 허수축 위를 오르내릴 뿐이다(주기 3.3 s). 지연이 있으면 오히려 진동이 커진다." },
+    { "id": "q3", "type": "numeric", "q": "빔 수평 오차 0.05°, L/d = 0.34/0.052일 때 PD(Kp = 1 rad/m)로 남는 정상상태 오차(mm)는?", "answer": 5.7, "tol_rel": 0.02, "unit": "mm", "explain": "θ0 = 0.05°·(0.34/0.052) ≈ 0.327° = 0.00571 rad, e_ss = θ0/Kp ≈ 5.7 mm.", "answer_source": "analytic: K_b θ0 + (3/5) g α0 = 0, K_b = (3/5) g d/L → θ0 = α0 L/d" },
+    { "id": "q4", "type": "short", "q": "'I 항은 진동을 잡아 준다'는 말은 맞나? D 항과 비교해 설명하라.", "model_answer": "틀리다. I는 과거 오차를 쌓아 남은 오차를 없애지만, 쌓인 값 때문에 목표를 더 지나쳐 오버슈트를 키운다. 진동을 줄이는 것은 오차의 변화 속도(공의 속도)에 반응하는 D 항이다.", "rubric": ["I는 정상상태 오차 제거", "I는 오버슈트를 키움", "감쇠는 D 항"] },
+    { "id": "q5", "type": "short", "q": "출력 한계 ±30°가 있는 PID에서 공이 오래 목표에서 먼 곳에 있었다. 무엇이 문제가 되며 앱은 어떻게 막나?", "model_answer": "적분 와인드업. 서보가 한계에 붙어 있는 동안 적분값이 계속 쌓여 목표에 다가와도 그 값을 갚을 때까지 서보가 최대에 머물러 크게 지나친다. 앱 PID는 출력이 한계에 걸린 동안 같은 방향 적분을 멈추고(조건부 적분), 적분값을 출력 한계 안으로 묶는다.", "rubric": ["와인드업 현상 설명", "anti-windup(조건부 적분 또는 적분 제한)"] },
+    { "id": "q6", "type": "short", "q": "미분을 오차가 아니라 측정값에 거는 이유는?", "model_answer": "목표가 계단처럼 바뀌는 순간 오차 미분이 매우 커져 서보가 튄다(설정값 킥). 측정값 미분은 목표가 일정할 때 오차 미분과 같으면서 킥이 없다. 오차 미분이 만드는 폐루프 영점이 오버슈트를 키우는 것도 피한다.", "rubric": ["설정값 킥", "목표 일정 시 같음 또는 영점·오버슈트 언급"] }
+  ],
+  "instructor_notes": "worksheets/a2-pid-intro.md"
+}

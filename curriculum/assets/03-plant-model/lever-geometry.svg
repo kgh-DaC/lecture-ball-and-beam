@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 322" width="680" height="322" role="img" aria-labelledby="t d">
+<title id="t">서보 각과 빔 각의 레버 관계</title>
+<desc id="d">빔은 센서 쪽 왼쪽 끝의 힌지에서 길이 L 떨어진 점에서 링크로 서보 혼(길이 d)과 이어져 있다. 서보가 θ만큼 돌면 혼 끝이 h = d sin θ만큼 올라가고, 링크가 수직을 유지한다고 보면 빔 끝도 h = L sin α만큼 올라간다. 따라서 sin α = (d/L) sin θ, 작은 각도에서 α ≈ (d/L)θ.</desc>
+<style>text{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:14px;fill:#2f3640}
+.s{font-size:12px}.xs{font-size:11px}.l{font-size:16px}.b{font-weight:700}.it{font-style:italic}
+.ln{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.thin{stroke-width:1.2}.thick{stroke-width:3}
+.dash{stroke-dasharray:7 5}.dot{stroke-dasharray:2 4}
+.box{fill:#7f8c99;fill-opacity:.10;stroke:#2f3640;stroke-width:1.6}
+.boxd{fill:none;stroke:#2f3640;stroke-width:1.6;stroke-dasharray:6 4}
+.grid{stroke:#8a949f;stroke-opacity:.35;stroke-width:1;fill:none}
+.zone{fill:#1f8a55;fill-opacity:.15}.zone2{fill:#d0611a;fill-opacity:.13}.zone3{fill:#2276c9;fill-opacity:.13}
+.solid{fill:#7f8c99;fill-opacity:.35}
+.c-k{stroke:#2f3640}.f-k{fill:#2f3640}.c-m{stroke:#66707c}.f-m{fill:#66707c}.c-blue{stroke:#2276c9}.f-blue{fill:#2276c9}.c-org{stroke:#d0611a}.f-org{fill:#d0611a}.c-grn{stroke:#1f8a55}.f-grn{fill:#1f8a55}.c-red{stroke:#c8323f}.f-red{fill:#c8323f}.c-pur{stroke:#8050c0}.f-pur{fill:#8050c0}
+text.f-k{fill:#2f3640}text.f-m{fill:#66707c}</style>
+<rect x="0.5" y="0.5" width="679" height="321" rx="10" fill="#fbfcfd" stroke="#c9d0d8"/>
+<line x1="70" y1="150" x2="550" y2="150" class="ln c-m thin dash"/><path d="M70 150L507.4 102.3" class="ln c-k thick"/><circle cx="70" cy="150" r="6" class="box"/><text x="80" y="176" class="s" text-anchor="middle">힌지(센서 쪽 끝)</text><path d="M 190 150 A 120 120 0 0 0 189.3 137" class="ln c-red "/><text x="196" y="144" class="b it" text-anchor="start">α</text><circle cx="431.1" cy="220" r="7" class="box"/><text x="419.1" y="244" class="s" text-anchor="middle">서보 축</text><line x1="431.1" y1="220" x2="507.4" y2="172.3" class="ln c-org thick"/><text x="451.2" y="190.2" class="b it" text-anchor="start">d</text><line x1="431.1" y1="220" x2="551.1" y2="220" class="ln c-m thin dash"/><path d="M 481.1 220 A 50 50 0 0 0 473.5 193.5" class="ln c-red "/><text x="487.1" y="210" class="b it" text-anchor="start">θ</text><line x1="507.4" y1="172.3" x2="507.4" y2="102.3" class="ln c-grn thick"/><text x="499.4" y="141.3" class="s" text-anchor="end">링크(수직 유지 가정)</text><line x1="541.4" y1="144" x2="541.4" y2="108.3" class="ln c-blue thin"/><polygon points="541.4,102.3 544.9,110.6 537.9,110.6" class="f-blue"/><polygon points="541.4,150 537.9,141.7 544.9,141.7" class="f-blue"/><text x="547.4" y="130.2" class="b it" text-anchor="start">h</text><line x1="76" y1="200" x2="501.4" y2="200" class="ln c-m thin"/><polygon points="507.4,200 499.1,203.5 499.1,196.5" class="f-m"/><polygon points="70,200 78.3,196.5 78.3,203.5" class="f-m"/><text x="228.7" y="194" class="s" text-anchor="middle">L (힌지 → 링크 연결점)</text><text x="30" y="280" class="b" text-anchor="start">같은 높이 h를 두 쪽에서 보면:  h = L sin α = d sin θ   →   sin α = (d/L) sin θ</text><text x="30" y="304" class="s" text-anchor="start">작은 각도:  α ≈ (d/L) θ,   d/L = 0.052/0.34 ≈ 0.153 (서보 6.5°가 빔 1°)</text>
+</svg>

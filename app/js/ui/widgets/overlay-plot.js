@@ -14,7 +14,7 @@ export function mount(el, props, ctx) {
   const align = props.align || 'step';
   el.appendChild(head('겹쳐 보기', h('span', { class: 'muted' }, align === 'step' ? '스텝 시작을 t = 0으로 맞춤' : '기록 시작을 t = 0으로 맞춤')));
   const units = [...new Set(signals.map(unitOf))];
-  const plots = units.map((u) => new Plot(el, { height: props.height_px || 230, xLabel: align === 'step' ? '스텝 후 시간 (s)' : '시간 (s)', yLabel: u === 'cdeg' ? '각도 (°)' : u === 'mm' ? '위치 (mm)' : u }));
+  const plots = units.map((u) => new Plot(el, { height: props.height_px || 230, xLabel: align === 'step' ? '스텝 후 시간 (s)' : '시간 (s)', yLabel: u === 'cdeg' ? '각도 (°)' : u === 'mm' ? '측정 거리(표면) (mm)' : u }));
   const legend = h('div');
   const msgs = h('div');
   const tbl = h('div', { class: 'tbl-wrap' });

@@ -1,7 +1,8 @@
 // sensor.js — 디지털 트윈의 초음파 센서(HC-SR04) + 펌웨어 필터 + 포텐쇼미터 (순수 모듈)
 //
 // 한 번의 측정(펌웨어 주기 fs ≥ 60 ms, 지터 jitter_ms):
-//   참값 y(t − T_sensor) [mm] × scale(음속 오차)
+//   참값 y(t − T_sensor) [mm] × scale(음속 오차)   — y = 센서 면→공의 가까운 표면 거리(HC-SR04 첫 반사).
+//                                                     공 중심이 아니다(중심 = y + R, twin.js centerMm)
 //   → 고장 상태(stuck/dropout/bias/outlier_burst/outlier_rate)
 //   → 이상값: 확률 p_out 으로 y_out ± σ_out (과거 실기에서 ~304 mm로 튀던 값을 흉내)
 //   → 가우시안 잡음 σ → 정수 mm 양자화(quant_mm)

@@ -195,7 +195,7 @@ export async function mount(el, props, ctx) {
     h('div', { class: 'row' }, btnStart, btnStop, btnEstop, btnBatch, btnOn, status),
     h('div', { class: 'row twin-dist' }, h('span', { class: 'muted' }, '외란: '), dist.pushP, dist.pushN, dist.knock, h('span', { class: 'muted' }, ' 센서: '), faultSel, dist.fault, dist.clear),
     msg, rigWrap);
-  const pY = new Plot(el, { height: props.height_px || 220, xLabel: '시간 (s)', yLabel: '위치 (mm)', minYSpan: 20, title: '참 위치 vs 센서 측정' });
+  const pY = new Plot(el, { height: props.height_px || 220, xLabel: '시간 (s)', yLabel: '측정 거리(표면) (mm)', minYSpan: 20, title: '참 위치 vs 센서 측정' });
   const pA = new Plot(el, { height: 150, xLabel: '시간 (s)', yLabel: '각도 (°)', minYSpan: 2, title: '서보 명령·출력축·링크' });
   el.append(h('h4', null, '지표 (참 위치로 채점 [시뮬레이션])'), metricsBox, evBox);
 

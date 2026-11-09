@@ -34,7 +34,7 @@ export async function mount(el, props, ctx) {
   const tbl = h('div', { class: 'tbl-wrap' });
   const bars = h('div', { class: 'grid2' });
   el.append(ctl, msg, tbl, bars);
-  const pY = new Plot(el, { height: props.height_px || 230, xLabel: '시간 (s)', yLabel: '위치 y (mm)' });
+  const pY = new Plot(el, { height: props.height_px || 230, xLabel: '시간 (s)', yLabel: '측정 거리 y(표면) (mm)' });
   const pU = new Plot(el, { height: 150, xLabel: '시간 (s)', yLabel: '서보 명령 u (°)' });
   let charts = [], alive = true, runId = 0;
 

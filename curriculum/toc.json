@@ -2,7 +2,7 @@
   "schema_ver": 1,
   "title": "볼앤빔으로 배우는 제어공학",
   "parts": [
-    { "id": "A", "title": "기초", "chapters": ["01-intro", "02-hardware", "03-plant-model"] },
+    { "id": "A", "title": "기초", "chapters": ["01-intro", "a1-arduino-basics", "02-hardware", "03-plant-model", "a2-pid-intro"] },
     { "id": "B", "title": "고전 설계", "chapters": ["04-root-locus", "05-nyquist", "06-realtime-pid"] },
     { "id": "C", "title": "서보 포함 모델과 평가", "chapters": ["07-servo-id", "08-model-compare", "09-sample-data", "10-validation"] },
     { "id": "D", "title": "고급 제어", "chapters": ["11-autotuning", "12-adaptive-pid", "13-lqr", "14-sliding-mode", "15-final-compare"] },

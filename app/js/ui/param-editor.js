@@ -86,7 +86,7 @@ const DEFAULTS = {
 };
 
 /** 설정값 프로파일 편집기. 반환 요소에 .value() */
-export function profileEditor(profile, { onChange, standard } = {}) {
+export function profileEditor(profile, { onChange, standard, radius_mm = null } = {}) {
   let p = { ...(profile || DEFAULTS.step) };
   const box = h('div', { class: 'profile-editor' });
   const fields = h('span', { class: 'row' });
@@ -109,7 +109,9 @@ export function profileEditor(profile, { onChange, standard } = {}) {
   const sel = h('select', { onchange: (e) => { p = { ...DEFAULTS[e.target.value] }; renderFields(); emit(); } },
     Object.keys(DEFAULTS).map((t) => h('option', { value: t, selected: t === p.type }, { step: '스텝', square: '왕복(사각파)', staircase: '계단', const: '일정' }[t])));
   renderFields();
-  box.append(h('div', { class: 'row' }, h('label', null, '설정값 프로파일 ', sel), fields), desc);
+  const conv = h('div', { class: 'muted', 'data-role': 'profile-coord', style: { fontSize: '.8rem' } },
+    `위치 값(mm)은 모두 측정 거리(표면): 센서 앞면 → 공의 가까운 표면${Number.isFinite(radius_mm) ? `. 공 중심 = 측정 + ${radius_mm} mm` : ''}.`);
+  box.append(h('div', { class: 'row' }, h('label', null, '설정값 프로파일 ', sel), fields), desc, conv);
   box.value = () => ({ ...p });
   box.setValue = (np) => { p = { ...np }; sel.value = p.type; renderFields(); emit(); };
   emit();

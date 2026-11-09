@@ -19,7 +19,7 @@ export const HW_STEPS = Object.freeze([
   { id: 'ASM', group: 'ASM', no: '→', title: '기구부 조립(수평)', widget: null, how: '서보를 90°로 고정한 채(전원 유지) 혼을 빔이 수평이 되는 방향으로 끼우고 나사·링크를 조입니다.', why: '조립이 끝나야 빔 위에서 공 위치를 잴 수 있습니다.' },
   { id: 'B4-sensor', group: 'B', no: '④', title: '센서 연결 기본 확인', widget: 'signal-monitor:basic', how: '신호 확인(signal-monitor)에서 초음파 값이 들어오는지만 봅니다(수신 주기·거리 유실). "센서 연결 기본 확인 기록"을 누릅니다.', why: '다음 수평 찾기가 초음파로 공 굴림 속도를 재므로, 먼저 값이 들어오는지 확인합니다.' },
   { id: 'B5-level', group: 'B', no: '⑤', title: '수평 찾기(trim)', widget: 'level-trim', how: '수평계·스마트폰 수평계로 먼저 대략 맞추고, 공 굴림 속도로 미세 조정해 공이 흘러가지 않는 trim 을 저장합니다.', why: '수평이 맞아야 공이 한쪽으로 쏠리지 않아 ⑥⑦ 센서 시험이 공정합니다.' },
-  { id: 'B6-sonar', group: 'B', no: '⑥', title: '초음파 센서 테스트: 위치 응답', widget: 'sensor-position-test', how: '줄자로 잰 100/150/200/250 mm 에 공을 놓고 측정 거리가 직선으로 따라오는지 봅니다.', why: '수평에서 공이 제자리에 머물러야 위치마다 정지 측정이 됩니다.' },
+  { id: 'B6-sonar', group: 'B', no: '⑥', title: '실제 거리 vs 측정 거리 검증', widget: 'sensor-position-test', how: '줄자로 잰 실제 거리(100/150/200/250 mm, 공 표면 또는 중심까지 — 무엇까지 쟀는지 고름)에 공을 놓고 초음파 측정 거리와 비교합니다(오차·기울기·σ). 초음파는 공의 가까운 표면까지 재므로 공 중심 = 측정 + 반지름(26 mm).', why: '수평에서 공이 제자리에 머물러야 위치마다 정지 측정이 됩니다.' },
   { id: 'B7-signal', group: 'B', no: '⑦', title: '한 위치 안정성(정지 측정)', widget: 'signal-monitor', how: '공을 한 자리에 정지시켜 두고 신호 확인의 모든 판정(튄 값·필터 치우침·A0 안정성)을 기록합니다.', why: '위치 응답이 맞은 뒤에 한 점의 잡음·튐을 봐야 원인을 가를 수 있습니다.' },
   { id: 'B8-limit', group: 'B', no: '⑧', title: '각도 제한 찾기', widget: 'angle-limit-finder', how: '빔이 닿기 직전 각도를 기록해 lim 을 확정합니다.', why: '수평(trim)이 정해진 뒤라야 ± 양쪽 한계가 대칭으로 잡힙니다.' },
 ]);
@@ -76,6 +76,18 @@ function levelLine(lv) {
     h('span', { class: 'muted' }, ' · 수정은 '), h('a', { href: '#/settings' }, '보정 기록 표'));
 }
 
+const DV_VERD = { pass: ['합격', 'b-ok'], fail: ['불합격', 'b-bad'], warn: ['주의', 'b-assumed'] };
+/** ⑥ 거리 검증 카드에 붙는 마지막 거리 검증 기록 한 줄(판정·기준 방식·평균 오차·기울기). 기록 표는 #/settings */
+function distLine(dv) {
+  if (!dv) return h('div', { class: 'dist-verify-line muted', style: { fontSize: '.8rem' } }, '거리 검증 기록 없음 — 이 단계 위젯(sensor-position-test)에서 "거리 검증 기록에 저장"을 누르세요.');
+  const v = DV_VERD[dv.verdict] || ['–', 'b-unknown'];
+  const meas = dv.provenance === 'measured';
+  return h('div', { class: 'dist-verify-line', style: { fontSize: '.8rem' } },
+    h('b', null, '마지막 거리 검증 '), badge(v[0], v[1]), ' ', badge(meas ? '실측' : '시뮬레이션', meas ? 'b-real' : 'b-sim'), ' ',
+    `${String(dv.created_at || dv.date || '').slice(0, 16).replace('T', ' ')} · ${dv.ref_basis === 'center' ? '중심' : '표면'} 기준 ${(dv.points || []).length}곳 · 평균 오차 ${Number.isFinite(dv.bias_mm) ? `${dv.bias_mm >= 0 ? '+' : ''}${dv.bias_mm.toFixed(1)}` : '–'} mm · 기울기 ${dv.fit && Number.isFinite(dv.fit.slope) ? dv.fit.slope.toFixed(3) : '–'}`,
+    h('span', { class: 'muted' }, ' · 기록 표는 '), h('a', { href: '#/settings' }, '하드웨어 설정'));
+}
+
 export function mount(el, props, ctx) {
   checkProps(el, WIDGET_ID, props, accepts);
   const hw = ctx.settings.hw;
@@ -105,6 +117,7 @@ export function mount(el, props, ctx) {
         r.result ? h('div', { class: 'muted', style: { fontSize: '.8rem' } }, `마지막 판정 ${date(r.result.at)}${r.result.provenance === 'simulated' ? ' [시뮬레이션]' : ''} · ${r.result.summary}`)
           : props.show_links !== false && r.widget ? h('div', { class: 'muted', style: { fontSize: '.8rem' } }, `위젯 ${r.widget.split(':')[0]}`) : null,
         r.widget === 'level-trim' && hw.activeLevel ? levelLine(hw.activeLevel()) : null,
+        r.widget === 'sensor-position-test' && hw.lastDistVerify ? distLine(hw.lastDistVerify()) : null,
         r.done_at ? h('div', { class: 'muted', style: { fontSize: '.8rem' } }, `완료 ${date(r.done_at)}`) : null,
         r.warnPrev.length ? warnBox(`앞 단계(${r.warnPrev.join(' ')})가 아직 끝나지 않았습니다. 순서대로 하는 것이 안전합니다.`) : null));
     }

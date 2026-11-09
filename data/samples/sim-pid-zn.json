@@ -6,7 +6,7 @@
   "chapter_id": "11-autotuning",
   "source": "bundle_sim",
   "provenance": "simulated",
-  "title": "릴레이 → Ziegler–Nichols PID (1.927, 0.9507, 2.476)",
+  "title": "릴레이 → Ziegler–Nichols PID (1.895, 0.9451, 2.449)",
   "device": {
     "proto_ver": 1,
     "fw_ver": "virtual-1.0.0",
@@ -23,9 +23,9 @@
   "controller": {
     "id": "pid",
     "params": {
-      "kp": 1.927,
-      "ki": 0.9507,
-      "kd": 2.476,
+      "kp": 1.895,
+      "ki": 0.9451,
+      "kd": 2.449,
       "n_filt": 8,
       "d_on": "measurement"
     },
@@ -33,12 +33,12 @@
   },
   "plant_params": {
     "m_kg": 0.012482,
-    "R_m": 0.025,
+    "R_m": 0.026,
     "L_m": 0.34,
     "d_m": 0.052,
     "J_kgm2": 0.000005625,
     "g": 9.8,
-    "K_b": 0.8708833113358925
+    "K_b": 0.8993082715361691
   },
   "model_kind": "ball_servo",
   "servo_tf": {
@@ -57,8 +57,8 @@
     "source": "preset",
     "ref": null,
     "order": 1,
-    "a_cdeg_per_lsb": -36.42987249544626,
-    "b_cdeg": 11218.579234972676,
+    "a_cdeg_per_lsb": 33.45724907063197,
+    "b_cdeg": -11018.587360594795,
     "c": 0
   },
   "setpoint_profile": {
@@ -74,7 +74,7 @@
   },
   "run_group": null,
   "attempt": null,
-  "notes": "simulate.js 번들 시뮬레이션: 모델 ball_servo (가정 서보 fo_slew K=1, τ=0.06 s, Td=0.02 s, vmax=400°/s — 실측 아님), K_b=0.87088, Ts 60 ms, 센서 잡음 σ=1 mm, 양자화 1 mm, 유실 1 %, 재귀 필터 α=0.2, seed 1, RK4 substeps 10, 빔 끝 비탄성 정지. sim-relay 기록에서 relayAnalyze(eps 보정) Ku=3.212, Tu=4.054 s → applyRule('zn', kd_stab 1.5 더함).",
+  "notes": "simulate.js 번들 시뮬레이션: 모델 ball_servo (가정 서보 fo_slew K=1, τ=0.06 s, Td=0.02 s, vmax=400°/s — 실측 아님), K_b=0.89931, Ts 60 ms, 센서 잡음 σ=1 mm, 양자화 1 mm, 유실 1 %, 재귀 필터 α=0.2, seed 1, RK4 substeps 10, 빔 끝 비탄성 정지. sim-relay 기록에서 relayAnalyze(eps 보정) Ku=3.158, Tu=4.009 s → applyRule('zn', kd_stab 1.5 더함).",
   "stats": {
     "n": 167,
     "n_lost": 2,
@@ -102,8 +102,9 @@
   "complete": true,
   "end_hit": false,
   "metrics": {
-    "def_ver": 1,
+    "def_ver": 2,
     "ts_band": 0.05,
+    "min_dwell_s": null,
     "segments": [
       {
         "t0_s": 2.04,
@@ -113,20 +114,22 @@
         "y_initial_mm": 151,
         "computable": true,
         "reason": null,
-        "tr": 0.7633333333333332,
-        "tp": 2.0999999999999996,
-        "po": 59.968602825745684,
+        "tr": 0.75,
+        "tp": 2.04,
+        "po": 55.965463108320264,
         "ts": null,
         "ts_settled": false,
-        "ess": 0.3846153846153868,
-        "iae": 102.36000000000007,
-        "ise": 2542.9199999999946,
-        "itae": 248.32080000000002,
-        "u_rms": 2.945512069807805,
+        "ts_dwell_s": null,
+        "min_dwell_s": 1,
+        "ess": 0.576923076923066,
+        "iae": 101.64000000000001,
+        "ise": 2504.399999999996,
+        "itae": 247.0716000000002,
+        "u_rms": 2.896488410607223,
         "u_sat_ratio": 0,
-        "u_tv": 41.94,
+        "u_tv": 40.75,
         "lost_ratio": 0.015037593984962405,
-        "y_final_mm": 199.6153846153846
+        "y_final_mm": 200.57692307692307
       }
     ],
     "summary": {
@@ -137,20 +140,22 @@
       "y_initial_mm": 151,
       "computable": true,
       "reason": null,
-      "tr": 0.7633333333333332,
-      "tp": 2.0999999999999996,
-      "po": 59.968602825745684,
+      "tr": 0.75,
+      "tp": 2.04,
+      "po": 55.965463108320264,
       "ts": null,
       "ts_settled": false,
-      "ess": 0.3846153846153868,
-      "iae": 102.36000000000007,
-      "ise": 2542.9199999999946,
-      "itae": 248.32080000000002,
-      "u_rms": 2.945512069807805,
+      "ts_dwell_s": null,
+      "min_dwell_s": 1,
+      "ess": 0.576923076923066,
+      "iae": 101.64000000000001,
+      "ise": 2504.399999999996,
+      "itae": 247.0716000000002,
+      "u_rms": 2.896488410607223,
       "u_sat_ratio": 0,
-      "u_tv": 41.94,
+      "u_tv": 40.75,
       "lost_ratio": 0.015037593984962405,
-      "y_final_mm": 199.6153846153846
+      "y_final_mm": 200.57692307692307
     },
     "y_col": "y_mm",
     "u_sat_lim_cdeg": 3000

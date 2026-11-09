@@ -1,6 +1,7 @@
 // live-plot: 실시간 그래프(러너 링 버퍼를 rAF에서 읽음 — 제어 루프와 분리) + 모델 예측 + 세션 저장·승격 버튼.
 // 디지털 트윈 모드: '디지털 트윈 [시뮬레이션]' 배지와 참 위치(트윈 내부 상태, 제어기에는 가지 않음)를 겹쳐 그린다.
 // 참 위치는 세션 CSV 에 넣지 않는다(docs/spec/digital-twin.md §6) — 화면 전용.
+// 좌표 보기(ui/coord.js): '측정 거리(표면)'(기본, 저장·제어 좌표) / '공 중심 = 측정 + R'. 화면에서만 바꾸고 저장 값은 그대로.
 
 import { h, checkProps, clear, badge, modal, toast, provenanceBadge } from '../dom.js';
 import { Plot, styleOf } from '../plot.js';
@@ -8,6 +9,7 @@ import { head, kv } from './_util.js';
 import { predict, SIGNAL_INFO } from '../sources.js';
 import { PRACTICE_CHANNEL, modeBadges, allowedModes } from './controller-panel.js';
 import { MODE_LABEL } from '../../serial/device.js';
+import { coordToggle, getView, radiusOf, axisLabel, viewMm, centerMm } from '../coord.js';
 
 export const accepts = ['signals', 'window_s', 'show_debug', 'show_prediction', 'actions'];
 
@@ -25,7 +27,8 @@ export function mount(el, props, ctx) {
   el.appendChild(head('실시간 그래프', tag));
   const mmSig = signals.filter((s) => MM.includes(s));
   const degSig = signals.filter((s) => DEG.includes(s));
-  const pPos = mmSig.length || props.show_prediction !== false ? new Plot(el, { height: props.height_px || 220, xLabel: '시간 (s)', yLabel: '위치 (mm)', minYSpan: 20 }) : null;
+  let view = getView();
+  const pPos = mmSig.length || props.show_prediction !== false ? new Plot(el, { height: props.height_px || 220, xLabel: '시간 (s)', yLabel: axisLabel(view, radiusOf(ctx)), minYSpan: 20 }) : null;
   const pAng = degSig.length ? new Plot(el, { height: 160, xLabel: '시간 (s)', yLabel: '각도 (°)', minYSpan: 2 }) : null;
   const pDbg = props.show_debug !== false ? new Plot(el, { height: 140, xLabel: '시간 (s)', yLabel: '제어기 내부(SI)' }) : null;
   const read = h('div', { class: 'readout' });
@@ -79,15 +82,18 @@ export function mount(el, props, ctx) {
     const tEnd = x.length ? x[x.length - 1] : 0;
     const range = meta.monitor || !x.length ? null : [Math.max(0, tEnd - win), Math.max(win, tEnd)];
     const col = (k, sc = 1) => rows.map((r) => (typeof r[k] === 'number' ? r[k] * sc : NaN));
+    const R = radiusOf(ctx);
+    const vm = (a) => (view === 'center' ? a.map((v) => viewMm(v, view, R)) : a);
+    const vLab = (l) => (view === 'center' ? `${l} → 공 중심` : l);
     if (pPos) {
-      const ser = mmSig.map((k, i) => ({ label: (SIGNAL_INFO[k] || {}).label || k, x, y: col(k), ...styleOf(i), width: k === 'y_mm' ? 1.2 : 2, step: k === 'ref_mm', alpha: k === 'y_mm' ? 0.6 : 1 }));
-      if (pred && !meta.monitor) ser.push({ label: pred.label, x: pred.x, y: pred.y, ...styleOf(4), width: 1.5 });
+      const ser = mmSig.map((k, i) => ({ label: vLab((SIGNAL_INFO[k] || {}).label || k), x, y: vm(col(k)), ...styleOf(i), width: k === 'y_mm' ? 1.2 : 2, step: k === 'ref_mm', alpha: k === 'y_mm' ? 0.6 : 1 }));
+      if (pred && !meta.monitor) ser.push({ label: vLab(pred.label), x: pred.x, y: vm(pred.y), ...styleOf(4), width: 1.5 });
       if (meta.twin && truth.meta === meta && truth.x.length) {
         const x0 = x.length ? x[0] : -Infinity;
         let k0 = 0; while (k0 < truth.x.length && truth.x[k0] < x0) k0++;
-        ser.push({ label: '참 위치(트윈 내부, 제어기에 안 감)', x: truth.x.slice(k0), y: truth.y.slice(k0), color: '#000000', dash: [2, 2], width: 1.6 });
+        ser.push({ label: vLab('참 위치(트윈 내부·측정 거리 좌표, 제어기에 안 감)'), x: truth.x.slice(k0), y: vm(truth.y.slice(k0)), color: '#000000', dash: [2, 2], width: 1.6 });
       }
-      pPos.setOpts({ xRange: range }); pPos.setSeries(ser);
+      pPos.setOpts({ xRange: range, yLabel: axisLabel(view, R) }); pPos.setSeries(ser);
     }
     if (pAng) { pAng.setOpts({ xRange: range }); pAng.setSeries(degSig.map((k, i) => ({ label: (SIGNAL_INFO[k] || {}).label || k, x, y: col(k, 0.01), ...styleOf(i + 1), step: k === 'u_cdeg' }))); }
     if (pDbg) {
@@ -99,7 +105,9 @@ export function mount(el, props, ctx) {
     clear(read);
     if (last) {
       const nLost = rows.filter((r) => r.lost === 1).length;
-      read.append(kv('t', last.t_s, 's'), kv('y', last.y_filt_mm ?? last.y_mm, 'mm'), kv('설정값', last.ref_mm, 'mm'), kv('u', Number.isFinite(last.u_cdeg) ? last.u_cdeg / 100 : null, '°'), kv('유실', `${nLost}/${rows.length}`));
+      const yv = last.y_filt_mm ?? last.y_mm;
+      read.append(kv('t', last.t_s, 's'), kv('측정 거리(표면) y', yv, 'mm'), h('span', { class: 'kv', 'data-role': 'center-readout' }, h('b', null, `공 중심(+${R}) `), Number.isFinite(centerMm(yv, R)) ? `${centerMm(yv, R).toFixed(1)} mm` : '–'),
+        kv('설정값(측정 거리)', last.ref_mm, 'mm'), kv('u', Number.isFinite(last.u_cdeg) ? last.u_cdeg / 100 : null, '°'), kv('유실', `${nLost}/${rows.length}`));
       if (runner.state === 'running') { const st = runner.stats; read.append(kv('Δt 평균', st.dt_mean_ms, 'ms'), kv('Δt 최대', st.dt_max_ms, 'ms')); }
       if (last.dbg_saturated === 1) read.append(badge('포화', 'b-bad'));
     } else read.append(h('span', { class: 'muted' }, `데이터 없음 — 실습 패널에서 연결하거나 실험을 시작하세요${dev ? ` (현재 모드: ${MODE_LABEL[dev.mode] || dev.mode})` : ''}.`));
@@ -127,7 +135,8 @@ export function mount(el, props, ctx) {
     modeSel.disabled = runner.state === 'running';
   };
   paintMode();
-  act.append(...Object.values(btns), pauseBtn, modeSel ? h('label', { class: 'muted' }, '모드 ', modeSel) : '', info);
+  const ct = coordToggle(ctx, (v) => { view = v; lastVer = -1; });
+  act.append(...Object.values(btns), pauseBtn, modeSel ? h('label', { class: 'muted' }, '모드 ', modeSel) : '', ct.el, info);
   const setLast = (sid, complete) => {
     lastSid = sid;
     for (const b of Object.values(btns)) b.disabled = !sid;
@@ -144,7 +153,7 @@ export function mount(el, props, ctx) {
       h('label', null, '제목', t), h('label', null, '메모(무엇을 바꿨고 왜)', n),
       h('div', { class: 'row' }, h('button', { class: 'btn primary', onclick: async () => { await ctx.store.sessions.update(lastSid, { title: t.value, notes: n.value }); m.close(); toast('저장했습니다', 'ok'); } }, '저장'))));
   };
-  const offs = [];
+  const offs = [ct.off];
   if (offTickT) offs.push(offTickT);
   if (dev && dev.onStatus) offs.push(dev.onStatus(() => { subTwin(); paintMode(); lastVer = -1; }));
   offs.push(() => { if (offTruth) offTruth(); });

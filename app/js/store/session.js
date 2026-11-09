@@ -48,6 +48,10 @@ export function fromFiles(jsonText, csvText) {
   if (!meta.session_id) throw new Error('메타에 session_id가 없습니다');
   // data-schema 1.2.0: device.despike 추가(schema_ver 1 유지). 이전 파일에는 없으므로 null(구 펌웨어 또는 모름)로 채운다
   if (meta.device && typeof meta.device === 'object' && !('despike' in meta.device)) meta.device = { ...meta.device, despike: null };
+  // data-schema 1.5.0: 거리 규약·공 반지름 추가(schema_ver 1 유지). 센서는 언제나 공 표면까지 재므로 규약은 'surface',
+  // 반지름은 예전 파일에 기록이 없으므로 null(모름 — 표시할 때는 지금 공 크기 기록을 쓴다). 위치 값(y_mm 등)은 어느 판이든 원 측정 거리
+  if (!('distance_convention' in meta)) meta.distance_convention = 'surface';
+  if (!('ball_radius_mm' in meta)) meta.ball_radius_mm = null;
   const { rows } = csvText ? parseCSV(csvText) : { rows: [] };
   return { meta, rows, warn };
 }

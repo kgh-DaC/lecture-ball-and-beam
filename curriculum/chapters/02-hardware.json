@@ -6,7 +6,7 @@
   "order": 2,
   "status": "ready",
   "requires": [
-    "01-intro"
+    "a1-arduino-basics"
   ],
   "est_minutes": 120,
   "objectives": [

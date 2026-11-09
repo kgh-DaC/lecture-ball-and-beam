@@ -9,6 +9,7 @@ import { resolveSources } from '../sources.js';
 import { paramDiff } from './attempt-log.js';
 import { MODE_LABEL, isSimMode } from '../../serial/device.js';
 import { TWIN_BADGE, SENSOR_ONLY_NOTE, twinFetchOf, loadScenarioIndex, loadScenario, scenarioEvents, paramsProvenanceText } from '../twin/lib.js';
+import { radiusOf } from '../coord.js';
 
 export const accepts = ['controllers', 'show_profile_editor'];
 
@@ -113,20 +114,20 @@ export function mount(el, props, ctx) {
       onChange: (v, key) => { publish(); if (runner.state === 'running') runner.setParams({ [key]: v[key] }); } });
     box.appendChild(editor);
     if (props.show_profile_editor !== false) {
-      profEd = profileEditor(shared.get().profile || (practice && practice.setpoint_profile), { standard: practice && practice.setpoint_profile, onChange: () => publish() });
+      profEd = profileEditor(shared.get().profile || (practice && practice.setpoint_profile), { standard: practice && practice.setpoint_profile, radius_mm: radiusOf(ctx), onChange: () => publish() });
       box.appendChild(h('div', { class: 'panel-sec' }, profEd));
     } else {
       profEd = null;
     }
     const lim = practice && practice.angle_limit_deg;
     box.appendChild(h('div', { class: 'muted', style: { fontSize: '.85rem' } },
-      `각도 한계 ±${lim ?? '설정값'}° · 데이터 주기 ${(practice && practice.fs_ms) || 60} ms · 필터 α ${(practice && practice.alpha) ?? '설정값'} · 측정 ${(practice && practice.y_source) === 'raw' ? '원측정' : '필터값'} · 예측 모델 ${(practice && practice.model) === 'ball+servo' ? '서보 포함' : '서보 무시'}`));
+      `각도 한계 ±${lim ?? '설정값'}° · 데이터 주기 ${(practice && practice.fs_ms) || 60} ms · 필터 α ${(practice && practice.alpha) ?? '설정값'} · 측정 ${(practice && practice.y_source) === 'raw' ? '원측정' : '필터값'}(측정 거리(표면) = 센서 → 공 표면, 공 중심 = 측정 + ${radiusOf(ctx)} mm) · 예측 모델 ${(practice && practice.model) === 'ball+servo' ? '서보 포함' : '서보 무시'}`));
     // 실행 버튼
     const startBtn = h('button', { class: 'btn primary', disabled: runner.state === 'running', onclick: () => start() }, runner.state === 'running' ? '실행 중…' : '실험 시작');
     const stopBtn = h('button', { class: 'btn', disabled: runner.state !== 'running', onclick: () => runner.stop('user') }, '정지(저장)');
     const estop = h('button', { class: 'btn estop', onclick: () => runner.estop() }, '비상 정지');
     box.appendChild(h('div', { class: 'row panel-sec' }, startBtn, stopBtn, estop, h('span', { class: 'muted' }, `시도 ${attempt}회`)));
-    if (dev.mode === 'device') box.appendChild(warnBox('실기: 시작 전에 공을 시작 위치에 손으로 놓고, 빔 주변에서 손을 치우세요. 이상하면 비상 정지(Esc).'));
+    if (dev.mode === 'device') box.appendChild(warnBox(`실기: 시작 전에 공을 시작 위치(측정 거리 = 센서 → 공 표면, 공 중심은 ${radiusOf(ctx)} mm 더 멂)에 손으로 놓고, 빔 주변에서 손을 치우세요. 이상하면 비상 정지(Esc).`));
     publish();
   };
 

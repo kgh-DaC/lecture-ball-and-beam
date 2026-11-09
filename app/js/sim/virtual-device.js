@@ -11,6 +11,9 @@
 //   빈 줄은 opts.blank_e5(기본 true)면 E,5 (실기 1.0.0 이 그럴 수 있는 경우를 흉내 — 호스트 동기화 시험용).
 // 포텐쇼미터(A0): 서보 혼 각도 → raw = 보정 직선(servo-presets.js HS5645MG pot_preset = 사용자 실측, raw 증가 방향) + 잡음 0.7 LSB.
 // 이상값(튐) 흉내: opts.outlier_prob(기본 0), opts.outlier_mm(기본 304) — 실기 정지 공 15 %가 ~304 mm로 튄 기록(protocol §3.1).
+// 거리 좌표: 플랜트 y 와 dist 는 모두 '측정 거리'(센서 앞면 → 공의 가까운 표면). 공 중심 = 측정 + 반지름(26 mm)은 화면에서만 바꾼다(ui/coord.js).
+// 시험용 센서 오차 주입(거리 검증 sensor-position-test 판정 시험): opts.sensor_offset_mm(상수 오차, 기본 0), opts.sensor_scale(배율, 기본 1)
+//   → 보고 거리 = sensor_scale·y + sensor_offset_mm(+ 잡음). setSensorError({ offset_mm, scale }) 로 연결 중에도 바꿀 수 있다. 플랜트·제어는 그대로.
 
 import { SERVO_PRESETS } from '../config/servo-presets.js';
 import { TRIG_PIN, ECHO_PIN } from '../config/settings.js';
@@ -39,7 +42,8 @@ function mulberry32(seed) {
 export class VirtualDevice {
   /**
    * @param {object} opts { sim: { stepPlant, initPlantState? }, model, seed, noise_mm, lost_prob, quant_mm, y0_m, speed, realtime,
-   *   fw: '1.2.0'(기본) | '1.1.0' | '1.0.0', blank_e5 (1.0.0 전용, 기본 true), outlier_prob, outlier_mm }
+   *   fw: '1.2.0'(기본) | '1.1.0' | '1.0.0', blank_e5 (1.0.0 전용, 기본 true), outlier_prob, outlier_mm,
+   *   sensor_offset_mm (시험용 상수 오차, 기본 0), sensor_scale (시험용 배율, 기본 1) }
    * realtime=false면 tick(ms)을 직접 불러 시간을 진행한다(시험용).
    */
   constructor(opts = {}) {
@@ -60,6 +64,8 @@ export class VirtualDevice {
     this.blank_e5 = this.legacy && (opts.blank_e5 ?? true);
     this.outlier_prob = opts.outlier_prob ?? 0;
     this.outlier_mm = opts.outlier_mm ?? 304;
+    this.sensor_offset_mm = Number.isFinite(opts.sensor_offset_mm) ? opts.sensor_offset_mm : 0;
+    this.sensor_scale = Number.isFinite(opts.sensor_scale) && opts.sensor_scale > 0 ? opts.sensor_scale : 1;
     // 시험용: 부팅 H/C 직후 장치 수신 버퍼에 남는 인쇄 가능한 쓰레기(USB·잡음 흉내, protocol §2.1). 예 'xyz'
     this.rx_garbage = opts.rx_garbage ?? '';
     this.textListeners = new Set();
@@ -118,8 +124,18 @@ export class VirtualDevice {
     this.y0_m = y_m;
     this._resetPlant();
     // 손으로 놓고 잠시 기다린 상태: 펌웨어 필터(이상값 제거 기준값 포함)도 새 위치에 수렴해 있다(이전 위치 기억 제거)
-    this.dfilt.settle(y_m * 1000);
+    this.dfilt.settle(this._sensed(y_m * 1000));
   }
+
+  /** 시험용 센서 오차(상수 오차 mm, 배율). 인자 생략 = 그대로, setSensorError() = 오차 없음으로 되돌림 */
+  setSensorError({ offset_mm = 0, scale = 1 } = {}) {
+    this.sensor_offset_mm = Number.isFinite(offset_mm) ? offset_mm : 0;
+    this.sensor_scale = Number.isFinite(scale) && scale > 0 ? scale : 1;
+    return { offset_mm: this.sensor_offset_mm, scale: this.sensor_scale };
+  }
+  get sensorError() { return { offset_mm: this.sensor_offset_mm, scale: this.sensor_scale }; }
+  /** 참 측정 거리(mm) → 센서가 보고할 거리(잡음 전): 배율·상수 오차 적용 */
+  _sensed(y_mm) { return this.sensor_scale * y_mm + this.sensor_offset_mm; }
 
   async close() {
     clearInterval(this.timer);
@@ -220,7 +236,7 @@ export class VirtualDevice {
   }
 
   _measure() {
-    let y_mm = this.state.y_m * 1000 + this._gauss() * this.noise_mm;
+    let y_mm = this._sensed(this.state.y_m * 1000) + this._gauss() * this.noise_mm;
     if (this.outlier_prob > 0 && this.rand() < this.outlier_prob) y_mm = this.outlier_mm + this._gauss() * 3; // 실기 튐 흉내
     let dist = Math.round(y_mm / this.quant_mm) * this.quant_mm;
     if (this.rand() < this.lost_prob || dist < 20 || dist > 500) dist = -1;

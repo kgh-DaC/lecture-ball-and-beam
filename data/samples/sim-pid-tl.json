@@ -6,7 +6,7 @@
   "chapter_id": "11-autotuning",
   "source": "bundle_sim",
   "provenance": "simulated",
-  "title": "릴레이 → Tyreus–Luyben PID (1.46, 0.1637, 2.439)",
+  "title": "릴레이 → Tyreus–Luyben PID (1.435, 0.1627, 2.413)",
   "device": {
     "proto_ver": 1,
     "fw_ver": "virtual-1.0.0",
@@ -23,9 +23,9 @@
   "controller": {
     "id": "pid",
     "params": {
-      "kp": 1.46,
-      "ki": 0.1637,
-      "kd": 2.439,
+      "kp": 1.435,
+      "ki": 0.1627,
+      "kd": 2.413,
       "n_filt": 8,
       "d_on": "measurement"
     },
@@ -33,12 +33,12 @@
   },
   "plant_params": {
     "m_kg": 0.012482,
-    "R_m": 0.025,
+    "R_m": 0.026,
     "L_m": 0.34,
     "d_m": 0.052,
     "J_kgm2": 0.000005625,
     "g": 9.8,
-    "K_b": 0.8708833113358925
+    "K_b": 0.8993082715361691
   },
   "model_kind": "ball_servo",
   "servo_tf": {
@@ -57,8 +57,8 @@
     "source": "preset",
     "ref": null,
     "order": 1,
-    "a_cdeg_per_lsb": -36.42987249544626,
-    "b_cdeg": 11218.579234972676,
+    "a_cdeg_per_lsb": 33.45724907063197,
+    "b_cdeg": -11018.587360594795,
     "c": 0
   },
   "setpoint_profile": {
@@ -74,7 +74,7 @@
   },
   "run_group": null,
   "attempt": null,
-  "notes": "simulate.js 번들 시뮬레이션: 모델 ball_servo (가정 서보 fo_slew K=1, τ=0.06 s, Td=0.02 s, vmax=400°/s — 실측 아님), K_b=0.87088, Ts 60 ms, 센서 잡음 σ=1 mm, 양자화 1 mm, 유실 1 %, 재귀 필터 α=0.2, seed 1, RK4 substeps 10, 빔 끝 비탄성 정지. sim-relay 기록에서 relayAnalyze(eps 보정) Ku=3.212, Tu=4.054 s → applyRule('tl', kd_stab 1.5 더함).",
+  "notes": "simulate.js 번들 시뮬레이션: 모델 ball_servo (가정 서보 fo_slew K=1, τ=0.06 s, Td=0.02 s, vmax=400°/s — 실측 아님), K_b=0.89931, Ts 60 ms, 센서 잡음 σ=1 mm, 양자화 1 mm, 유실 1 %, 재귀 필터 α=0.2, seed 1, RK4 substeps 10, 빔 끝 비탄성 정지. sim-relay 기록에서 relayAnalyze(eps 보정) Ku=3.158, Tu=4.009 s → applyRule('tl', kd_stab 1.5 더함).",
   "stats": {
     "n": 167,
     "n_lost": 2,
@@ -102,8 +102,9 @@
   "complete": true,
   "end_hit": false,
   "metrics": {
-    "def_ver": 1,
+    "def_ver": 2,
     "ts_band": 0.05,
+    "min_dwell_s": null,
     "segments": [
       {
         "t0_s": 2.04,
@@ -113,20 +114,22 @@
         "y_initial_mm": 151,
         "computable": true,
         "reason": null,
-        "tr": 1.056,
-        "tp": 4.92,
-        "po": 11.067503924646804,
-        "ts": 7.920000000000001,
-        "ts_settled": true,
-        "ess": 5.576923076923066,
-        "iae": 79.67999999999999,
-        "ise": 2041.9199999999998,
-        "itae": 193.10760000000013,
-        "u_rms": 1.8340382331351504,
+        "tr": 1.0290000000000004,
+        "tp": 4.56,
+        "po": 10.047095761381499,
+        "ts": null,
+        "ts_settled": false,
+        "ts_dwell_s": 0,
+        "min_dwell_s": 1,
+        "ess": 6.076923076923066,
+        "iae": 80.94000000000004,
+        "ise": 2055.3,
+        "itae": 200.48040000000003,
+        "u_rms": 1.8474121302371513,
         "u_sat_ratio": 0,
-        "u_tv": 27.91,
+        "u_tv": 28.14,
         "lost_ratio": 0.015037593984962405,
-        "y_final_mm": 205.57692307692307
+        "y_final_mm": 206.07692307692307
       }
     ],
     "summary": {
@@ -137,20 +140,22 @@
       "y_initial_mm": 151,
       "computable": true,
       "reason": null,
-      "tr": 1.056,
-      "tp": 4.92,
-      "po": 11.067503924646804,
-      "ts": 7.920000000000001,
-      "ts_settled": true,
-      "ess": 5.576923076923066,
-      "iae": 79.67999999999999,
-      "ise": 2041.9199999999998,
-      "itae": 193.10760000000013,
-      "u_rms": 1.8340382331351504,
+      "tr": 1.0290000000000004,
+      "tp": 4.56,
+      "po": 10.047095761381499,
+      "ts": null,
+      "ts_settled": false,
+      "ts_dwell_s": 0,
+      "min_dwell_s": 1,
+      "ess": 6.076923076923066,
+      "iae": 80.94000000000004,
+      "ise": 2055.3,
+      "itae": 200.48040000000003,
+      "u_rms": 1.8474121302371513,
       "u_sat_ratio": 0,
-      "u_tv": 27.91,
+      "u_tv": 28.14,
       "lost_ratio": 0.015037593984962405,
-      "y_final_mm": 205.57692307692307
+      "y_final_mm": 206.07692307692307
     },
     "y_col": "y_mm",
     "u_sat_lim_cdeg": 3000

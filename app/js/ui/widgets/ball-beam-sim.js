@@ -21,7 +21,7 @@ export function mount(el, props, ctx) {
   el.appendChild(head(mode === 'openloop' ? '볼앤빔 시뮬레이터 — 개루프' : '볼앤빔 시뮬레이터 — 폐루프', badge('시뮬레이션', 'b-sim'), badge(plantName === 'ball+servo' ? '서보 포함 모델' : '서보 무시 모델', 'b-unknown')));
   const cv = h('canvas', { class: 'bb-canvas', style: { width: '100%', height: '150px', display: 'block' }, 'aria-label': '빔과 공 애니메이션', role: 'img' });
   el.appendChild(cv);
-  const plot = new Plot(el, { height: props.height_px || 200, xLabel: '시간 (s)', yLabel: '위치 y (mm)' });
+  const plot = new Plot(el, { height: props.height_px || 200, xLabel: '시간 (s)', yLabel: '측정 거리 y(표면) (mm)' });
   const read = h('div', { class: 'readout' });
   el.appendChild(read);
   const ctl = h('div', { class: 'row' });

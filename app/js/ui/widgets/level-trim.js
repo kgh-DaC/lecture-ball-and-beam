@@ -10,6 +10,7 @@ import { head, kv } from './_util.js';
 import { hwModeNote, GUIDE } from '../jog.js';
 import { ballSlopeStats, levelCorrection } from './level-finder.js';
 import { levelTrimHint, expectedRaw, LEVEL_FLAT_MM_S } from '../hwtest.js';
+import { radiusOf, centerMm } from '../coord.js';
 import { levelDegToTrim, trimToServoDeg, TRIM_LIMIT_CDEG } from '../../config/servo-presets.js';
 
 /** null 을 건너뛰는 append(브라우저 append(null) 은 'null' 글자를 넣는다) */
@@ -161,6 +162,11 @@ export function mount(el, props, ctx) {
     add(clear(read), kv('장치 trim', devTrim == null ? '–' : devTrim / 100, '°'), kv('저장된 trim', ctx.settings.device.trim / 100, '°'),
       h('span', { class: 'kv', 'data-role': 'servo-deg-now' }, h('b', null, '현재 서보각 = 90° + trim = '), `90° ${trim < 0 ? '−' : '+'} ${fmt(Math.abs(trim) / 100, 2)}° = ${fmt(trimToServoDeg(trim), 2)}°`), kv('A0(최근 평균)', Number.isFinite(a0) ? fmt(a0, 1) : '–'), kv('기대 A0(보정 직선)', Number.isFinite(exp) ? fmt(exp, 1) : '–'),
       Number.isFinite(a0) && Number.isFinite(exp) ? kv('차이', fmt(a0 - exp, 1), 'LSB') : null);
+    // 공 위치: 측정 거리(센서 → 공 표면)와 공 중심(= 측정 + R) 보조 표시
+    const fl = samples.slice(-5).map((d) => d.filt_mm).filter((v) => v >= 0);
+    const yb = fl.length ? fl.reduce((a, b) => a + b, 0) / fl.length : NaN;
+    const Rb = radiusOf(ctx);
+    if (Number.isFinite(yb)) add(read, kv('공 측정 거리(표면)', fmt(yb, 1), 'mm'), h('span', { class: 'kv', 'data-role': 'center-readout' }, h('b', null, `공 중심(+${Rb}) `), `${fmt(centerMm(yb, Rb), 1)} mm`));
     clear(assist);
     if (props.ball_assist !== false) {
       const stt = ballSlopeStats(samples);

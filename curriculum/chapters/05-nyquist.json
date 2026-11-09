@@ -37,7 +37,7 @@
   },
   "sample_sessions": [ { "slot": "pd-design" } ],
   "quiz": [
-    { "id": "q1", "type": "numeric", "q": "P(s) = 0.8709/s²의 ω = 1 rad/s에서 크기(dB)는?", "answer": -1.20, "tol_abs": 0.02, "unit": "dB", "explain": "|P(j1)| = 0.8709 → 20·log10(0.8709) ≈ −1.20 dB. 위상은 모든 주파수에서 −180°다.", "answer_source": "analytic: 20log10(K_b/ω²) (analysis.bode, python-control 대조 완료: tests/control/check_chapters.mjs)" },
+    { "id": "q1", "type": "numeric", "q": "P(s) = 0.8993/s²의 ω = 1 rad/s에서 크기(dB)는?", "answer": -0.92, "tol_abs": 0.02, "unit": "dB", "explain": "|P(j1)| = 0.8993 → 20·log10(0.8993) ≈ −0.92 dB(슬라이드 값 기준 0.8709면 −1.20 dB). 위상은 모든 주파수에서 −180°다.", "answer_source": "analytic: 20log10(K_b/ω²) (analysis.bode, python-control 대조 완료: tests/control/check_chapters.mjs)" },
     { "id": "q2", "type": "numeric", "q": "위상여유 60°, 이득교차주파수 2 rad/s인 루프의 지연여유(s)는?", "answer": 0.5236, "tol_rel": 0.005, "unit": "s", "explain": "지연여유 = PM(rad)/ωgc = 1.0472/2 ≈ 0.524 s.", "answer_source": "analytic: PM/ωgc 정의 (analysis.margins delay_margin_s 정의와 같음)" },
     { "id": "q3", "type": "numeric", "q": "순수 지연 0.03 s가 ω = 2 rad/s에서 만드는 위상 지연(°)은?", "answer": 3.44, "tol_abs": 0.05, "unit": "°", "explain": "ωT = 0.06 rad ≈ 3.44°. 샘플링(ZOH) 지연 자체는 크지 않다. 센서 필터가 훨씬 크다(q4).", "answer_source": "analytic: ωT" },
     { "id": "q4", "type": "numeric", "q": "센서 필터(T_f = 0.24 s)가 ω = 1.91 rad/s에서 만드는 위상 지연(°)은?", "answer": 24.6, "tol_abs": 0.2, "unit": "°", "explain": "atan(0.24 × 1.91) = atan(0.458) ≈ 24.6°. 이 지연이 D 필터 없는 순수 PD 기준으로 슬라이드 48 PD의 위상여유를 60.8°에서 34.2°로 줄인다(교차주파수도 2.06 → 1.91 rad/s로 낮아짐). 위젯 설정(D 필터 N = 8)에서는 교차주파수가 약 2.0 rad/s라 51.5°에서 24.9°로 준다.", "answer_source": "analytic: atan(T_f ω) (analysis.sensorTF, python-control 대조 완료: tests/control/check_chapters.mjs)" },

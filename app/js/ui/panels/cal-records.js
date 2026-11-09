@@ -1,13 +1,15 @@
 // '보정 기록' 표(#/settings 하드웨어 설정): 포텐쇼미터 보정 기록(서보각 ↔ A0) 목록·적용·사용자 입력/수정·삭제와 조립 후 시험 기록.
 // 저장은 settings.hw(localStorage 'ballbeam.hw_records', data-schema §4.4). 번들 기본 기록 = 사용자 실측(2026-11-04, 0/90/180°, 각 n=10).
+// 공 크기(번들 = 사용자 실측 2026-11-05 지름 52 mm → R 26 mm, 고치면 ball_override)·초음파 좌표 규약(측정 = 표면까지, 중심 = 측정 + R)·
+// 거리 검증 기록(sensor-position-test, 실제 거리 vs 측정 거리)도 여기 표로 보인다.
 
 import { h, clear, table, fmt, badge, toast, download, errorBox } from '../dom.js';
 import { fitPotLine, SERVO_IDS, levelDegToTrim, TRIM_LIMIT_CDEG } from '../../config/servo-presets.js';
-import { BUNDLE_POT_ID, BUNDLE_LEVEL_ID } from '../../config/hw-records.js';
+import { BUNDLE_POT_ID, BUNDLE_LEVEL_ID, BALL_MEASURED_USER, BALL_RADIUS_RANGE_MM } from '../../config/hw-records.js';
 
 const PROV = { measured: ['실측', 'b-real'], real: ['실측', 'b-real'], simulated: ['시뮬레이션', 'b-sim'], assumed: ['가정값', 'b-assumed'] };
 const provBadge = (p) => { const [t, c] = PROV[p] || ['출처 불명', 'b-unknown']; return badge(t, c); };
-const WNAME = { 'pot-mapping-test': '포텐쇼미터 매핑', 'servo-center-assist': '서보 90° 고정', 'level-trim': '수평 trim', 'sensor-position-test': '초음파 위치 응답', 'signal-monitor': '신호 확인', 'angle-limit-finder': '각도 제한' };
+const WNAME = { 'pot-mapping-test': '포텐쇼미터 매핑', 'servo-center-assist': '서보 90° 고정', 'level-trim': '수평 trim', 'sensor-position-test': '실제 거리 vs 측정 거리 검증', 'signal-monitor': '신호 확인', 'angle-limit-finder': '각도 제한' };
 const VERD = { pass: ['합격', 'b-ok'], fail: ['불합격', 'b-bad'], warn: ['주의', 'b-assumed'] };
 
 export function mountCalRecords(el, ctx) {
@@ -17,15 +19,23 @@ export function mountCalRecords(el, ctx) {
   const logs = h('div');
   const lvBox = h('div', { 'data-role': 'level-records' });
   const lvForm = h('div');
+  const ballBox = h('div', { 'data-role': 'ball-records' });
+  const ballForm = h('div');
+  const dvBox = h('div', { 'data-role': 'dist-verify-records' });
   el.append(h('h4', null, '보정 기록 (포텐쇼미터: 서보 혼 각도 ↔ A0)'),
     h('p', { class: 'muted' }, '직선은 서보 혼 각도 기준입니다(horn = (서보각 − 90°)·100 cdeg). 명령 좌표 각도는 펌웨어 식 서보각 = 90° + trim/100 + dir·cmd/100 을 뒤집어 θ = dir·(horn − trim) 으로 구합니다. 빔의 실제 수평은 조립 후 trim으로 맞춥니다. "적용" 표시된 기록이 A0 → 각도 변환(러너 servo_pot_cdeg, 위젯 기대값)에 쓰입니다. 값은 이 브라우저에만 저장됩니다.'),
     box, form,
     h('h4', null, '수평(trim) 기록 (조립 후: 공이 흘러가지 않는 서보각)'),
     h('p', { class: 'muted' }, `trim = (수평 서보각 − 90°) × 100 cdeg (명령 0 에서 서보각 = 90° + trim/100, dir 무관). 한계 ±${TRIM_LIMIT_CDEG / 100}° → 서보각 ${90 - TRIM_LIMIT_CDEG / 100}°~${90 + TRIM_LIMIT_CDEG / 100}°. 번들 기본 장치 설정(trim 0)은 바꾸지 않습니다 — 이 기록은 "사용자 장치 프로필"로 적용합니다(가상 장치·트윈 기구는 trim 0 이 수평).`),
     lvBox, lvForm,
+    h('h4', null, '공 크기와 초음파 좌표 규약'),
+    h('p', { class: 'muted' }, '초음파(HC-SR04)는 센서 앞면에서 공의 가까운 표면(센서 쪽 면)까지 잽니다. 그래서 공 중심 위치 = 측정 거리 + 반지름. 제어·세션 저장 좌표는 측정 거리 그대로이고(상수 오프셋이라 동역학 불변), 반지름은 화면의 "공 중심" 표시와 세션 메타 ball_radius_mm 에 쓰입니다.'),
+    ballBox, ballForm,
+    h('h4', null, '거리 검증 기록 (실제 거리 vs 초음파 측정 거리)'), dvBox,
     h('h4', null, '하드웨어 시험 기록(조립 전·후)'), logs);
   let editing = null; // { id|null, draft }
   let lvEditing = null; // { id|null, draft }
+  let ballEditing = null; // { draft }
 
   const pointsText = (r) => h('div', null, r.points.map((p) => h('div', { style: { whiteSpace: 'nowrap' } }, `${p.servo_deg}° → ${fmt(p.raw_mean, 1)}`, h('span', { class: 'muted' }, ` σ ${p.raw_sd == null ? '–' : fmt(p.raw_sd, 2)} · n ${p.n ?? '–'}`))));
   const fitText = (f) => (f ? h('div', null, h('div', null, `${fmt(f.slope_lsb_per_deg, 4)} LSB/° · 90° raw ${fmt(f.raw_at_90, 1)}`), h('div', { class: 'muted' }, `a ${fmt(f.a_cdeg_per_lsb, 4)} cdeg/LSB, b ${fmt(f.b_cdeg, 1)} cdeg, 잔차 최대 ${fmt(f.residual_max_lsb, 2)} LSB${f.monotonic === 'down' ? ' · 감소 방향' : ''}`)) : h('span', { class: 'muted' }, '점 2개 이상 필요'));
@@ -46,9 +56,63 @@ export function mountCalRecords(el, ctx) {
     }), { cls: 'cal-records' }));
     box.appendChild(h('div', { class: 'row' },
       h('button', { class: 'btn', onclick: () => { editing = { id: null, draft: { date: new Date().toISOString().slice(0, 10), servo_model: ctx.settings.device.servo_model, method: '서보각별 A0 평균(사용자 입력)', source: '사용자 입력', provenance: 'measured', points: [{ servo_deg: 0, raw_mean: '', raw_sd: '', n: 10 }, { servo_deg: 90, raw_mean: '', raw_sd: '', n: 10 }, { servo_deg: 180, raw_mean: '', raw_sd: '', n: 10 }] } }; paintForm(); } }, '새 기록 입력(사용자 제공 값)'),
-      h('button', { class: 'btn', onclick: () => download('hw_records.json', JSON.stringify({ ...hw.data, pot_records: hw.potRecords() }, null, 2), 'application/json') }, '보정·점검 기록 내려받기(JSON)')));
+      h('button', { class: 'btn', onclick: () => download('hw_records.json', JSON.stringify({ ...hw.data, pot_records: hw.potRecords(), ball_record: hw.ballRecord(), sonar_convention: hw.sonarConvention() }, null, 2), 'application/json') }, '보정·점검 기록 내려받기(JSON)')));
     paintLevels();
+    paintBall();
+    paintDist();
     paintLogs();
+  };
+
+  const paintBall = () => {
+    const b = hw.ballRecord();
+    const c = hw.sonarConvention();
+    clear(ballBox).appendChild(table(['기록', '날짜', '값', '측정 방법', '출처', '작업'], [
+      ['공 크기', b.date || String(b.created_at).slice(0, 10),
+        h('div', null, h('div', null, `지름 ${b.diameter_mm == null ? '–' : fmt(b.diameter_mm, 1)} mm → 반지름 R = ${b.radius_mm == null ? '–' : fmt(b.radius_mm, 1)} mm`), b.valid ? null : h('div', null, badge(`범위(${BALL_RADIUS_RANGE_MM[0]}~${BALL_RADIUS_RANGE_MM[1]} mm) 밖 — 표시에는 ${BALL_MEASURED_USER.radius_mm} mm 사용`, 'b-bad'))),
+        h('div', { style: { maxWidth: '18rem' } }, b.method || '', b.source ? h('div', { class: 'muted' }, b.source) : null),
+        h('span', null, provBadge(b.provenance), b.bundle ? badge('번들 기본', 'b-unknown') : null, b.edited ? badge('수정됨', 'b-assumed') : null),
+        h('span', null, h('button', { class: 'btn small', 'data-role': 'edit-ball', onclick: () => { ballEditing = { draft: JSON.parse(JSON.stringify(b)) }; paintBallForm(); } }, '수정'),
+          b.edited ? h('button', { class: 'btn small', onclick: () => { hw.resetBallBundle(); toast(`번들 기본값(사용자 실측 지름 ${BALL_MEASURED_USER.diameter_mm} mm)으로 되돌렸습니다`, 'ok'); } }, '수정 취소') : null)],
+      ['초음파 좌표 규약', b.date || '',
+        h('div', null, h('div', null, c.measured), h('div', null, h('b', null, c.center)), h('div', { class: 'muted' }, c.control)),
+        '센서 원리(반사면 = 공의 가까운 표면)', h('span', null, provBadge(b.provenance), badge('공 크기 기록에서', 'b-unknown')), h('span', { class: 'muted' }, '공 크기를 고치면 함께 바뀜')],
+    ], { cls: 'ball-records' }));
+  };
+
+  const paintBallForm = () => {
+    clear(ballForm);
+    if (!ballEditing) return;
+    const d = ballEditing.draft;
+    const prev = h('span', { class: 'muted' });
+    const err = h('div');
+    const preview = () => { const D = Number(d.diameter_mm); clear(prev).append(String(d.diameter_mm ?? '') !== '' && Number.isFinite(D) ? `반지름 R = ${fmt(D / 2, 2)} mm → 공 중심 = 측정 + ${fmt(D / 2, 2)} mm` : '지름을 넣으면 반지름을 계산합니다'); };
+    const inp = (key, cls = 'num', type = 'text') => h('input', { value: d[key] ?? '', class: cls, type, step: 'any', 'data-role': `ball-${key}`, oninput: (e) => { d[key] = e.target.value; preview(); } });
+    ballForm.append(h('div', { class: 'panel-sec' }, h('h4', null, '공 크기 기록 수정(덮어쓴 값으로 저장)'),
+      h('div', { class: 'row' }, h('label', null, '날짜 ', inp('date', 'num-wide')), h('label', null, ' 공 지름(mm) ', inp('diameter_mm', 'num', 'number')), prev),
+      h('div', { class: 'row' }, h('label', null, '측정 방법 ', inp('method', 'num-wide')), h('label', null, ' 출처 설명 ', inp('source', 'num-wide')),
+        h('label', null, ' 출처 ', h('select', { onchange: (e) => { d.provenance = e.target.value; } }, [['measured', '실측'], ['assumed', '가정값']].map(([v, l]) => h('option', { value: v, selected: d.provenance === v }, l))))),
+      err,
+      h('div', { class: 'row' }, h('button', { class: 'btn primary', 'data-role': 'save-ball', onclick: () => {
+        clear(err);
+        const D = Number(d.diameter_mm);
+        if (String(d.diameter_mm ?? '') === '' || !Number.isFinite(D)) { err.appendChild(errorBox('공 지름(mm)을 넣으세요.')); return; }
+        if (D / 2 < BALL_RADIUS_RANGE_MM[0] || D / 2 > BALL_RADIUS_RANGE_MM[1]) { err.appendChild(errorBox(`반지름 ${D / 2} mm 는 ${BALL_RADIUS_RANGE_MM[0]}~${BALL_RADIUS_RANGE_MM[1]} mm 밖입니다. 지름을 다시 재세요.`)); return; }
+        hw.updateBall({ date: d.date, diameter_mm: D, method: d.method, source: d.source, provenance: d.provenance });
+        ballEditing = null; clear(ballForm); toast(`공 크기를 저장했습니다(R = ${D / 2} mm)`, 'ok');
+      } }, '저장'), h('button', { class: 'btn', onclick: () => { ballEditing = null; clear(ballForm); } }, '취소'))));
+    preview();
+  };
+
+  const paintDist = () => {
+    const L = hw.distVerifyRecords ? hw.distVerifyRecords().slice().reverse() : [];
+    clear(dvBox).appendChild(L.length ? table(['날짜', '기준 방식', 'R', '점별 실제 → 측정 (오차 = 실제 − 측정)', '직선', '평균 오차', '판정', '출처', '작업'], L.map((r) => [
+      String(r.created_at || r.date).slice(0, 16).replace('T', ' '), r.ref_basis === 'center' ? '공 중심까지(− R 환산)' : '공 표면까지', `${r.ball_radius_mm ?? '–'} mm`,
+      h('div', null, (r.points || []).map((p) => h('div', { style: { whiteSpace: 'nowrap' } }, `${p.actual_mm} → ${fmt(p.meas_mean_mm, 1)}`, h('span', { class: 'muted' }, ` (${p.err_mm >= 0 ? '+' : ''}${fmt(p.err_mm, 1)}, σ ${fmt(p.sd_mm, 2)})`)))),
+      r.fit ? `기울기 ${fmt(r.fit.slope, 4)}, 절편 ${fmt(r.fit.intercept, 1)} mm` : '–',
+      Number.isFinite(r.bias_mm) ? `${r.bias_mm >= 0 ? '+' : ''}${fmt(r.bias_mm, 1)} mm` : '–',
+      badge(...(VERD[r.verdict] || ['–', 'b-unknown'])), provBadge(r.provenance),
+      h('button', { class: 'btn small', onclick: () => { if (typeof globalThis.confirm !== 'function' || globalThis.confirm('이 거리 검증 기록을 지울까요?')) hw.removeDistVerify(r.id); } }, '삭제'),
+    ]), { cls: 'dist-verify-records' }) : h('p', { class: 'muted' }, '아직 없음 — 하드웨어 챕터의 "실제 거리 vs 초음파 측정 거리 검증"(sensor-position-test)에서 "거리 검증 기록에 저장"을 누르면 여기에 쌓입니다.'));
   };
 
   const paintLevels = () => {
@@ -169,5 +233,6 @@ export function mountCalRecords(el, ctx) {
   const off = hw.onChange(() => paint());
   const offS = ctx.settings.onChange ? ctx.settings.onChange(() => paintLevels()) : null;
   paint();
-  return { unmount() { off(); offS && offS(); }, paint, applyProfile, editLevel: (id) => { const r = hw.getLevel(id); lvEditing = { id, draft: JSON.parse(JSON.stringify(r)) }; paintLvForm(); }, get lvEditing() { return lvEditing; }, edit: (id) => { const r = hw.getPot(id); editing = { id, draft: JSON.parse(JSON.stringify(r)) }; paintForm(); }, get editing() { return editing; } };
+  return { unmount() { off(); offS && offS(); }, paint, applyProfile,
+    editBall: () => { ballEditing = { draft: JSON.parse(JSON.stringify(hw.ballRecord())) }; paintBallForm(); }, get ballEditing() { return ballEditing; }, editLevel: (id) => { const r = hw.getLevel(id); lvEditing = { id, draft: JSON.parse(JSON.stringify(r)) }; paintLvForm(); }, get lvEditing() { return lvEditing; }, edit: (id) => { const r = hw.getPot(id); editing = { id, draft: JSON.parse(JSON.stringify(r)) }; paintForm(); }, get editing() { return editing; } };
 }
