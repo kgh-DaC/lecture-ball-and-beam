@@ -30,9 +30,9 @@
   "slides": [54, 55, 61, 64, 78, 98, 100, 101, 102, 103, 104, 105, 106, 109, 110, 119, 122, 127, 128, 130, 133, 135, 136, 137, 138, 141],
   "widgets": ["pwm-demo"],
   "predictions": [
-    { "id": "p1", "type": "choice", "q": "아무 일도 안 하는 loop()는 1초에 몇 번쯤 돌 수 있을까?", "choices": ["약 10번", "약 1000번", "약 10만 번 이상"] },
-    { "id": "p2", "type": "numeric", "q": "A0에 2.5 V를 걸면 analogRead(A0)는 대략 얼마?", "unit": "" },
-    { "id": "p3", "type": "numeric", "q": "에코가 1.2 ms 동안 HIGH였다. 거리(음속 340 m/s)는?", "unit": "mm" }
+    { "id": "p1", "type": "choice", "q": "아무 일도 안 하는 loop()는 1초에 몇 번쯤 돌 수 있을까?", "choices": ["약 10번", "약 1000번", "약 10만 번 이상"], "answer": "약 10만 번 이상입니다. ATmega328P는 16 MHz(1초에 1600만 클록)로 돌기 때문에, 아무 일도 안 하는 loop()는 1초에 수십만 번 이상 돕니다. 그래서 볼앤빔 펌웨어는 loop()를 빨리 돌리면서 millis()로 60 ms가 지났을 때만 측정합니다." },
+    { "id": "p2", "type": "numeric", "q": "A0에 2.5 V를 걸면 analogRead(A0)는 대략 얼마?", "unit": "", "answer": "약 512입니다. raw ≈ 2.5/5 × 1024 = 512이고(구현에 따라 511~512), 한 단계는 5/1024 V ≈ 4.9 mV입니다." },
+    { "id": "p3", "type": "numeric", "q": "에코가 1.2 ms 동안 HIGH였다. 거리(음속 340 m/s)는?", "unit": "mm", "answer": "204 mm입니다. 거리 = 0.0012 s × 340 m/s ÷ 2 = 0.204 m이고, 2로 나누는 것은 초음파가 왕복하기 때문입니다." }
   ],
   "quiz": [
     { "id": "q1", "type": "numeric", "q": "5 V 기준 10비트 ADC에서 A0에 2.5 V를 걸면 analogRead 값은 대략?", "answer": 512, "tol_abs": 1, "unit": "", "explain": "raw ≈ 2.5/5 × 1024 = 512 (구현에 따라 511~512). 한 단계 = 5/1024 V ≈ 4.9 mV.", "answer_source": "analytic: ATmega328P ADC = V_in·1024/V_ref" },

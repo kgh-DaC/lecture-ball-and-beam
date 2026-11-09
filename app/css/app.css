@@ -166,6 +166,12 @@ select { padding: .2rem .3rem; }
 .ch-body code { background: var(--code-bg); padding: 0 .25rem; border-radius: 4px; font-size: .9em; font-family: Consolas, "D2Coding", monospace; }
 .ch-body pre.code { background: var(--code-bg); padding: .8rem 1rem; border-radius: 8px; overflow-x: auto; line-height: 1.5; font-size: .88rem; }
 .ch-body pre.code code { background: none; padding: 0; }
+.ch-body .code-wrap { position: relative; }
+.ch-body .code-wrap > pre.code { padding-top: 1.9rem; }
+.code-copy { position: absolute; top: .4rem; right: .5rem; font: inherit; font-size: .78rem; padding: .15rem .6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--ink); cursor: pointer; opacity: .85; }
+.code-copy:hover, .code-copy:focus-visible { opacity: 1; }
+.code-copy.done { border-color: var(--pred-bd); color: var(--pred-bd); }
+@media print { .code-copy { display: none; } }
 .ch-body hr { border: none; border-top: 1px solid var(--line); margin: 2rem 0; }
 .tbl-wrap { overflow-x: auto; }
 .ch-body p, .ch-body li { overflow-wrap: break-word; }
@@ -226,6 +232,9 @@ details.derivation[open] .details-hint { display: none; }
 .predict-foot { font-size: .8rem; color: var(--muted); margin-top: .3rem; }
 .predict-choices label { display: block; padding: .15rem 0; cursor: pointer; }
 .predict-short { width: 100%; }
+.predict-answer { margin-top: .5rem; border-top: 1px dashed var(--pred-bd); padding-top: .4rem; }
+.predict-answer > summary { cursor: pointer; font-weight: 600; color: var(--pred-bd); }
+.predict-answer-body { margin-top: .3rem; line-height: 1.6; }
 
 /* 이전/다음 */
 .ch-nav { display: flex; justify-content: space-between; gap: 1rem; margin: 3rem 0 1rem; max-width: var(--measure); }

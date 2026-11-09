@@ -16,8 +16,8 @@
   "slides": [48, 49],
   "widgets": ["sample-browser", "overlay-plot", "score-weights", "sample-compare", "promote-sample"],
   "predictions": [
-    { "id": "p1", "type": "choice", "q": "가중치를 ITAE에만 1.0으로 주면 1등은?", "choices": ["A", "B", "C"] },
-    { "id": "p2", "type": "short", "q": "ITAE는 최고지만 5% 밴드 안에서 잔진동이 계속되는 세션을 승격해야 할까?" }
+    { "id": "p1", "type": "choice", "q": "가중치를 ITAE에만 1.0으로 주면 1등은?", "choices": ["A", "B", "C"], "answer": "B. ITAE만 보면 B가 1.5로 가장 작으므로 1등입니다. 대신 B는 오버슈트(20%)와 u_tv가 가장 커서, 가중치 선택이 순위를 바꾼다는 것을 보여 줍니다." },
+    { "id": "p2", "type": "short", "q": "ITAE는 최고지만 5% 밴드 안에서 잔진동이 계속되는 세션을 승격해야 할까?", "answer": "승격하지 않는 편이 좋습니다. 잔진동은 t_s·ITAE에는 잘 드러나지 않지만 서보를 계속 움직여(u_tv 큼) 마모·소음을 만들고, 다른 조건에서 진동이 커질 수 있습니다. 지표와 함께 그래프와 u_tv를 보고, 조금 느려도 조용히 정착하는 세션을 고릅니다." }
   ],
   "sample_sessions": [ { "slot": "pid-legacy" }, { "slot": "pid-best" }, { "slot": "pid-servo-redesign" } ],
   "promote_slots": ["pid-best", "pid-servo-redesign"],

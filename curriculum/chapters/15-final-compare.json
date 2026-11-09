@@ -16,7 +16,7 @@
   "slides": [],
   "widgets": ["final-compare", "metrics-table", "compare-bars", "sample-compare"],
   "predictions": [
-    { "id": "p1", "type": "choice", "q": "오버슈트가 가장 작은 제어기와 K_b +19%에 가장 덜 민감한 제어기는 같을까?", "choices": ["같다", "다르다", "데이터가 없어 판단할 수 없다"] }
+    { "id": "p1", "type": "choice", "q": "오버슈트가 가장 작은 제어기와 K_b +19%에 가장 덜 민감한 제어기는 같을까?", "choices": ["같다", "다르다", "데이터가 없어 판단할 수 없다"], "answer": "다른 경우가 많습니다. 오버슈트가 가장 작은 쪽은 보통 잘 튜닝한 PID·LQR, K_b 변화에 덜 민감한 쪽은 SMC나 적응형처럼 강인성을 노린 제어기입니다. 다만 결론은 여러분 데이터(반복 측정, 평균 ± 편차)로 내려야 하며, 실측이 없으면 판단할 수 없다고 적는 것도 정답입니다." }
   ],
   "sample_sessions": [ { "slot": "pid-best" }, { "slot": "autotune-best" }, { "slot": "gs-best" }, { "slot": "lqr-best" }, { "slot": "smc-best" } ],
   "quiz": [

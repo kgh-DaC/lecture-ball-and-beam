@@ -29,6 +29,33 @@ const PAGES = {
 // 평문을 이스케이프하고 t_r 같은 표기를 아래첨자로 바꿔 넣는 요소
 const rich = (tag, cls, text) => { const e = h(tag, cls ? { class: cls } : null); e.innerHTML = plainHtml(text); return e; };
 
+/** 예제 코드 블록의 [복사] 버튼: 코드 본문(<code>의 텍스트)만 클립보드로 */
+function wireCodeCopy(root) {
+  root.addEventListener('click', async (ev) => {
+    const btn = ev.target.closest && ev.target.closest('[data-copy-code]');
+    if (!btn || !root.contains(btn)) return;
+    const code = btn.parentElement && btn.parentElement.querySelector('pre code');
+    if (!code) return;
+    const text = code.textContent;
+    let ok = false;
+    try {
+      if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); ok = true; }
+    } catch (_) { ok = false; }
+    if (!ok) {
+      // file:// 등 보안 컨텍스트가 아닐 때의 대체 경로
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+      ta.remove();
+    }
+    btn.textContent = ok ? '복사됨 ✓' : '복사 실패';
+    btn.classList.toggle('done', ok);
+    clearTimeout(btn._t);
+    btn._t = setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('done'); }, 1500);
+  });
+}
+
 export class Shell {
   /** services: main.js가 만든 공용 ctx 조각 */
   constructor({ tocEl, mainEl, searchEl, services, katex }) {
@@ -198,6 +225,7 @@ export class Shell {
     const page = h('div', { class: `ch-page${secToc ? ' has-sec' : ''}` }, h('div', { class: 'ch-main' }, head, body), secToc);
     this.mainEl.append(page);
     enhanceFigures(body);
+    wireCodeCopy(body);
     const ctx = this.makeCtx(ch);
     // practice 없는 챕터: 위젯 조작(입력·버튼) 1회로 실습 완료 (chapter-format §8, 1.1.0)
     this._interacted = !!prog.practice_done;
@@ -273,6 +301,12 @@ export class Shell {
       box.appendChild(h('textarea', { rows: 2, class: 'predict-short', value: saved ?? '', onchange: (e) => save(e.target.value) }));
     }
     box.appendChild(h('div', { class: 'predict-foot' }, status, ' 예측은 채점하지 않습니다. 실습 후 결과와 나란히 비교하세요.'));
+    if (def.answer) {
+      // 답은 접어 둔다: 먼저 예측을 적고 펼쳐 보도록(chapter-format 1.8.0 predictions[].answer)
+      box.appendChild(h('details', { class: 'predict-answer' },
+        h('summary', null, '답 확인 ', h('span', { class: 'muted' }, '(예측을 적은 뒤 펼치기)')),
+        rich('div', 'predict-answer-body', def.answer)));
+    }
   }
 
   /** 실습 영역(:::part practice)이 화면에 들어오면 연결 모드 상단 바, 각 실습 머리에 연결 배지 */

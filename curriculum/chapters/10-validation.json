@@ -16,7 +16,7 @@
   "slides": [34, 35, 48],
   "widgets": ["controller-panel", "validation-run", "metrics-table", "compare-bars", "sample-compare"],
   "predictions": [
-    { "id": "p1", "type": "numeric", "q": "06장 PID를 같은 조건으로 3번 실행하면 오버슈트의 표준편차는 몇 %p일까?", "unit": "%p" }
+    { "id": "p1", "type": "numeric", "q": "06장 PID를 같은 조건으로 3번 실행하면 오버슈트의 표준편차는 몇 %p일까?", "unit": "%p", "answer": "장치마다 다르지만 실기에서는 대략 2~4 %p 정도를 예상합니다(교재 예시: 15 ± 3%). 시작 위치·잡음·서보 상태가 매번 조금씩 달라서이며, 정확한 값은 여러분의 3회 실행으로 확인합니다. 가상 장치는 잡음만 달라 흩어짐이 더 작게 나옵니다." }
   ],
   "practice": {
     "modes": ["device", "virtual", "sample"],

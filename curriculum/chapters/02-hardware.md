@@ -81,10 +81,8 @@ $$\text{deg}_{servo} = 90 + \text{trim} + \text{dir}\cdot\text{cmd}, \qquad \tex
 슬라이드 61의 "0 위치 ≈ 1.5 ms"는 일반적인 서보의 대략값입니다. 544/2400 µs 기본값으로 계산하면 90°는 1472 µs입니다. 실제로 어떤 펄스에서 빔이 수평이 되는지는 서보마다 다르며, `trim`과 07장 캘리브레이션으로 맞춥니다.
 :::
 
-:::widget pwm-demo {"servo_model": "current", "pulse_us": 1500, "show_period": true}:::
-
 :::predict p1
-명령각 cmd = +10°(trim 0, dir +1)일 때 펄스폭은 몇 µs일까요? 위젯을 움직이기 전에 계산해 보세요.
+명령각 cmd = +10°(trim 0, dir +1)일 때 펄스폭은 몇 µs일까요? 위 식으로 계산해 보세요. (펄스폭을 바꾸며 각도를 보는 위젯은 [a1장 2.2절](#/ch/a1-arduino-basics?h=h-2-2-타이머와-pwm)에 있습니다.)
 :::
 
 ### 3.3 서보 두 종류

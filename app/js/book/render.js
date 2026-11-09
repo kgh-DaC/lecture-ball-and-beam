@@ -177,7 +177,7 @@ function renderMarkdown(lines, ctx) {
       i++;
       while (i < L.length && !L[i].trim().startsWith(fence)) buf.push(L[i++]);
       i++;
-      out += `<pre class="code"><code${m[2] ? ` class="lang-${esc(m[2])}"` : ''}>${esc(buf.join('\n'))}</code></pre>`;
+      out += `<div class="code-wrap"><button type="button" class="code-copy" data-copy-code aria-label="예제 코드 복사">복사</button><pre class="code"><code${m[2] ? ` class="lang-${esc(m[2])}"` : ''}>${esc(buf.join('\n'))}</code></pre></div>`;
       continue;
     }
     // 블록 수식

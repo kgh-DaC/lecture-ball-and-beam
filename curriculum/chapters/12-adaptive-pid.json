@@ -16,8 +16,8 @@
   "slides": [50],
   "widgets": ["schedule-editor", "adaptation-plot", "controller-panel", "live-plot", "validation-run", "compare-bars", "overlay-plot"],
   "predictions": [
-    { "id": "p1", "type": "numeric", "q": "오차 10 cm(속도 0)에서 '멂'→'가까움' 전환 시 P 항 명령 변화는 몇 도?", "unit": "°" },
-    { "id": "p2", "type": "short", "q": "γ를 1에서 10으로 키우면 게인 시계열은 어떤 모양이 될까?" }
+    { "id": "p1", "type": "numeric", "q": "오차 10 cm(속도 0)에서 '멂'→'가까움' 전환 시 P 항 명령 변화는 몇 도?", "unit": "°", "answer": "약 9.9°입니다. P 항 변화 = (2.3884 − 0.66861) × 0.10 m ≈ 0.172 rad ≈ 9.9°로, 경계에서 명령이 계단처럼 뜁니다. 그래서 blend(선형·시그모이드)나 bumpless 전환을 씁니다." },
+    { "id": "p2", "type": "short", "q": "γ를 1에서 10으로 키우면 게인 시계열은 어떤 모양이 될까?", "answer": "게인이 빨리 바뀌지만 매끄럽게 수렴하지 않고 진동하거나 투영 한계 사이를 오갑니다. 지연과 잡음이 있는 루프에서는 적응 루프 자체의 안정 여유가 부족해져 응답이 오히려 나빠집니다(실기 γ 상한은 5)." }
   ],
   "practice": {
     "modes": ["device", "virtual", "sample"],
