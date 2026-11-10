@@ -14,14 +14,28 @@ export function mount(el, props, ctx) {
   let modelId = props.servo_model && props.servo_model !== 'current' ? props.servo_model : dev.servo_model || 'HS5645MG';
   let pulse = props.pulse_us ?? 1500;
   el.appendChild(head('PWM 펄스폭과 서보 각'));
-  const sel = h('select', { onchange: (e) => { modelId = e.target.value; draw(); } },
+  // 펄스폭 범위는 선택한 서보의 pmin~pmax로 제한한다(슬라이더·숫자 입력 모두). 모델을 바꾸면 슬라이더를 새 범위로 다시 만든다.
+  const rangeOf = () => {
+    const p = presets[modelId] || { pmin_us: 544, pmax_us: 2400 };
+    const useDev = modelId === dev.servo_model;
+    return { pmin: useDev && dev.pmin ? dev.pmin : p.pmin_us, pmax: useDev && dev.pmax ? dev.pmax : p.pmax_us };
+  };
+  let pulseRow = null;
+  const buildSlider = () => {
+    const { pmin, pmax } = rangeOf();
+    pulse = Math.min(pmax, Math.max(pmin, pulse));
+    const row = slider({ label: '펄스폭', min: pmin, max: pmax, step: 1, value: pulse, unit: 'µs', onInput: (v) => { pulse = v; draw(); } });
+    if (pulseRow && pulseRow.parentNode) pulseRow.replaceWith(row); else el.appendChild(row);
+    pulseRow = row;
+  };
+  const sel = h('select', { onchange: (e) => { modelId = e.target.value; buildSlider(); draw(); } },
     Object.values(presets).map((p) => h('option', { value: p.id, selected: p.id === modelId }, p.label + (p.id === dev.servo_model ? ' (현재 설정)' : ''))));
   el.appendChild(h('div', { class: 'row' }, h('label', null, '서보 모델 ', sel)));
   const cv = h('canvas', { style: { width: '220px', height: '160px', display: 'block', margin: '0 auto' }, role: 'img', 'aria-label': '서보 혼 각도' });
   el.appendChild(cv);
   const read = h('div', { class: 'readout' });
   el.appendChild(read);
-  el.appendChild(slider({ label: '펄스폭', min: 400, max: 2600, step: 10, value: pulse, unit: 'µs', onInput: (v) => { pulse = v; draw(); } }));
+  buildSlider();
   const plot = props.show_period !== false ? new Plot(el, { height: 150, xLabel: '시간 (ms)', yLabel: '신호 (V)', yRange: [-0.5, 5.5], noZoom: true }) : null;
   const note = h('div', { class: 'muted', style: { fontSize: '.85rem' } });
   el.appendChild(note);
