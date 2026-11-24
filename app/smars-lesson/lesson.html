@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아두이노 기초와 사용법 (SMARS 수업 M1~M6)</title>
+<!--
+==========================================================================
+ 볼앤빔 교재 a1장용 틀 페이지 (app/smars-lesson/lesson.html)
+ - SMARS 수업 교재 lesson.html 에서 M0·M7·정리를 뺀 틀이다. 이 파일은 동기화 대상이 아니다.
+ - M1~M6 내용은 a1/a1.js·a1/a1.css(+ examples/m1~m6)에 있고, 그 부분만 SMARS 저장소와 동기화된다
+   (node tools/sync_lesson.mjs). 교재 a1장의 위젯 smars-lesson 이 ?embed=1&mods=m1,…,m6 로 연다.
+==========================================================================
+ SMARS 로봇 수업 교재 (lesson.html) — 구조 안내
+==========================================================================
+ - 단일 파일. 외부 CDN·웹폰트·프레임워크·fetch 없음. file:// 더블클릭으로 연다.
+ - 기준 문서: .claude/skills/class-lesson-page(레이아웃·카드 6칸),
+              .claude/skills/smars-protocol(핀). 시간표·타이머·소요 시간은 넣지 않는다.
+
+ [HTML]
+   header.topbar      상단 고정 바(수업명 · 현재 모듈 · 시리얼 연결 배지 · 큰 글자 토글)
+   nav#toc            목차(MODULES에서 생성, 모듈별 체크 완료율). 900px 미만이면 가로 탭
+   main#cards         모듈 카드 껍데기 <section class="card" id="m0"…"m7","wrap">
+                      → 내용은 JS의 LESSON[모듈id] 데이터로 renderCard()가 채운다.
+                      M0, M7, 정리처럼 6칸 틀이 맞지 않는 카드는 custom 칸을 쓴다.
+   section#tools      하단(접기 가능): 공통 핀 맵 표 · 문제 해결 표 · 미니 시리얼 모니터(Web Serial)
+   예제 블록 (script 태그, type="text/plain", id="ex-mN", data-file="examples/…")
+                      검증된 예제 스케치 원문. examples/mN_*/mN_*.ino 내용을 그대로 붙여 넣는다.
+                      비어 있으면 카드 ④에 자리표시 문구가 나온다(대비용).
+
+ [JS] (맨 아래 script 태그 한 개)
+   1. PINMAP          핀 단일 정의. 배선도 SVG · 프롬프트 [핀] · 핀 맵 표 · 본문 속 핀 번호 모두 여기서.
+   2. MODULES         id · 제목 · 사용 핀 키. 목차 · 상단 바 · 카드 머리 배지가 공유.
+   3. 공통 유틸       store(localStorage, try/catch), copyText, toast, pin()/pinLine()
+   4. 공통 생성기     wiringSVG(keys) · buildPrompt() · 체크리스트 · 확인 문제 · 예제 표시
+   5. 인터랙티브      breadboard(M1) · hbridge/pwm(M2) · buzzer(M3) · ultra(M4) · line(M5) · bt/uart(M6) · wrap(정리)
+                      — principle.html(문자열 또는 함수) + principle.init(sec)
+   6. LESSON          모듈별 내용 객체(m0, m1, m2 …). 새 카드는 여기 객체 하나만 추가하면 된다.
+   7. 시리얼          Monitor(Web Serial 연결·해지·수신 로그·보내기) + sendQuick('F')(카드 빠른 전송 버튼)
+==========================================================================
+-->
+<style>
+:root{
+  --bg:#0f1117;--panel:#1a1d27;--panel2:#141722;--accent:#4f8ef7;
+  --accent2:#f7a64f;--green:#4fcf83;--red:#f74f4f;
+  --yellow:#f7d94f;--purple:#b48cf7;--cyan:#4fd1e0;
+  --text:#e8eaf6;--muted:#7a7f99;--border:#2a2d3e;
+  --topH:56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{color-scheme:dark;font-size:16px;scroll-behavior:smooth;}
+html[data-big="1"]{font-size:21.6px;} /* ×1.35 */
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Malgun Gothic',sans-serif;font-size:1rem;line-height:1.6;}
+a{color:var(--cyan);}
+code,.mono,pre{font-family:Consolas,'D2Coding','Courier New',monospace;}
+code{background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:0 .3em;font-size:.92em;}
+button{font:inherit;cursor:pointer;}
+
+/* ── 상단 바 ── */
+.org{display:flex;align-items:center;gap:.9rem;padding:.4rem 18px;background:var(--panel2);border-bottom:1px solid var(--border);}
+.org img{height:56px;width:auto;flex:none;}
+.org-dept{font-size:1.15rem;font-weight:600;letter-spacing:.04em;color:var(--text);}
+@media (max-width:640px){.org img{height:44px;} .org-dept{font-size:.95rem;}}
+.topbar{position:sticky;top:0;z-index:30;height:var(--topH);display:flex;align-items:center;gap:14px;padding:0 18px;background:var(--panel2);border-bottom:1px solid var(--border);}
+.topbar h1{font-size:1.1rem;color:var(--accent);letter-spacing:1px;white-space:nowrap;}
+.topbar .cur{flex:1;min-width:0;color:var(--muted);font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .cur b{color:var(--text);}
+.btn{background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.3em .8em;font-size:.88rem;}
+.btn:hover{border-color:var(--accent);}
+.btn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn.small{font-size:.78rem;padding:.15em .6em;}
+html[data-embed="1"] .org{display:none;}
+.safety-strip{background:rgba(247,79,79,.12);border-bottom:1px solid rgba(247,79,79,.4);color:#ffd0d0;font-size:.85rem;padding:.35em 18px;}
+
+/* ── 레이아웃 ── */
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:0;}
+#toc{position:sticky;top:var(--topH);align-self:start;height:calc(100vh - var(--topH));overflow:auto;padding:14px 10px;border-right:1px solid var(--border);background:var(--panel2);}
+#toc a{display:block;text-decoration:none;color:var(--text);padding:.45em .6em;border-radius:6px;margin-bottom:2px;font-size:.9rem;}
+#toc a:hover{background:var(--panel);}
+#toc a.active{background:rgba(79,142,247,.18);outline:1px solid var(--accent);}
+#toc .no{display:inline-block;min-width:2.6em;color:var(--accent);font-weight:700;}
+#toc .prog{display:block;font-size:.75rem;color:var(--muted);margin-left:2.6em;}
+#toc .bar{display:block;height:4px;background:var(--border);border-radius:2px;margin:2px 0 0 2.6em;overflow:hidden;}
+#toc .bar i{display:block;height:100%;background:var(--green);width:0;}
+#toc .toc-foot{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;}
+main{padding:18px 22px 40px;min-width:0;}
+
+/* ── 카드 ── */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:22px;scroll-margin-top:calc(var(--topH) + 50px);}
+.card-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:14px;}
+.mod-no{background:var(--accent);color:#fff;font-weight:800;border-radius:8px;padding:.1em .55em;font-size:1.2rem;}
+.card-head h2{font-size:1.35rem;}
+.card-head .goal{flex-basis:100%;color:var(--muted);font-size:.95rem;}
+.card-head .goal b{color:var(--text);font-weight:600;}
+.badges{display:flex;flex-wrap:wrap;gap:6px;}
+.badge{font-size:.78rem;border:1px solid var(--border);background:var(--panel2);border-radius:999px;padding:.1em .7em;color:var(--cyan);}
+.badge.opt{color:var(--accent2);border-color:var(--accent2);}
+.slots{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;}
+.slot{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;min-width:0;}
+.slot.wide{grid-column:1/-1;}
+.slot h3{font-size:1.02rem;color:var(--accent2);margin-bottom:8px;}
+.slot p,.slot li{font-size:.95rem;}
+.slot ul,.slot ol{padding-left:1.3em;}
+.slot li{margin:.2em 0;}
+.placeholder{color:var(--muted);text-align:center;padding:26px 10px;border:1px dashed var(--border);border-radius:10px;}
+
+.box{border-left:4px solid var(--accent);background:rgba(79,142,247,.08);padding:.55em .9em;border-radius:0 8px 8px 0;margin:.6em 0;font-size:.93rem;}
+.warn{border-left:4px solid var(--red);background:rgba(247,79,79,.09);padding:.55em .9em;border-radius:0 8px 8px 0;margin:.6em 0;font-size:.93rem;}
+.warn b{color:#ff9a9a;}
+.warn ul,.box ul{padding-left:1.3em;}
+.muted{color:var(--muted);}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:.5em 0;}
+
+/* ── 인터랙티브 공통 ── */
+.ia{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start;}
+.ia svg{width:100%;height:auto;display:block;background:#0b0d13;border:1px solid var(--border);border-radius:8px;}
+.ia .explain{font-size:.95rem;}
+.ia .explain ol,.ia .explain ul{padding-left:1.2em;}
+.status{margin-top:8px;padding:.5em .8em;border-radius:8px;background:var(--panel);border:1px solid var(--border);font-size:.92rem;min-height:2.4em;}
+.fake-serial{font-family:Consolas,monospace;font-size:.85rem;background:#06070b;border:1px solid var(--border);border-radius:6px;padding:6px 8px;height:7.5em;overflow:auto;color:var(--green);white-space:pre-wrap;}
+
+</style>
+<link rel="stylesheet" href="a1/a1.css">
+<style>
+/* 입력칸 공통 */
+.txt{background:#06070b;color:var(--text);border:1px solid var(--border);border-radius:6px;padding:.3em .5em;font:inherit;font-size:.92rem;}
+/* 진행 막대 (정리 카드) */
+.pbar{display:block;height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+.pbar i{display:block;height:100%;background:var(--green);}
+/* 미니 시리얼 모니터 */
+.mon-log{background:#06070b;border:1px solid var(--border);border-radius:8px;height:16em;overflow:auto;padding:6px 10px;font-family:Consolas,monospace;font-size:.85rem;white-space:pre-wrap;word-break:break-all;margin:.4em 0;}
+.mon-log .ml-rx{color:var(--text);} .mon-log .ml-tx{color:var(--cyan);} .mon-log .ml-sys{color:var(--muted);} .mon-log .ml-err{color:var(--red);}
+.conn-badge{font-size:.78rem;border:1px solid var(--border);background:var(--panel);color:var(--muted);border-radius:999px;padding:.15em .7em;white-space:nowrap;}
+.conn-badge::before{content:'●';margin-right:.35em;color:var(--muted);}
+.conn-badge.on{color:var(--green);border-color:var(--green);}
+.conn-badge.on::before{color:var(--green);}
+/* PWM */
+input[type=range]{width:100%;accent-color:var(--accent);}
+.deadband{color:var(--yellow);font-weight:600;}
+
+/* ── 배선도 ── */
+.wiring svg{width:100%;height:auto;display:block;background:#0b0d13;border:1px solid var(--border);border-radius:8px;}
+.wiring .legend{font-size:.8rem;color:var(--muted);margin-top:4px;}
+
+/* ── 코드/프롬프트 ── */
+.codebox{position:relative;margin:.5em 0;}
+.codebox pre{background:#06070b;border:1px solid var(--border);border-radius:8px;padding:12px 14px;padding-top:34px;overflow:auto;font-size:.86rem;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:30em;}
+.codebox .copy{position:absolute;top:6px;right:6px;}
+.codebox .file{position:absolute;top:8px;left:12px;font-size:.75rem;color:var(--muted);}
+details{margin:.5em 0;}
+details>summary{cursor:pointer;color:var(--cyan);font-size:.93rem;padding:.2em 0;}
+details[open]>summary{margin-bottom:.3em;}
+details.teacher>summary{color:var(--purple);}
+details.teacher{border:1px dashed var(--purple);border-radius:8px;padding:.3em .8em;}
+.loop4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:.5em 0;}
+.loop4 div{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:.5em .6em;font-size:.88rem;position:relative;}
+.loop4 div b{display:block;color:var(--accent2);font-size:.95rem;}
+.loop4 div:not(:last-child)::after{content:'→';position:absolute;right:-.85em;top:40%;color:var(--muted);}
+
+/* ── 체크리스트/퀴즈 ── */
+.chk{display:flex;gap:.6em;align-items:flex-start;padding:.3em .2em;border-radius:6px;cursor:pointer;font-size:.95rem;}
+.chk:hover{background:var(--panel);}
+.chk input{margin-top:.35em;width:1.1em;height:1.1em;accent-color:var(--green);flex:none;}
+.chk input:checked + span{color:var(--muted);text-decoration:line-through;}
+.chk.tg input:checked + span{color:var(--text);text-decoration:none;} /* 상태 토글(체크리스트 아님) */
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin:.4em 0;}
+.quick button{font-family:Consolas,monospace;font-weight:700;min-width:3em;}
+details.quiz{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:.4em .8em;}
+details.quiz>summary{color:var(--text);}
+details.quiz .ans{color:var(--green);font-size:.93rem;padding:.2em 0 .3em;}
+
+/* ── 하단 도구 ── */
+#tools{padding:0 22px 40px;}
+#tools>details{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px 18px;margin-bottom:14px;}
+#tools>details>summary{font-size:1.1rem;color:var(--accent);font-weight:700;}
+table{border-collapse:collapse;width:100%;font-size:.9rem;margin-top:8px;}
+th,td{border:1px solid var(--border);padding:.4em .6em;text-align:left;vertical-align:top;}
+th{background:var(--panel2);color:var(--accent2);}
+td.pin{font-family:Consolas,monospace;color:var(--cyan);white-space:nowrap;}
+td.pin.long{white-space:normal;word-break:break-all;}
+
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--accent2);color:var(--text);padding:.6em 1.1em;border-radius:8px;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s;font-size:.95rem;}
+#toast.show{opacity:1;}
+
+/* ── 반응형 ── */
+@media (max-width:1150px){
+  .slots{grid-template-columns:minmax(0,1fr);}
+  .ia{grid-template-columns:minmax(0,1fr);}
+}
+@media (max-width:900px){
+  .layout{display:block;}
+  #toc{position:sticky;top:var(--topH);z-index:20;height:auto;display:flex;gap:4px;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border);padding:6px 8px;}
+  #toc a{flex:none;margin:0;white-space:nowrap;font-size:.85rem;}
+  #toc .prog,#toc .bar,#toc .ttl{display:none;}
+  #toc .no{min-width:0;}
+  #toc .toc-foot{display:none;}
+  main{padding:12px;}
+  #tools{padding:0 12px 30px;}
+  .topbar h1{font-size:.95rem;}
+  .topbar .cur{display:none;}
+  .loop4{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .loop4 div::after{display:none;}
+  .card{scroll-margin-top:calc(var(--topH) + 100px);}
+}
+</style>
+</head>
+<body>
+
+<div class="org">
+  <img src="img/logo.png" alt="한국폴리텍대학 광주캠퍼스 로고" width="262" height="240">
+  <span class="org-dept">Dept. Mechanical System</span>
+</div>
+<header class="topbar">
+  <h1>아두이노 기초 · SMARS M1~M6</h1>
+  <div class="cur" id="curMod">지금 보는 곳: <b>—</b></div>
+  <button class="conn-badge" id="connBadge" title="미니 시리얼 모니터 연결 안 됨">시리얼 끊김</button>
+  <button class="btn" id="btnBig" title="프로젝터용 큰 글자">큰 글자</button>
+</header>
+<div class="safety-strip" id="safetyStrip"></div>
+
+<div class="layout">
+  <nav id="toc" aria-label="목차"></nav>
+
+  <main id="cards">
+    <!-- 카드 껍데기: 내용은 LESSON 데이터로 채운다 -->
+    <section class="card" id="m1" data-mod="m1"></section>
+    <section class="card" id="m2" data-mod="m2"></section>
+    <section class="card" id="m3" data-mod="m3"></section>
+    <section class="card" id="m4" data-mod="m4"></section>
+    <section class="card" id="m5" data-mod="m5"></section>
+    <section class="card" id="m6" data-mod="m6"></section>
+  </main>
+</div>
+
+<section id="tools">
+  <details open id="pinTableBox">
+    <summary>공통 핀 맵</summary>
+    <p class="muted" style="font-size:.88rem">모든 카드의 배선도와 프롬프트 [핀] 칸은 이 표와 같은 데이터에서 만들어집니다.</p>
+    <div id="pinTable"></div>
+  </details>
+  <details open id="troubleBox">
+    <summary>문제 해결</summary>
+    <div id="troubleTable"></div>
+  </details>
+  <details open id="monitorBox">
+    <summary>미니 시리얼 모니터</summary>
+    <div class="warn"><b>주의:</b> Arduino IDE 시리얼 모니터나 웹 콘솔과 <b>동시에 포트를 열 수 없습니다.</b> 스케치를 업로드하기 전에는 여기서 <b>연결 해지</b>를 먼저 누르세요.</div>
+    <div id="monitor">
+      <div class="warn" id="monNoSerial" hidden><b>이 브라우저는 Web Serial을 지원하지 않습니다.</b> Chrome 또는 Edge에서 이 파일을 열어 주세요. (나머지 페이지는 그대로 쓸 수 있습니다)</div>
+      <div class="row">
+        <label for="monBaud">보율</label><select id="monBaud" class="txt"></select>
+        <button class="btn" id="monConnect">연결</button><button class="btn" id="monDisconnect" disabled>연결 해지</button>
+        <span id="monStatus" class="muted"></span>
+      </div>
+      <p class="muted" style="font-size:.85rem">USB는 예제·펌웨어 모두 같은 보율, 블루투스 COM 포트(M6·M7)는 HC-05 보율로 엽니다. 연결을 누르면 포트 선택 창이 뜹니다.</p>
+      <div id="monLog" class="mon-log" aria-live="polite"></div>
+      <div class="row">
+        <input id="monInput" class="txt" placeholder="보낼 글자 입력 후 Enter (줄 끝에 줄바꿈이 붙습니다)" style="flex:1;min-width:12em" disabled>
+        <button class="btn" id="monSend" disabled>보내기</button>
+        <button class="btn small" id="monClear">로그 지우기</button>
+        <label class="muted" style="font-size:.85rem"><input type="checkbox" id="monAuto" checked> 자동 스크롤</label>
+      </div>
+    </div>
+  </details>
+</section>
+
+<div id="toast"></div>
+
+<!-- ===== 검증된 예제 원문 =====
+  컴파일 검증이 끝난 examples/mN_*/mN_*.ino 내용을 그대로 아래 형식으로 넣는다(type이 id보다 앞에 와야 QA가 읽는다).
+    script type="text/plain" id="ex-m1" data-file="examples/m1_blink/m1_blink.ino" … /script
+  블록이 없거나 비어 있으면 카드 ④에 자리표시가 나온다. 현재 ex-m1~m6 모두 들어 있다(컴파일 검증됨).
+-->
+
+<script>
+'use strict';
+/* =====================================================================
+   1. PINMAP — 핀 단일 정의 (smars-protocol "웹 핀 맵 데이터"와 같아야 함)
+   ===================================================================== */
+const PINMAP = {
+  led:    { label:'LED(M1 실습)', pins:{ '+(저항 거쳐)':'D13', '−':'GND' } },
+  motorL: { label:'왼쪽 모터(B)', pins:{ DIR:'D12', BRAKE:'D9', PWM:'D10' } },
+  motorR: { label:'오른쪽 모터(A)', pins:{ DIR:'D13', BRAKE:'미사용(D8은 Echo)', PWM:'D11' } },
+  ultra:  { label:'초음파 HC-SR04', pins:{ Trig:'D7', Echo:'D8', '+':'5V', G:'GND' } },
+  buzzer: { label:'능동형 부저', pins:{ 신호:'D4', GND:'GND' } },
+  line:   { label:'IR 라인센서', pins:{ DO:'A2', VCC:'5V', GND:'GND' } },
+  bt:     { label:'HC-05', pins:{ 'TXD→':'A1(아두이노 RX)', 'RXD←':'A0(아두이노 TX)' }, baud:9600 },
+  usb:    { label:'USB 시리얼', pins:{ RX:'D0', TX:'D1' }, baud:57600 },
+};
+
+/* =====================================================================
+   2. MODULES — 목차 · 상단 바 · 카드 머리 공유 (시간 정보 없음)
+   ===================================================================== */
+const MODULES = [
+  /* m1~m6 은 a1/a1.js 가 여기(m0 뒤)에 끼운다 */
+];
+
+/* 2-1. 끼워 넣기 모드 — 다른 교재가 iframe으로 일부 모듈만 보여 줄 때 쓴다.
+   예) lesson.html?embed=1&mods=m1,m2,m3,m4,m5,m6  (볼앤빔 교재 a1장)
+   embed=1 : 학교 로고 줄을 숨긴다.  mods : 목록에 없는 모듈은 목차·카드에서 뺀다.
+   mods 거르기는 a1/a1.js 가 M1~M6 을 더한 뒤 init() 에서 한다.
+   M1~M6(a1/ 폴더)만 볼앤빔 저장소(app/smars-lesson/a1/)와 동기화된다(tools/sync_lesson.mjs). */
+const EMBED = (() => {
+  try {
+    const q = new URLSearchParams(location.search);
+    return { on: q.get('embed') === '1', mods: (q.get('mods') || '').split(',').map(s => s.trim()).filter(Boolean) };
+  } catch (e) { return { on: false, mods: [] }; }
+})();
+
+/* =====================================================================
+   3. 공통 유틸
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch(e){} },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} },
+  keys(prefix){ try { return Object.keys(localStorage).filter(k => k.startsWith(prefix)); } catch(e){ return []; } },
+};
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+let toastTimer = null;
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+async function copyText(text, btn){
+  let ok = false;
+  try { await navigator.clipboard.writeText(text); ok = true; } catch(e) {
+    try {
+      const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove();
+    } catch(e2) { ok = false; }
+  }
+  if (btn){ const old = btn.textContent; btn.textContent = ok ? '복사됨' : '복사 실패'; setTimeout(() => btn.textContent = old, 1400); }
+  if (!ok) toast('복사하지 못했습니다. 글자를 직접 드래그해 복사하세요.');
+}
+/* 핀 값에서 핀 이름만: 'A1(아두이노 RX)' → 'A1', '미사용(…)' → 그대로 */
+function pinCode(v){ const m = /^(D\d+|A\d|5V|GND)/.exec(v); return m ? m[1] : null; }
+function pin(key, term){ const v = PINMAP[key].pins[term]; return pinCode(v) || v; }
+function pinLine(key){
+  const p = PINMAP[key];
+  return p.label + ': ' + Object.entries(p.pins).map(([t,v]) => t + '=' + v).join(', ') + (p.baud ? ', ' + p.baud + 'bps' : '');
+}
+const PWM_CAPABLE = ['D3','D5','D6','D9','D10','D11'];
+const pinShow = p => (PWM_CAPABLE.includes(p) ? '~' : '') + p;
+
+/* =====================================================================
+   4. 공통 생성기
+   ===================================================================== */
+/* 4-1. 배선도 SVG: 부품 단자 → 아두이노 핀 (번호는 PINMAP에서만) */
+const PART_COLOR = { led:'#f7d94f', motorL:'#4f8ef7', motorR:'#f7a64f', ultra:'#4fd1e0', buzzer:'#b48cf7', line:'#4fcf83', bt:'#6f8cff', usb:'#7a7f99' };
+function wiringSVG(keys, opt = {}){
+  const rowH = 30, headH = 30, gap = 16, top = 12;
+  const PX = 12, PW = 190, AX = 400, AW = 150, W = 562;
+  let y = top; const rows = [], parts = [];
+  keys.forEach(k => {
+    const ents = Object.entries(PINMAP[k].pins);
+    parts.push({ k, y, h: headH + ents.length * rowH });
+    ents.forEach(([t,v], i) => rows.push({ k, t, v, code: pinCode(v), y: y + headH + i * rowH + rowH / 2 }));
+    y += headH + ents.length * rowH + gap;
+  });
+  const leftBottom = y - gap;
+  // 아두이노 쪽 핀: 연결된 단자들의 평균 높이에 맞춰 배치(겹치면 아래로 민다)
+  const pinMap = {};
+  rows.forEach(r => { if (r.code){ (pinMap[r.code] = pinMap[r.code] || []).push(r.y); } });
+  const pins = Object.entries(pinMap).map(([code, ys]) => ({ code, y: ys.reduce((a,b)=>a+b,0) / ys.length }));
+  pins.sort((a,b) => a.y - b.y);
+  let minY = top + headH + rowH / 2;
+  pins.forEach(p => { p.y = Math.max(p.y, minY); minY = p.y + rowH; });
+  const aBottom = Math.max(leftBottom, (pins.length ? pins[pins.length-1].y : 0) + rowH / 2 + 6);
+  const H = aBottom + 14;
+  const yOf = code => pins.find(p => p.code === code).y;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="배선도">`;
+  // 부품 상자
+  parts.forEach(p => {
+    const c = PART_COLOR[p.k] || '#888';
+    s += `<rect x="${PX}" y="${p.y}" width="${PW}" height="${p.h}" rx="8" fill="#141722" stroke="${c}" stroke-width="2"/>`;
+    s += `<text x="${PX + 10}" y="${p.y + 20}" fill="${c}" font-size="14" font-weight="700">${esc(PINMAP[p.k].label)}</text>`;
+  });
+  // 아두이노 상자
+  s += `<rect x="${AX}" y="${top}" width="${AW}" height="${aBottom - top}" rx="8" fill="#101a2e" stroke="#4f8ef7" stroke-width="2"/>`;
+  s += `<text x="${AX + 10}" y="${top + 20}" fill="#4f8ef7" font-size="13" font-weight="700">Arduino UNO + L298P</text>`;
+  pins.forEach(p => {
+    s += `<circle cx="${AX}" cy="${p.y}" r="5" fill="#4f8ef7"/>`;
+    s += `<text x="${AX + 14}" y="${p.y + 5}" fill="#e8eaf6" font-size="15" font-family="Consolas,monospace" font-weight="700">${esc(pinShow(p.code))}</text>`;
+  });
+  // 단자와 선
+  rows.forEach(r => {
+    const c = PART_COLOR[r.k] || '#888';
+    const x1 = PX + PW;
+    s += `<text x="${x1 - 12}" y="${r.y + 5}" fill="#e8eaf6" font-size="14" text-anchor="end">${esc(r.t)}</text>`;
+    s += `<circle cx="${x1}" cy="${r.y}" r="5" fill="${c}"/>`;
+    if (r.code){
+      const y2 = yOf(r.code), mx = (x1 + AX) / 2;
+      s += `<path d="M${x1},${r.y} C${mx},${r.y} ${mx},${y2} ${AX},${y2}" stroke="${c}" stroke-width="3" fill="none"/>`;
+      if (/저항/.test(r.t) && opt.resistor){
+        const my = (r.y + y2) / 2;
+        s += `<rect x="${mx - 24}" y="${my - 9}" width="48" height="18" fill="#0b0d13"/>`;
+        s += `<polyline points="${mx-24},${my} ${mx-18},${my-7} ${mx-10},${my+7} ${mx-2},${my-7} ${mx+6},${my+7} ${mx+14},${my-7} ${mx+20},${my} ${mx+24},${my}" stroke="${c}" stroke-width="2.5" fill="none"/>`;
+        s += `<text x="${mx}" y="${my - 13}" fill="${c}" font-size="13" text-anchor="middle">${esc(opt.resistor)}</text>`;
+      }
+    } else {
+      s += `<line x1="${x1}" y1="${r.y}" x2="${x1 + 34}" y2="${r.y}" stroke="#7a7f99" stroke-width="2" stroke-dasharray="4 4"/>`;
+      s += `<text x="${x1 + 40}" y="${r.y + 5}" fill="#7a7f99" font-size="13">${esc(r.v)}</text>`;
+    }
+  });
+  s += `</svg>`;
+  return `<div class="wiring">${s}<div class="legend">~ 표시 = PWM(속도 조절) 가능 핀 · 점선 = 연결하지 않음</div></div>`;
+}
+
+/* 4-2. 프롬프트 (스킬 4절 템플릿) */
+function buildPrompt(p){
+  let cons = `시리얼 ${PINMAP.usb.baud}bps / tone() 사용 금지 / loop() 안에서 긴 delay 대신 millis() / 외부 라이브러리 없이`;
+  if (p.extraConstraint) cons += ' / ' + p.extraConstraint;
+  const pinsTxt = p.pinKeys.map(pinLine).join(' / ');
+  const act = p.actions.map((a,i) => `${i+1}. ${a}`).join('\n       ');
+  return `[역할] 너는 아두이노 우노 코드를 작성하는 도우미야.\n[하드웨어] Arduino UNO + L298P 모터 쉴드, ${p.parts}\n[핀] ${pinsTxt}\n[동작] ${act}\n[제약] ${cons}\n[출력] 코드 한 파일 + 줄마다 한국어 주석 + 테스트 방법 3줄`;
+}
+const LOOP4_HTML = `<div class="loop4">
+  <div><b>1 요청</b>프롬프트 카드를 복사해 AI에게 보낸다. 핀·보율·금지 사항을 빠짐없이.</div>
+  <div><b>2 읽기</b>받은 코드를 바로 올리지 않는다. 아래 코드 검사표로 확인한다.</div>
+  <div><b>3 실행</b>업로드하고 테스트 체크리스트대로 직접 해 본다.</div>
+  <div><b>4 고치기</b>틀린 점을 구체적으로 적어 다시 요청한다. (예: "보율을 57600으로 바꿔 줘")</div>
+</div>`;
+/* p.delayNote: delay 항목 뒤에 붙는 모듈별 예외 안내(M1), p.includeCheck: #include 항목 대체(M6) */
+const BASE_CODE_CHECKS = (p = {}) => [
+  '코드의 핀 번호가 프롬프트 [핀] 칸(= 아래 공통 핀 맵)과 같은가',
+  `<code>Serial.begin(${PINMAP.usb.baud})</code>인가 (다른 숫자면 시리얼 글자가 깨진다)`,
+  '<code>tone()</code>을 쓰지 않았는가',
+  '<code>loop()</code> 안에 긴 <code>delay()</code>가 없는가 (<code>millis()</code> 사용)' + (p.delayNote ? ' ' + p.delayNote : ''),
+  p.includeCheck || '외부 라이브러리(<code>#include</code>)를 쓰지 않았는가',
+];
+function promptSlot(mod, p){
+  const text = buildPrompt(p);
+  const checks = BASE_CODE_CHECKS(p).concat(p.codeChecks || []);
+  return `<div class="slot"><h3>③ 프롬프트 카드</h3>
+    <p class="muted" style="font-size:.88rem">[핀] 칸은 공통 핀 맵에서 자동으로 채워집니다.</p>
+    <div class="codebox"><button class="btn small copy" data-copy="prompt-${mod}">복사</button><pre id="prompt-${mod}">${esc(text)}</pre></div>
+    <div class="warn"><b>AI가 자주 틀리는 점</b><ul>${p.mistakes.map(m => `<li>${m}</li>`).join('')}</ul></div>
+    <details><summary>바이브코딩 4단계 루프 · 코드 검사표</summary>${LOOP4_HTML}
+      <b style="font-size:.93rem">코드 검사표</b><ul>${checks.map(c => `<li>${c}</li>`).join('')}</ul></details>
+    ${p.teacherTip ? `<details class="teacher"><summary>교사용</summary><p>${p.teacherTip}</p></details>` : ''}
+  </div>`;
+}
+
+/* 4-3. 예제 칸: 예제 블록(type=text/plain, id=ex-mN)의 내용을 그대로 표시 */
+function exampleSlot(mod, ex){
+  const el = $('ex-' + mod);
+  const file = (el && el.dataset.file) || ex.file || '';
+  const code = el ? el.textContent.replace(/^\r?\n/, '') : '';
+  if (!code.trim()){
+    return `<div class="slot wide"><h3>④ 검증된 예제</h3>
+      <p class="muted">파일: <code>${esc(file)}</code></p>
+      <div class="placeholder">예제 준비 중 — 컴파일 검증 후 들어갑니다</div></div>`;
+  }
+  return `<div class="slot wide"><h3>④ 검증된 예제</h3>
+    <p class="muted" style="font-size:.88rem">AI 코드가 안 될 때 비교해 보거나 그대로 업로드해도 됩니다.</p>
+    <details><summary>예제 코드 펼치기</summary>
+      <div class="codebox"><span class="file">${esc(file)}</span><button class="btn small copy" data-copy="code-${mod}">복사</button><pre id="code-${mod}">${esc(code)}</pre></div>
+    </details></div>`;
+}
+
+/* 4-4. 체크리스트 (localStorage 키 smarsLesson.check.<모듈>.<번호>) */
+const CHECK_PREFIX = 'smarsLesson.check.';
+function checklistSlot(mod, items, quick, extra, quickNote){
+  const list = items.map((t,i) => {
+    const key = `${CHECK_PREFIX}${mod}.${i+1}`;
+    return `<label class="chk"><input type="checkbox" data-key="${key}" ${store.get(key) === '1' ? 'checked' : ''}><span>${t}</span></label>`;
+  }).join('');
+  const q = quick && quick.length ? `<div class="box"><b>빠른 전송</b> (아래 미니 시리얼 모니터로 보냅니다)
+      <div class="quick">${quick.map(c => `<button class="btn" data-send="${esc(c)}">${esc(c)}</button>`).join('')}</div>${quickNote ? `<div class="warn" style="margin-bottom:0">${quickNote}</div>` : ''}</div>` : '';
+  return `<div class="slot"><h3>⑤ 테스트 체크리스트</h3>${q}${extra || ''}${list}
+    <div class="row"><button class="btn small" data-reset="${mod}">이 카드 체크 초기화</button></div></div>`;
+}
+function quizSlot(items){
+  return `<div class="slot"><h3>⑥ 확인 문제</h3><p class="muted" style="font-size:.85rem">질문을 누르면 답이 보입니다.</p>
+    ${items.map((it,i) => `<details class="quiz"><summary>Q${i+1}. ${it.q}</summary><div class="ans">${it.a}</div></details>`).join('')}</div>`;
+}
+
+/* 4-5. 카드 렌더러 */
+function badgesHTML(m){
+  let b = '';
+  if (m.pins === 'all') b += `<span class="badge">전체 핀</span>`;
+  else m.pins.forEach(k => {
+    const codes = Object.values(PINMAP[k].pins).map(pinCode).filter(c => c && c !== 'GND' && c !== '5V');
+    b += `<span class="badge">${esc(PINMAP[k].label)} ${esc(codes.join('/'))}</span>`;
+  });
+  if (m.optional) b += `<span class="badge opt">${esc(typeof m.optional === 'string' ? m.optional : '선택 모듈')}</span>`;
+  return b ? `<div class="badges">${b}</div>` : '';
+}
+function renderCard(m){
+  const sec = $(m.id); const d = LESSON[m.id];
+  let h = `<div class="card-head"><span class="mod-no">${esc(m.no)}</span><h2>${esc(m.title)}</h2>${badgesHTML(m)}
+    <div class="goal"><b>학습 목표</b> · ${d ? d.goal : '—'}</div></div>`;
+  if (!d){
+    sec.innerHTML = h + `<div class="placeholder">이 모듈의 내용(LESSON)이 없습니다.</div>`;
+    return;
+  }
+  if (d.topWarn) h += `<div class="warn">${d.topWarn}</div>`;
+  h += `<div class="slots">`;
+  if (d.custom){
+    h += d.custom.map(c => `<div class="slot${c.wide ? ' wide' : ''}"><h3>${c.title}</h3>${c.html}</div>`).join('');
+  } else {
+    const ph = typeof d.principle.html === 'function' ? d.principle.html() : d.principle.html;
+    h += `<div class="slot wide"><h3>① 원리</h3>${ph}</div>`;
+    h += `<div class="slot"><h3>② 배선도</h3>${wiringSVG(d.wiring.keys, d.wiring)}${d.wiring.notes || ''}</div>`;
+    h += promptSlot(m.id, d.prompt);
+    h += exampleSlot(m.id, d.example || {});
+  }
+  if (d.checklist) h += checklistSlot(m.id, d.checklist, d.quick, typeof d.testExtra === 'function' ? d.testExtra() : d.testExtra, d.quickNote);
+  if (d.quiz) h += quizSlot(d.quiz);
+  h += `</div>`;
+  sec.innerHTML = h;
+  if (d.principle && d.principle.init) d.principle.init(sec);
+}
+
+/* =====================================================================
+   5. 인터랙티브
+   ===================================================================== */
+/* 5-1. M1 — 원리 6단계(스텝): 보드 → 신호선 → 전원 → 시리얼 → 브레드보드 → IDE·드라이버·보레이트
+   순서는 references/modules.md M1 절(사용자 요청)을 따른다. 바꾸지 않는다. */
+
+/* 5-1-0. 스텝 공통: 탭 + 진행 표시 + 이전/다음 */
+function stepperHTML(id, steps){
+  return `<div class="stepper" id="${id}">
+    <div class="step-tabs" role="tablist">${steps.map((s,i) => `<button class="step-tab" role="tab" data-go="${i}"><span class="sn">${i+1}</span>${s.title}</button>`).join('')}</div>
+    <div class="step-prog"><span class="step-count"></span><span class="pbar"><i></i></span></div>
+    ${steps.map((s,i) => `<div class="step-pane" data-pane="${i}" role="tabpanel"><h4 class="step-h">${i+1}. ${s.title}</h4>${s.html}</div>`).join('')}
+    <div class="step-nav"><button class="btn" data-step-prev>← 이전 단계</button><button class="btn on" data-step-next>다음 단계 →</button></div>
+  </div>`;
+}
+function initStepper(sec, id){
+  const root = sec.querySelector('#' + id);
+  const tabs = [...root.querySelectorAll('.step-tab')], panes = [...root.querySelectorAll('.step-pane')];
+  const prev = root.querySelector('[data-step-prev]'), next = root.querySelector('[data-step-next]');
+  const n = panes.length; let cur = 0;
+  function go(i, scroll){
+    cur = Math.max(0, Math.min(n - 1, i));
+    tabs.forEach((t,k) => { t.classList.toggle('active', k === cur); t.classList.toggle('done', k < cur); t.setAttribute('aria-selected', k === cur); });
+    panes.forEach((p,k) => p.hidden = k !== cur);
+    root.querySelector('.step-count').textContent = `단계 ${cur + 1} / ${n}`;
+    root.querySelector('.step-prog i').style.width = ((cur + 1) / n * 100) + '%';
+    prev.disabled = cur === 0; next.disabled = cur === n - 1;
+    next.textContent = cur === n - 1 ? '마지막 단계' : `다음: ${tabs[cur + 1].textContent.replace(/^\d+/, '')} →`;
+    if (scroll) root.scrollIntoView({ block:'start', behavior:'smooth' });
+  }
+  tabs.forEach((t,k) => t.onclick = () => go(k));
+  prev.onclick = () => go(cur - 1, true); next.onclick = () => go(cur + 1, true);
+  root.goStep = go;
+  go(0);
+}
+
+/* 5-1-1. 아두이노 UNO R3 보드 그림 (영역 클릭 → 설명). prefix로 같은 그림을 여러 단계에서 쓴다.
+   보드 핀 이름(D0~D13, A0~A5, 전원 헤더)은 보드 일반 설명이라 그대로 쓴다. */
+const UNO_DIG = ['SCL','SDA','AREF','GND','13','12','~11','~10','~9','8','','7','~6','~5','4','~3','2','TX→1','RX←0'];
+const UNO_PWR = ['NC','IOREF','RESET','3.3V','5V','GND','GND','VIN'];
+const UNO_ANA = ['A0','A1','A2','A3','A4','A5'];
+function unoSVG(prefix){
+  let s = `<svg viewBox="0 0 540 330" id="${prefix}Uno" class="uno" role="img" aria-label="아두이노 UNO R3 보드">
+    <rect x="40" y="16" width="480" height="300" rx="14" fill="#0e5a6e" stroke="#4fd1e0" stroke-width="1.5"/>
+    <text x="420" y="150" fill="#bfe9f2" font-size="20" font-weight="800" text-anchor="middle" opacity=".5">UNO</text>`;
+  // 디지털 헤더 (위)
+  const dx = i => 162 + i * 17.5;   // SCL·SDA 포함 19칸(빈칸 1)
+  s += `<g class="uno-part" data-part="dig"><rect class="hl" x="152" y="20" width="${dx(18) - 142}" height="56" rx="4"/>
+    <rect x="152" y="26" width="${dx(18) - 142}" height="16" fill="#111" rx="2"/>`;
+  UNO_DIG.forEach((p,i) => { if (!p) return; const pwm = p.startsWith('~');
+    s += `<rect class="pin${pwm ? ' pwm' : ''}" data-grp="${/^\d|~|TX|RX/.test(p) ? 'dig' : /^S[CD]/.test(p) ? 'i2c' : 'pwr'}" x="${dx(i) - 5}" y="29" width="10" height="10" fill="#555"/>
+      <text x="${dx(i)}" y="56" fill="${pwm ? '#f7d94f' : '#e8eaf6'}" font-size="9.5" text-anchor="middle" transform="rotate(-60 ${dx(i)} 56)">${p}</text>`; });
+  s += `<text x="${dx(13)}" y="72" fill="#bfe9f2" font-size="10" text-anchor="middle">DIGITAL (PWM ~)</text></g>`;
+  // 전원 헤더 (아래 왼쪽)
+  const px = i => 190 + i * 20;
+  s += `<g class="uno-part" data-part="pwr"><rect class="hl" x="180" y="252" width="${px(7) - 170}" height="60" rx="4"/>
+    <rect x="180" y="290" width="${px(7) - 170}" height="16" fill="#111" rx="2"/>`;
+  UNO_PWR.forEach((p,i) => { s += `<rect class="pin" data-grp="pwr" x="${px(i) - 5}" y="293" width="10" height="10" fill="#555"/>
+      <text x="${px(i)}" y="284" fill="#e8eaf6" font-size="9.5" text-anchor="start" transform="rotate(-60 ${px(i)} 284)">${p}</text>`; });
+  s += `<text x="${px(3)}" y="248" fill="#bfe9f2" font-size="10" text-anchor="middle">POWER</text></g>`;
+  // 아날로그 헤더 (아래 오른쪽)
+  const ax = i => 380 + i * 20;
+  s += `<g class="uno-part" data-part="ana"><rect class="hl" x="370" y="252" width="${ax(5) - 360}" height="60" rx="4"/>
+    <rect x="370" y="290" width="${ax(5) - 360}" height="16" fill="#111" rx="2"/>`;
+  UNO_ANA.forEach((p,i) => { s += `<rect class="pin" data-grp="ana" x="${ax(i) - 5}" y="293" width="10" height="10" fill="#555"/>
+      <text x="${ax(i)}" y="284" fill="#e8eaf6" font-size="9.5" text-anchor="start" transform="rotate(-60 ${ax(i)} 284)">${p}</text>`; });
+  s += `<text x="${ax(2.5)}" y="248" fill="#bfe9f2" font-size="10" text-anchor="middle">ANALOG IN</text></g>`;
+  // 부품
+  s += `<g class="uno-part" data-part="usb"><rect class="hl" x="6" y="44" width="96" height="76" rx="4"/><rect x="12" y="52" width="80" height="60" rx="3" fill="#b9bcc6" stroke="#777"/><text x="52" y="87" fill="#333" font-size="12" text-anchor="middle" font-weight="700">USB-B</text></g>
+    <g class="uno-part" data-part="dc"><rect class="hl" x="6" y="222" width="90" height="74" rx="4"/><rect x="12" y="230" width="74" height="58" rx="4" fill="#222" stroke="#555"/><circle cx="49" cy="259" r="12" fill="#444"/><text x="49" y="305" fill="#bfe9f2" font-size="10" text-anchor="middle">DC 잭</text></g>
+    <g class="uno-part" data-part="reset"><rect class="hl" x="102" y="20" width="44" height="40" rx="4"/><rect x="112" y="27" width="24" height="24" rx="3" fill="#ccc"/><circle cx="124" cy="39" r="7" fill="#c33"/></g>
+    <g class="uno-part" data-part="ch340"><rect class="hl" x="112" y="118" width="64" height="56" rx="4"/><rect x="122" y="126" width="44" height="40" fill="#151515"/><text x="144" y="150" fill="#ddd" font-size="9" text-anchor="middle">CH340</text></g>
+    <g class="uno-part" data-part="txrx"><rect class="hl" x="200" y="88" width="62" height="34" rx="4"/><rect x="208" y="96" width="10" height="6" fill="#f7d94f"/><rect x="208" y="108" width="10" height="6" fill="#f7d94f"/><text x="224" y="103" fill="#e8eaf6" font-size="9">TX</text><text x="224" y="115" fill="#e8eaf6" font-size="9">RX</text></g>
+    <g class="uno-part" data-part="led13"><rect class="hl" x="270" y="88" width="46" height="34" rx="4"/><rect x="278" y="100" width="10" height="6" fill="#f7a64f" class="uno-l"/><text x="294" y="107" fill="#e8eaf6" font-size="9">L</text></g>
+    <g class="uno-part" data-part="mcu"><rect class="hl" x="240" y="168" width="230" height="54" rx="4"/><rect x="250" y="176" width="210" height="38" rx="3" fill="#1b1b1b"/>
+      ${Array.from({length:14}, (_,i) => `<rect x="${256 + i * 14.5}" y="171" width="6" height="5" fill="#bbb"/><rect x="${256 + i * 14.5}" y="214" width="6" height="5" fill="#bbb"/>`).join('')}
+      <text x="355" y="200" fill="#ddd" font-size="12" text-anchor="middle">ATmega328P</text></g>
+    <rect x="90" y="196" width="40" height="22" fill="#222"/><text x="110" y="232" fill="#bfe9f2" font-size="8" text-anchor="middle">레귤레이터</text>
+  </svg>`;
+  return s;
+}
+const UNO_INFO = {
+  dig:  '<b>디지털 헤더 (D0~D13)</b>: HIGH(5V)/LOW(0V) 두 값만 읽고 씁니다. <code>~</code> 표시 6개는 PWM 출력이 됩니다. D0·D1은 시리얼(RX·TX)과 같은 핀입니다. 왼쪽 끝 SCL·SDA는 A5·A4와 연결된 I2C 핀입니다(이 수업에서는 쓰지 않음).',
+  ana:  '<b>아날로그 입력 헤더 (A0~A5)</b>: 0~5V 전압을 0~1023 숫자로 읽습니다. 디지털 핀으로도 쓸 수 있습니다.',
+  pwr:  '<b>전원 헤더</b>: 5V, 3.3V, GND, VIN, RESET, IOREF. 다른 부품에 전원을 나눠 줄 때 씁니다.',
+  usb:  '<b>USB 단자</b>: PC와 연결해 코드 업로드, 시리얼 통신, 전원 공급(5V)을 한 번에 합니다.',
+  dc:   '<b>DC 잭</b>: 배터리·어댑터 전원(7~12V 권장)을 넣는 곳. 보드의 레귤레이터가 5V로 낮춥니다.',
+  reset:'<b>리셋 버튼</b>: 누르면 프로그램이 처음(<code>setup()</code>)부터 다시 시작합니다.',
+  ch340:'<b>USB-시리얼 변환 칩</b>: USB 신호를 아두이노가 알아듣는 시리얼(UART)로 바꿉니다. 호환 보드는 CH340(드라이버 필요), 정품은 ATmega16U2.',
+  txrx: '<b>TX/RX LED</b>: 데이터를 보내거나(TX) 받을(RX) 때 깜빡입니다. 업로드 중에 빠르게 깜빡입니다.',
+  led13:'<b>내장 LED (L)</b>: 보드에 붙어 있는 LED로 <b>D13</b>에 연결되어 있습니다. 외부 LED 없이도 깜빡이기를 확인할 수 있습니다.',
+  mcu:  '<b>MCU ATmega328P</b>: 아두이노의 두뇌(마이크로컨트롤러). 5V, 16MHz, 플래시 32KB(부트로더 0.5KB), SRAM 2KB, EEPROM 1KB.',
+};
+function initUnoClick(sec, prefix, infoId){
+  const svg = sec.querySelector('#' + prefix + 'Uno'), info = sec.querySelector('#' + infoId);
+  svg.addEventListener('click', e => {
+    const g = e.target.closest('.uno-part'); if (!g) return;
+    svg.querySelectorAll('.uno-part').forEach(x => x.classList.toggle('sel', x === g));
+    info.innerHTML = UNO_INFO[g.dataset.part];
+  });
+}
+
+/* 볼앤빔 틀: M7(디지털트윈) 코드 없음 */
+
+/* 5-1 ~ 5-10. M1~M6 인터랙티브는 a1/a1.js (두 저장소 동기화) */
+
+/* 5-11. 정리 카드: 모듈별 완료 현황 + 제출용 요약 */
+function wrapStatusHTML(){
+  return MODULES.filter(m => m.id !== 'wrap').map(m => {
+    const boxes = [...$(m.id).querySelectorAll('input[data-key]')];
+    const done = boxes.filter(b => b.checked).length, pct = boxes.length ? Math.round(done / boxes.length * 100) : 0;
+    return `<tr><td><b>${esc(m.no)}</b> ${esc(m.title)}</td><td style="white-space:nowrap">${done} / ${boxes.length}</td>
+      <td style="width:40%"><span class="pbar"><i style="width:${pct}%"></i></span></td></tr>`;
+  }).join('');
+}
+function updateWrap(){
+  const t = $('wrapStatus'); if (t) t.innerHTML = '<tr><th>모듈</th><th>완료</th><th>진행</th></tr>' + wrapStatusHTML();
+}
+function buildSubmitText(){
+  const team = ($('teamName') && $('teamName').value.trim()) || '(팀 이름 없음)';
+  const d = new Date(), pad = n => String(n).padStart(2, '0');
+  let out = `SMARS 수업 체크리스트 — 팀: ${team} — ${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}\n`;
+  let all = 0, allDone = 0;
+  MODULES.filter(m => m.id !== 'wrap').forEach(m => {
+    const boxes = [...$(m.id).querySelectorAll('input[data-key]')];
+    if (!boxes.length) return;
+    const done = boxes.filter(b => b.checked);
+    all += boxes.length; allDone += done.length;
+    out += `\n[${m.no} ${m.title}] ${done.length}/${boxes.length}\n`;
+    boxes.forEach(b => { out += `  ${b.checked ? '[v]' : '[ ]'} ${b.nextElementSibling.textContent.trim()}\n`; });
+  });
+  return out + `\n전체 ${allDone}/${all}\n`;
+}
+function initWrap(sec){
+  const team = sec.querySelector('#teamName'), pre = sec.querySelector('#submitPreview');
+  team.value = store.get('smarsLesson.team') || '';
+  const refresh = () => { pre.textContent = buildSubmitText(); };
+  team.addEventListener('input', () => { store.set('smarsLesson.team', team.value); refresh(); });
+  sec.querySelector('#btnSubmitCopy').onclick = e => { refresh(); copyText(pre.textContent, e.currentTarget); };
+  updateWrap(); refresh();
+  document.addEventListener('change', e => { if (e.target.matches('input[data-key]')) refresh(); });
+}
+
+/* =====================================================================
+   6. LESSON — 모듈별 내용 (references/modules.md 기준)
+      새 카드 추가: 아래 객체에 m3: { goal, principle:{html, init}, wiring:{keys, notes},
+      prompt:{parts, pinKeys, actions, mistakes, codeChecks, teacherTip}, example:{file},
+      checklist:[...], quick:[...], quiz:[{q,a}] } 를 넣으면 renderCard()가 같은 틀로 그린다.
+   ===================================================================== */
+const LESSON = {
+  /* 볼앤빔 틀: M0 없음. m1~m6 은 a1/a1.js 가 더한다 */
+  /* m1~m6 은 a1/a1.js 에서 Object.assign 으로 더한다 */
+
+};
+
+/* 하단 표: 핀 맵 "수업 중 강조할 점" (modules.md 2절) */
+const PIN_NOTES = {
+  led:    `오른쪽 모터 DIR(${pin('motorR','DIR')})과 같은 핀 → M1은 모터 전원 없이(또는 바퀴를 띄운 채)`,
+  motorL: 'PWM은 ~ 표시 핀만 가능',
+  motorR: `PWM은 ~ 표시 핀만 가능. BRAKE 자리는 초음파 Echo(${pin('ultra','Echo')})와 공유 → 쓰지 않음`,
+  ultra:  `쉴드 + R T G 헤더 (T=${pin('ultra','Trig')}, R=${pin('ultra','Echo')})`,
+  buzzer: `tone() 금지 (오른쪽 모터 PWM ${pin('motorR','PWM')}과 타이머 충돌)`,
+  line:   'digitalRead로 읽는다. 모듈마다 극성(0/1 뜻)이 다름',
+  bt:     `${PINMAP.bt.baud}bps. HC-05 RXD에는 분압(5V→3.3V) 권장`,
+  usb:    `통합 펌웨어 USB는 ${PINMAP.usb.baud}bps. 업로드·시리얼 모니터와 같은 길을 씀`,
+};
+function renderPinTable(){
+  let h = '<table><tr><th>부품</th><th>부품 단자</th><th>아두이노 핀</th><th>수업 중 강조할 점</th></tr>';
+  Object.entries(PINMAP).forEach(([k,p]) => {
+    const ents = Object.entries(p.pins);
+    h += `<tr><td>${esc(p.label)}${p.baud ? `<br><span class="muted">${p.baud}bps</span>` : ''}</td><td>${ents.map(e => esc(e[0])).join('<br>')}</td>
+      <td class="pin">${ents.map(e => esc(e[1])).join('<br>')}</td><td>${PIN_NOTES[k] || ''}</td></tr>`;
+  });
+  $('pinTable').innerHTML = h + '</table>';
+}
+/* 문제 해결 표 (modules.md 4절) */
+const TROUBLE = [
+  ['업로드 실패 "액세스 거부"', '웹 콘솔·시리얼 모니터가 포트를 잡고 있음', '다른 프로그램 연결 해지 후 다시 업로드'],
+  ['시리얼에 깨진 글자', '보율 불일치', '<code>Serial.begin</code> 값과 모니터 보율 맞추기'],
+  ['모터가 울기만 함', 'PWM이 너무 낮음, 배터리 부족', '속도 40% 이상, 배터리 교체'],
+  ['부저를 켜면 오른쪽 모터 이상', 'AI 코드가 <code>tone()</code> 사용', '<code>digitalWrite</code>로 교체'],
+  ['초음파 항상 0 또는 타임아웃', 'Trig/Echo 반대 배선, 핀 번호 다름', `<code>+ R T G</code> 헤더 확인 (T=${pin('ultra','Trig')}, R=${pin('ultra','Echo')})`],
+  ['블루투스 연결은 되는데 응답 없음', 'TX/RX 교차 오류, 보율 다름, 다른 팀 로봇에 페어링', `TXD→${pin('bt','TXD→')} / RXD←${pin('bt','RXD←')}, ${PINMAP.bt.baud}bps, 로봇 이름 확인`],
+  ['3D 화면이 빈 칸', 'twin/ 폴더 일부 누락', 'html 옆 <code>web/twin.js</code>·<code>vendor/three-r160-bundle.js</code>가 있는지 확인(폴더째 복사)'],
+];
+function renderTrouble(){
+  $('troubleTable').innerHTML = '<table><tr><th>증상</th><th>원인</th><th>조치</th></tr>' +
+    TROUBLE.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('') + '</table>';
+}
+
+/* =====================================================================
+   7. 미니 시리얼 모니터 (Web Serial) — 해지 순서: 리더 cancel → releaseLock → 포트 close
+      twin/smars_console.html의 SerialTransport를 참고했다.
+   ===================================================================== */
+const MON_MAX = 300;
+function monLog(msg, cls = 'rx'){
+  const box = $('monLog'); if (!box) return;
+  const d = document.createElement('div'); d.className = 'ml-' + cls;
+  const t = new Date(), pad = n => String(n).padStart(2, '0');
+  d.textContent = `[${pad(t.getHours())}:${pad(t.getMinutes())}:${pad(t.getSeconds())}] ${cls === 'tx' ? '> ' : ''}${msg}`;
+  box.appendChild(d);
+  while (box.childElementCount > MON_MAX) box.firstElementChild.remove();
+  if ($('monAuto').checked) box.scrollTop = box.scrollHeight;
+}
+const Monitor = {
+  connected:false, busy:false, port:null, reader:null, writer:null, pipeDone:null, closing:false, baud:null,
+  supported(){ return 'serial' in navigator; },
+  async connect(){
+    if (!this.supported() || this.connected || this.busy) return;
+    this.busy = true; setMonUI();
+    const baud = parseInt($('monBaud').value, 10);
+    try {
+      this.port = await navigator.serial.requestPort();
+      await this.port.open({ baudRate: baud });
+      this.writer = this.port.writable.getWriter();
+      const dec = new TextDecoderStream();
+      this.pipeDone = this.port.readable.pipeTo(dec.writable).catch(() => {});
+      this.reader = dec.readable.getReader();
+      this.closing = false; this.connected = true; this.baud = baud;
+      monLog(`포트 열림 (${baud}bps). USB로 연결하면 보드가 재시작되어 1~2초 뒤부터 글자가 나옵니다.`, 'sys');
+      this.readLoop();
+    } catch(e){
+      monLog('연결 실패: ' + e.message + ' (다른 프로그램이 포트를 쓰고 있지 않은지 확인)', 'err');
+      try { if (this.port) await this.port.close(); } catch(_){}
+      this.port = null;
+    }
+    this.busy = false; setMonUI();
+  },
+  async readLoop(){
+    let buf = '';
+    try {
+      while (true){
+        const { value, done } = await this.reader.read();
+        if (done) break;
+        buf += value;
+        const parts = buf.split(/\r\n|\r|\n/);
+        buf = parts.pop();
+        parts.forEach(l => { if (l.length) monLog(l, 'rx'); });
+        if (buf.length > 512){ monLog(buf, 'rx'); buf = ''; }
+      }
+    } catch(e){ if (!this.closing) monLog('수신 오류: ' + e.message, 'err'); }
+    if (!this.closing && this.connected) this.disconnect('수신이 끊겼습니다.');
+  },
+  async send(line){
+    if (!this.connected || !this.writer) return false;
+    try { await this.writer.write(new TextEncoder().encode(line + '\n')); monLog(line, 'tx'); return true; }
+    catch(e){ monLog('보내기 실패: ' + e.message, 'err'); return false; }
+  },
+  async disconnect(reason){
+    if (!this.port || this.busy) return;
+    this.busy = true; this.closing = true; setMonUI();
+    try { await this.reader?.cancel(); } catch(_){}
+    try { await this.pipeDone; } catch(_){}
+    try { this.reader?.releaseLock(); } catch(_){}
+    try { this.writer?.releaseLock(); } catch(_){}
+    try { await this.port.close(); } catch(e){ monLog('포트 닫기 오류: ' + e.message, 'err'); }
+    this.port = this.reader = this.writer = this.pipeDone = null;
+    this.connected = false; this.busy = false;
+    monLog(reason || '연결을 해지했습니다. 이제 업로드해도 됩니다.', 'sys');
+    setMonUI();
+  },
+};
+function setMonUI(){
+  const ok = Monitor.supported(), c = Monitor.connected, b = Monitor.busy;
+  $('monConnect').disabled = !ok || c || b;
+  $('monDisconnect').disabled = !c || b;
+  $('monBaud').disabled = c || b;
+  $('monSend').disabled = !c; $('monInput').disabled = !c;
+  const txt = !ok ? 'Web Serial 미지원' : b ? '처리 중…' : c ? `연결됨 · ${Monitor.baud}bps` : '연결 안 됨';
+  $('monStatus').textContent = txt;
+  const badge = $('connBadge');
+  badge.textContent = c ? `시리얼 ${Monitor.baud}` : '시리얼 끊김';
+  badge.classList.toggle('on', c);
+  badge.title = c ? '미니 시리얼 모니터 연결됨' : '미니 시리얼 모니터 연결 안 됨 (맨 아래)';
+}
+function initMonitor(){
+  const sel = $('monBaud');
+  sel.innerHTML = [[PINMAP.bt.baud, '블루투스 COM'], [PINMAP.usb.baud, 'USB']].map(([b, n]) =>
+    `<option value="${b}" ${b === PINMAP.usb.baud ? 'selected' : ''}>${b} (${n})</option>`).join('');
+  if (!Monitor.supported()){
+    $('monNoSerial').hidden = false;
+  } else {
+    navigator.serial.addEventListener('disconnect', e => { if (Monitor.port && e.target === Monitor.port) Monitor.disconnect('장치가 분리되었습니다.'); });
+  }
+  $('monConnect').onclick = () => Monitor.connect();
+  $('monDisconnect').onclick = () => Monitor.disconnect();
+  const sendInput = () => { const v = $('monInput').value; if (!v) return; Monitor.send(v); $('monInput').value = ''; };
+  $('monSend').onclick = sendInput;
+  $('monInput').addEventListener('keydown', e => { if (e.key === 'Enter') sendInput(); });
+  $('monClear').onclick = () => { $('monLog').innerHTML = ''; };
+  $('connBadge').onclick = () => { $('monitorBox').open = true; $('monitorBox').scrollIntoView({ behavior:'smooth' }); };
+  setMonUI();
+}
+
+/* 카드의 빠른 전송 버튼 → 미니 모니터 (줄 끝 \n은 Monitor.send가 붙인다) */
+function sendQuick(text){
+  if (!Monitor.connected || typeof Monitor.send !== 'function'){
+    toast('아래 시리얼 모니터를 먼저 연결하세요');
+    const box = $('monitorBox'); box.open = true;
+    return false;
+  }
+  Monitor.send(text);
+  return true;
+}
+
+/* =====================================================================
+   8. 목차 · 진행률 · 상단 바 · 큰 글자 · 이벤트
+   ===================================================================== */
+function renderToc(){
+  $('toc').innerHTML = MODULES.map(m => `<a href="#${m.id}" data-toc="${m.id}"><span class="no">${esc(m.no)}</span><span class="ttl">${esc(m.title)}</span>
+      <span class="prog" data-prog="${m.id}"></span><span class="bar"><i data-bar="${m.id}"></i></span></a>`).join('') +
+    `<div class="toc-foot"><a href="#tools" style="color:var(--muted)">↓ 핀 맵 · 문제 해결 · 시리얼</a>
+     <button class="btn small" id="btnResetAll">체크 전체 초기화</button></div>`;
+}
+function updateProgress(){
+  MODULES.forEach(m => {
+    const boxes = $(m.id).querySelectorAll('input[data-key]');
+    const done = [...boxes].filter(b => b.checked).length;
+    const p = document.querySelector(`[data-prog="${m.id}"]`), bar = document.querySelector(`[data-bar="${m.id}"]`);
+    if (!p) return;
+    p.textContent = boxes.length ? `체크 ${done}/${boxes.length}` : '—';
+    bar.style.width = boxes.length ? (done / boxes.length * 100) + '%' : '0';
+  });
+  updateWrap();
+}
+function setCurrent(id){
+  const m = MODULES.find(x => x.id === id); if (!m) return;
+  $('curMod').innerHTML = `지금 보는 곳: <b>${esc(m.no)} ${esc(m.title)}</b>`;
+  document.querySelectorAll('#toc a[data-toc]').forEach(a => a.classList.toggle('active', a.dataset.toc === id));
+  const act = document.querySelector('#toc a.active');
+  if (act && window.innerWidth < 900) act.scrollIntoView({ block:'nearest', inline:'nearest' });
+}
+function setBig(v){
+  document.documentElement.dataset.big = v ? '1' : '0';
+  $('btnBig').classList.toggle('on', v);
+  store.set('smarsLesson.big', v ? '1' : '0');
+}
+
+function init(){
+  if (EMBED.on) document.documentElement.dataset.embed = '1';
+  if (EMBED.mods.length && MODULES.some(m => EMBED.mods.includes(m.id))){
+    for (let i = MODULES.length - 1; i >= 0; i--) if (!EMBED.mods.includes(MODULES[i].id)) MODULES.splice(i, 1);
+  }
+  document.querySelectorAll('#cards > section.card').forEach(s => { if (!MODULES.some(m => m.id === s.id)) s.remove(); });
+  $('safetyStrip').innerHTML = '<b>안전</b> · 모터 테스트는 바퀴를 띄운 채 · 주행은 바닥에서만 · 배선 변경은 USB·배터리를 모두 뺀 뒤';
+  renderToc();
+  MODULES.forEach(renderCard);
+  renderPinTable(); renderTrouble();
+  initMonitor();
+  updateProgress(); updateMeas();
+
+  document.addEventListener('input', e => {
+    const t = e.target;
+    if (t.matches('input[data-meas]')){ const k = 'smarsLesson.m4.meas.' + t.dataset.meas; if (t.value.trim() === '') store.del(k); else store.set(k, t.value.trim()); updateMeas(); }
+  });
+  document.addEventListener('change', e => {
+    const t = e.target;
+    if (t.matches('input[data-key]')){ if (t.checked) store.set(t.dataset.key, '1'); else store.del(t.dataset.key); updateProgress(); }
+  });
+  document.addEventListener('click', e => {
+    const c = e.target.closest('[data-copy]');
+    if (c){ const el = $(c.dataset.copy); if (el) copyText(el.textContent, c); return; }
+    const s = e.target.closest('[data-send]');
+    if (s){ sendQuick(s.dataset.send); return; }
+    const r = e.target.closest('[data-reset]');
+    if (r){ $(r.dataset.reset).querySelectorAll('input[data-key]').forEach(b => { b.checked = false; store.del(b.dataset.key); }); updateProgress(); return; }
+    if (e.target.id === 'btnResetAll'){
+      if (!confirm('모든 모듈의 체크를 지울까요?')) return;
+      store.keys(CHECK_PREFIX).forEach(k => store.del(k));
+      document.querySelectorAll('input[data-key]').forEach(b => b.checked = false);
+      updateProgress();
+    }
+  });
+  $('btnBig').onclick = () => setBig(document.documentElement.dataset.big !== '1');
+  setBig(store.get('smarsLesson.big') === '1');
+
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver(ents => ents.forEach(en => { if (en.isIntersecting) setCurrent(en.target.id); }),
+      { rootMargin:'-30% 0px -60% 0px' });
+    MODULES.forEach(m => io.observe($(m.id)));
+  }
+  setCurrent(location.hash ? location.hash.slice(1) : MODULES[0].id);
+  /* 카드를 그린 뒤에야 위치가 정해지므로 주소의 #모듈로 다시 이동한다 */
+  if (location.hash){ const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+}
+/* 예제 블록(ex-mN)이 이 스크립트 뒤에 있으므로 문서를 다 읽은 뒤 시작한다 */
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+</script>
+<script src="a1/a1.js"></script>
+</body>
+</html>

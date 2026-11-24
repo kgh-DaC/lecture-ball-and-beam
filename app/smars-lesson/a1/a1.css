@@ -1,0 +1,104 @@
+/* a1 — 아두이노 기초(SMARS 수업 M1~M6) 인터랙티브 스타일. 두 저장소에서 동기화(a1.js 머리 주석 참고) */
+/* 브레드보드 */
+.hole{fill:#2a2d3e;stroke:#3a3e55;stroke-width:1;cursor:pointer;}
+.hole:hover{stroke:var(--accent);}
+.hole.on{fill:var(--yellow);stroke:#fff;}
+.hole.ex1{fill:var(--accent2);} .hole.ex2{fill:var(--cyan);} .hole.ex3{fill:var(--purple);} .hole.ex4{fill:#6f8cff;}
+#bbEx{display:none;} #bbEx.show{display:inline;}
+/* M1 단계(스텝) 탭 */
+.stepper{border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--panel);scroll-margin-top:calc(var(--topH) + 50px);}
+.step-tabs{display:flex;flex-wrap:wrap;gap:6px;}
+.step-tab{display:inline-flex;align-items:center;gap:.4em;background:var(--panel2);color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:.25em .8em .25em .3em;font-size:.88rem;}
+.step-tab:hover{border-color:var(--accent);color:var(--text);}
+.step-tab .sn{display:inline-flex;align-items:center;justify-content:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--border);color:var(--text);font-weight:800;font-size:.85em;}
+.step-tab.done{color:var(--text);}
+.step-tab.done .sn{background:var(--green);color:#000;}
+.step-tab.active{background:rgba(79,142,247,.18);border-color:var(--accent);color:var(--text);font-weight:700;}
+.step-tab.active .sn{background:var(--accent);color:#fff;}
+.step-prog{display:flex;align-items:center;gap:10px;margin:8px 0 4px;font-size:.82rem;color:var(--muted);}
+.step-prog .pbar{flex:1;height:6px;}
+.step-prog .pbar i{transition:width .25s;}
+.step-pane{padding-top:6px;}
+.step-h{font-size:1.08rem;color:var(--cyan);margin:.3em 0 .6em;}
+.step-nav{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);}
+.step-nav .btn:disabled{opacity:.4;cursor:default;}
+.sub-h{font-size:1rem;color:var(--accent2);margin:1em 0 .4em;}
+.grp-card{border-left:4px solid var(--border);background:var(--panel2);border-radius:0 8px 8px 0;padding:.45em .8em;margin:.45em 0;font-size:.92rem;}
+/* M1 보드 그림 */
+.uno .uno-part{cursor:pointer;}
+.uno .uno-part .hl{fill:transparent;stroke:transparent;stroke-width:2;}
+.uno .uno-part:hover .hl{stroke:var(--accent);stroke-dasharray:4 3;}
+.uno .uno-part.sel .hl{fill:rgba(247,217,79,.14);stroke:var(--yellow);stroke-dasharray:none;}
+.uno.show-dig .pin[data-grp=dig]{fill:var(--cyan);}
+.uno.show-ana .pin[data-grp=ana]{fill:var(--green);}
+.uno.show-pwr .pin[data-grp=pwr]{fill:var(--red);}
+/* M1 전원·시리얼 경로 */
+.pw-path{fill:none;stroke:#3a3e55;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;}
+.pw-path.on{stroke:var(--yellow);stroke-dasharray:8 10;animation:dash .6s linear infinite;}
+.pw-ov{pointer-events:none;}
+.pw-ov .pw-g{display:none;}
+.pw-ov .pw-g.on{display:inline;}
+.pw-ring{fill:none;stroke-width:3;animation:pwPulse 1.2s ease-in-out infinite;}
+.pw-ring.thin{stroke-width:2;stroke-dasharray:4 3;}
+.pw-flow{fill:none;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:8 10;animation:dash .6s linear infinite;}
+@keyframes pwPulse{50%{opacity:.35;}}
+.sr-top svg{width:100%;max-width:860px;display:block;margin:0 auto;}
+.sr-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;} @media(max-width:760px){.sr-cards{grid-template-columns:1fr;}}
+.sr-tbl{overflow-x:auto;} .sr-tbl td:first-child{font-weight:700;white-space:nowrap;}
+.sr-ov .sr-g{display:none;} .sr-ov .sr-g.on{display:inline;}
+.sr-usb{stroke:#4fd1e0;} .sr-ext{stroke:#b48cf7;} .sr-soft{stroke:#4fcf83;}
+.sr-ov [data-g=usb] .pw-ring{stroke:#4fd1e0;} .sr-d01{stroke:#4fd1e0;} .sr-a01{stroke:#4fcf83;}
+.uno.sr-clash .sr-usb,.uno.sr-clash .sr-ext{stroke:#f74f4f;animation-duration:.25s;}
+.uno.sr-clash .sr-d01{stroke:#f74f4f;stroke-width:4;}
+/* M1 부품 꽂기 비교(✔/✘) */
+.cmp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px;}
+.cmp{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 10px;}
+.cmp-t{font-weight:700;color:var(--accent2);margin-bottom:6px;}
+.cmp-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;}
+.cmp-pair figure{border:2px solid var(--border);border-radius:8px;padding:4px;background:#0b0d13;}
+.cmp-pair figure.ok{border-color:var(--green);}
+.cmp-pair figure.bad{border-color:var(--red);}
+.cmp-pair figcaption{font-size:.8rem;line-height:1.4;padding:4px 2px 2px;}
+.cmp-pair figure.ok figcaption b{color:var(--green);}
+.cmp-pair figure.bad figcaption b{color:var(--red);}
+svg.mini{width:100%;height:auto;display:block;}
+/* M1 IDE 목업 번호 */
+.ide-call{cursor:pointer;}
+.ide-call:hover circle,.ide-call.sel circle{stroke:#fff;stroke-width:2.5;}
+
+/* H-bridge */
+.hb-wire{stroke:#5a6080;stroke-width:3;fill:none;}
+.flow{stroke:var(--yellow);stroke-width:5;fill:none;stroke-dasharray:8 10;opacity:0;stroke-linecap:round;}
+.flow.on{opacity:1;animation:dash .6s linear infinite;}
+.flow.on.rev{animation-direction:reverse;}
+.flow.short{stroke:var(--red);animation-duration:.25s;}
+.flow.brk{stroke:#f7a64f;animation:dash .3s linear infinite,brkFade 1.4s ease-out forwards;}
+@keyframes brkFade{0%{opacity:1;}100%{opacity:.18;}}
+.spin.stopFastCw{animation:stopCw .6s cubic-bezier(.1,.8,.3,1) 1 forwards;} .spin.stopFastCcw{animation:stopCcw .6s cubic-bezier(.1,.8,.3,1) 1 forwards;}
+.spin.stopSlowCw{animation:stopCw 2.8s cubic-bezier(.2,.6,.4,1) 1 forwards;} .spin.stopSlowCcw{animation:stopCcw 2.8s cubic-bezier(.2,.6,.4,1) 1 forwards;}
+@keyframes stopCw{to{transform:rotate(300deg);}} @keyframes stopCcw{to{transform:rotate(-300deg);}}
+@keyframes dash{from{stroke-dashoffset:18;}to{stroke-dashoffset:0;}}
+.sw-hit{fill:transparent;cursor:pointer;}
+.sw-hit:hover{fill:rgba(79,142,247,.12);}
+.sw-blade{stroke:var(--muted);stroke-width:4;stroke-linecap:round;}
+.sw.closed .sw-blade{stroke:var(--green);}
+.sw-label{fill:var(--text);font-size:15px;font-weight:700;}
+.spin{transform-box:fill-box;transform-origin:center;}
+.spin.cw{animation:spin 1.2s linear infinite;}
+.spin.ccw{animation:spin 1.2s linear infinite reverse;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.hb-short{display:none;} .hb-short.show{display:block;}
+
+/* M3 부저 */
+.buz-rowbg{fill:transparent;}
+.buz-row.play .buz-rowbg{fill:rgba(247,217,79,.08);stroke:#f7d94f;stroke-opacity:.5;}
+.buz-waves{opacity:0;}
+#buzIcon.buz-on .buz-waves{opacity:1;}
+#buzIcon.buz-on .buz-body{fill:#f7d94f;filter:drop-shadow(0 0 8px #f7d94f);}
+/* 드래그 그림 */
+svg.dragable{cursor:grab;touch-action:none;user-select:none;}
+/* M4 실측 표 */
+table.meas input{width:6em;background:#06070b;color:var(--text);border:1px solid var(--border);border-radius:4px;padding:.15em .4em;font:inherit;}
+/* M6 블루투스 */
+.bt-step{transition:opacity .2s;}
+.bt-step.dim{opacity:.3;}

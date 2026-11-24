@@ -18,6 +18,7 @@ export const WIDGETS = [
   'hardware-steps', 'pot-mapping-test', 'servo-center-assist', 'level-trim', 'sensor-position-test',
   'nn-trainer', 'nn-viz', 'nn-model-compare', 'rl-trainer', 'q-table-view', 'policy-map', 'reward-curve', 'imitation-lab', 'ai-compare',
   'twin-lab', 'twin-montecarlo',
+  'smars-lesson',
 ];
 
 const PAGES = {

@@ -8,7 +8,7 @@
 | p1 sign 스위칭의 u 모양, 면 위에 머물 수 있나? | | (가상 장치만) |
 | p2 기본값 50 mm 스텝 시작 시 $\lvert s\rvert$ vs $\Phi$ | | |
 
-## 2. 계산 (기본값 $\lambda$ 1, $\eta$ 0.1, $\Phi$ 0.05, $\hat K_b$ 0.8709)
+## 2. 계산 (기본값 $\lambda$ 1, $\eta$ 0.1, $\Phi$ 0.05, $\hat K_b$ 0.8993)
 등가 PD: $K_{p,eff}$ = ____, $K_{d,eff}$ = ____
 시작점 $\lvert s(0)\rvert = \lambda\lvert e(0)\rvert$ = ____ → 경계층 □ 안 □ 밖
 경계층 보장 범위 $\Phi/\lambda$ = ____ mm

@@ -1,5 +1,6 @@
 // level-finder: 방향(dir) 확인과 수평각(trim) 결정.
-// (1) dir: +3° 명령을 주고 "어느 쪽 끝이 올라갔는지" 고르면 dir 결정(규약: + 명령 ⇒ 센서 쪽 끝이 올라가 공이 센서에서 멀어짐, plant.js).
+// (1) dir: +3° 명령을 주고 "서보 쪽 끝이 내려갔는지 올라갔는지" 고르면 dir 결정(규약: + 명령 ⇒ 센서 쪽이 상대적으로 높아져 공이 센서에서 멀어짐, plant.js).
+//     센서 쪽 끝은 힌지라 움직이지 않고, 실제로 움직이는 것은 서보 쪽 끝이다(02장 2절).
 //     공을 올려 두면 dist 변화로 자동 판정도 돕는다. → P,dir(IDLE) + 설정 저장
 // (2) 수평: 조그·숫자 입력·디지털 수평계 값으로 빔을 수평에 맞추고 그때 명령각으로 trim = trim + dir·cmd 계산 → P,trim(IDLE, ±1500 cdeg) + 저장
 //     수평계 값 α(센서 쪽 높으면 +)는 레버 비 θ ≈ α·L/d 로 서보 보정각으로 바꾼다. 공 굴림 속도로 기울기 방향을 알려 준다.
@@ -88,11 +89,11 @@ export function mount(el, props, ctx) {
   // (1) 방향
   let dirProbeDist = null;
   dirBox.append(h('h4', null, '1. 방향(dir) 확인'),
-    h('p', { class: 'muted' }, `규약: + 명령이면 센서 쪽 끝이 올라가 공이 센서에서 멀어져야 합니다(거리 증가). "+${probe / 100}° 기울여 보기"를 누르고 어느 쪽이 올라갔는지 고르세요.`),
+    h('p', { class: 'muted' }, `규약: + 명령이면 공이 센서에서 멀어지는 쪽으로 빔이 기울어야 합니다(거리 증가). 센서 쪽 끝은 힌지라 움직이지 않으므로, 서보 쪽 끝이 내려가면 정상입니다. "+${probe / 100}° 기울여 보기"를 누르고 서보 쪽 끝이 어느 쪽으로 움직였는지 고르세요.`),
     h('div', { class: 'row' },
       h('button', { class: 'btn', onclick: () => guard(async () => { await ensureJog(); const s = samples.filter((d) => d.dist_mm >= 0); dirProbeDist = s.length ? s[s.length - 1].dist_mm : null; await jog.moveTo(probe); }) }, `+${probe / 100}° 기울여 보기`),
-      h('button', { class: 'btn', onclick: () => guard(async () => { const d = cur().dir; await applyIdle({ dir: dirFromObservation(d, 'sensor') }); toast('dir 유지(센서 쪽이 올라감 = 정상)', 'ok'); }) }, '센서 쪽 끝이 올라감'),
-      h('button', { class: 'btn', onclick: () => guard(async () => { const d = cur().dir; const nd = dirFromObservation(d, 'far'); await applyIdle({ dir: nd }); toast(`dir을 ${nd}로 바꿨습니다(P,dir 전송·저장)`, 'ok'); }) }, '반대쪽(센서에서 먼 끝)이 올라감'),
+      h('button', { class: 'btn', onclick: () => guard(async () => { const d = cur().dir; await applyIdle({ dir: dirFromObservation(d, 'sensor') }); toast('dir 유지(서보 쪽 끝이 내려감 = 정상)', 'ok'); }) }, '서보 쪽 끝이 내려감(정상)'),
+      h('button', { class: 'btn', onclick: () => guard(async () => { const d = cur().dir; const nd = dirFromObservation(d, 'far'); await applyIdle({ dir: nd }); toast(`dir을 ${nd}로 바꿨습니다(P,dir 전송·저장)`, 'ok'); }) }, '서보 쪽 끝이 올라감'),
       h('button', { class: 'btn', onclick: () => guard(() => jog.moveTo(0)) }, '0으로')));
 
   // (2) 수평

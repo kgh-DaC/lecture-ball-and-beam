@@ -39,11 +39,18 @@ function mulberry32(seed) {
   };
 }
 
+/** 가상 장치의 공 종류(12장 모델 오차 실험). K_b ∝ 1/(1 + J/(mR²)): 속이 빈 공 3/5, 속이 찬 공 5/7 → 배율 25/21. */
+export const VIRTUAL_BALLS = Object.freeze({
+  hollow: { label: '속이 빈 공(기본)', kb_scale: 1 },
+  solid: { label: '속이 찬 공 (K_b × 1.19)', kb_scale: 25 / 21 },
+});
+
 export class VirtualDevice {
   /**
    * @param {object} opts { sim: { stepPlant, initPlantState? }, model, seed, noise_mm, lost_prob, quant_mm, y0_m, speed, realtime,
    *   fw: '1.2.0'(기본) | '1.1.0' | '1.0.0', blank_e5 (1.0.0 전용, 기본 true), outlier_prob, outlier_mm,
-   *   sensor_offset_mm (시험용 상수 오차, 기본 0), sensor_scale (시험용 배율, 기본 1) }
+   *   sensor_offset_mm (시험용 상수 오차, 기본 0), sensor_scale (시험용 배율, 기본 1),
+   *   kb_scale (플랜트 K_b 배율, 기본 1. 속이 찬 공 = 25/21 ≈ 1.19 — 12장 모델 오차 실험, VIRTUAL_BALLS) }
    * realtime=false면 tick(ms)을 직접 불러 시간을 진행한다(시험용).
    */
   constructor(opts = {}) {
@@ -59,6 +66,7 @@ export class VirtualDevice {
     this.speed = opts.speed ?? 1;
     this.fw = VIRTUAL_FW[opts.fw] ? opts.fw : '1.2.0';
     this.pot_noise_lsb = opts.pot_noise_lsb ?? 0.7;
+    this.kb_scale = Number.isFinite(opts.kb_scale) && opts.kb_scale > 0 ? opts.kb_scale : 1;
     this.legacy = this.fw === '1.0.0';
     this.fwVer = VIRTUAL_FW[this.fw];
     this.blank_e5 = this.legacy && (opts.blank_e5 ?? true);

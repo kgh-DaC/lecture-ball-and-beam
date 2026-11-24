@@ -12,6 +12,7 @@ import * as levelTrim from '../widgets/level-trim.js';
 import * as sensorPos from '../widgets/sensor-position-test.js';
 import { mountCalRecords } from './cal-records.js';
 import { BOARD_LABEL, CONNECT_HELP, PORT_NAMES } from '../../serial/troubleshoot.js';
+import { VIRTUAL_BALLS } from '../../sim/virtual-device.js';
 
 /** 연결 문제 해결 안내(보드 중립). 시험·다른 화면에서도 쓴다 */
 export function connectHelp(open = false) {
@@ -37,16 +38,28 @@ export function mount(el, query, ctx) {
     h('h2', null, 'A. 조립 전: 서보·포텐쇼미터 시험 → 서보 90° 고정'), ...pre1,
     h('h2', null, 'B. 조립 후: 수평 → 초음파 → 신호 확인 → 각도 한계'), ...post,
     h('h2', null, '보정 기록·장치 설정'), recs, ds, pre, cal);
+  // 공 종류는 가상 장치를 만들 때 정해지므로, 연결 중이면 끊고 다시 연결한다
+  const setBall = async (kind) => {
+    try {
+      dev.setVirtualBall(kind);
+      if (dev.connected) { await dev.disconnect(); await dev.connect(); }
+      ctx.ui.toast(`가상 장치의 공: ${VIRTUAL_BALLS[kind].label}`, 'ok');
+    } catch (er) { ctx.ui.toast(er.message, 'error'); }
+    renderConn();
+  };
   const renderConn = () => {
     clear(conn).appendChild(h('div', null, h('h4', null, '연결'),
       h('div', { class: 'row' },
         h('span', { class: 'muted' }, `보드: ${BOARD_LABEL} · 115200 bps `),
         h('label', null, '모드 ', h('select', { onchange: (e) => dev.setMode(e.target.value).catch((er) => ctx.ui.toast(er.message, 'error')) },
           [['device', '실제 장치'], ['virtual', '가상 장치'], ['twin', '디지털 트윈'], ['sample', '샘플 재생']].map(([v, l]) => h('option', { value: v, selected: dev.mode === v, disabled: v === 'device' && !dev.supported }, l)))),
+        dev.mode === 'virtual' ? h('label', { title: '가상 장치의 공 종류(12장 모델 오차 실험). 제어기가 아는 모델은 그대로이고 가상 장치의 K_b만 바뀝니다.' }, '공 ', h('select', { class: 'virtual-ball', onchange: (e) => setBall(e.target.value) },
+          Object.entries(VIRTUAL_BALLS).map(([v, b]) => h('option', { value: v, selected: dev.virtualBall === v }, b.label)))) : null,
         h('span', { class: `dot ${dev.status}` }), ` ${dev.status} `,
         dev.mode !== 'sample' ? (dev.connected ? h('button', { class: 'btn small', onclick: () => dev.disconnect() }, '연결 끊기') : h('button', { class: 'btn small primary', onclick: () => dev.connect().catch((e) => ctx.ui.toast(e.message, 'error')) }, '연결')) : null,
         dev.hello ? h('span', { class: 'muted' }, ` 펌웨어 ${dev.hello.fw_ver}, 프로토콜 ${dev.hello.proto_ver}`) : null,
         dev.parser && dev.parser.counts && dev.parser.counts.bad ? h('span', { class: 'muted' }, ` · 파싱 실패 ${dev.parser.counts.bad}줄`) : null),
+      dev.mode === 'virtual' && dev.virtualBall !== 'hollow' ? h('div', { class: 'box box-warn' }, `가상 장치의 공이 "${VIRTUAL_BALLS[dev.virtualBall].label}"입니다. 제어기 설계 모델(K_b 0.8993)과 가상 장치가 일부러 어긋난 상태이며, 세션 메모에 기록됩니다. 실험이 끝나면 "속이 빈 공(기본)"으로 되돌리세요.`) : null,
       !dev.supported ? h('p', { class: 'muted' }, `Web Serial 사용 불가: ${dev.unsupportedReason}`) : null,
       dev.resetCount ? h('div', { class: 'box box-warn' }, `연결 중 보드 리셋 ${dev.resetCount}회 감지 — 서보 전원 부족 의심. 아래 "연결이 안 될 때"를 보세요.`) : null,
       dev.mode === 'device' ? connectHelp(dev.status === 'error' || !!dev.resetCount) : null,

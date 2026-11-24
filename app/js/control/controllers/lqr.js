@@ -135,6 +135,8 @@ export default class Lqr {
         help: 'Luenberger: 제어기 극점보다 몇 배 빠르게. 칼만: 프로세스 잡음 배율' },
       { key: 'theta_meas', label: 'θ 측정 사용', unit: '–', type: 'bool', default: true,
         help: '포텐쇼미터 서보각을 상태로 바로 쓴다. 캘리브레이션이 없으면 자동으로 관측기 추정' },
+      { key: 'ref_tau', label: '설정값 필터 τ_r', unit: 's', type: 'number', min: 0, max: 5, step: 0.1, default: 0,
+        help: '설정값을 1차 필터로 완만하게 바꿔 스텝 순간 명령(k₁·Δr)의 튐을 줄인다. 0 = 끔(기본). 켜면 응답이 τ_r 만큼 느려진다' },
     ],
     debug_keys: ['x_hat_y', 'x_hat_ydot', 'x_hat_theta', 'i', 'saturated'],
     needs_model: true,
@@ -162,6 +164,7 @@ export default class Lqr {
     if (Number.isFinite(state0.y_m)) this.xh[0] = state0.y_m;
     if (n > 2 && Number.isFinite(state0.theta_rad)) this.xh[2] = state0.theta_rad;
     this.z = 0;
+    this.rf = NaN; // 필터된 설정값(첫 update 에서 ref 로 초기화)
     this.u = Number.isFinite(state0.u_rad) ? state0.u_rad : 0;
     this.started = Number.isFinite(state0.y_m);
     this.diff.reset(Number.isFinite(state0.y_m) ? state0.y_m : NaN);
@@ -195,7 +198,15 @@ export default class Lqr {
     if (thMeas) xh[2] = aux.theta_rad;
     this.xh = xh;
     // 오차 좌표
-    const xe = xh.slice(); xe[0] = xh[0] - ref_m;
+    // 설정값 필터(ref_tau > 0): 위치 기준만 부드럽게 옮긴다(속도 기준 ṙ_f 는 넣지 않는다: 첫 샘플에서 오히려 킥이 된다)
+    let rEff = ref_m;
+    if (p.ref_tau > 0 && Number.isFinite(ref_m)) {
+      if (!Number.isFinite(this.rf)) this.rf = ref_m;
+      const prev = this.rf;
+      this.rf = prev + (dt_s / (p.ref_tau + dt_s)) * (ref_m - prev);
+      rEff = this.rf;
+    } else this.rf = NaN;
+    const xe = xh.slice(); xe[0] = xh[0] - rEff;
     let u = 0;
     for (let i = 0; i < n; i++) u -= K[i] * xe[i];
     let zn = this.z;

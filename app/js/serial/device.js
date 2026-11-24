@@ -6,7 +6,7 @@ import { BOARD_LABEL, resetHint } from './troubleshoot.js';
 import { Parser, ERROR_TEXT } from './parser.js';
 import { Writer, cmd } from './writer.js';
 import { WebSerialTransport, serialSupported, unsupportedReason } from './port.js';
-import { VirtualDevice } from '../sim/virtual-device.js';
+import { VirtualDevice, VIRTUAL_BALLS } from '../sim/virtual-device.js';
 import { PROTO_VER, HELLO_TIMEOUT_MS } from '../config/defaults.js';
 import { SEND_ORDER } from '../config/settings.js';
 
@@ -94,6 +94,15 @@ export class DeviceManager {
     this._setStatus('disconnected', { modeChanged: true });
   }
 
+  /** 가상 장치의 공 종류('hollow' | 'solid', 설정 ui.virtual_ball). 다음 연결부터 적용된다. */
+  get virtualBall() { const k = this.deps.settings?.ui?.virtual_ball; return VIRTUAL_BALLS[k] ? k : 'hollow'; }
+  setVirtualBall(kind) {
+    if (!VIRTUAL_BALLS[kind]) throw new Error(`공 종류는 ${Object.keys(VIRTUAL_BALLS).join(' 또는 ')}`);
+    this.deps.settings?.saveUi?.({ virtual_ball: kind });
+  }
+  /** 지금 연결된 가상 장치의 K_b 배율(가상 장치가 아니거나 연결 전이면 null) */
+  get virtualKbScale() { return this.mode === 'virtual' && this.transport && Number.isFinite(this.transport.kb_scale) ? this.transport.kb_scale : null; }
+
   async connect({ reuse = false } = {}) {
     if (this.mode === 'sample') throw new Error('샘플 재생 모드에서는 연결하지 않습니다');
     if (this.connected) return;
@@ -108,7 +117,7 @@ export class DeviceManager {
         this.transport = await this._makeTwin();
       } else {
         const { sim, model } = await this.deps.loadSim();
-        this.transport = new VirtualDevice({ sim, model, seed: (Date.now() & 0xffff) || 1, ...(this.deps.virtualOpts || {}) });
+        this.transport = new VirtualDevice({ sim, model, seed: (Date.now() & 0xffff) || 1, kb_scale: VIRTUAL_BALLS[this.virtualBall].kb_scale, ...(this.deps.virtualOpts || {}) });
       }
       this.transport.onText((t) => this._onText(t));
       this.transport.onClose((reason) => this._onClose(reason));

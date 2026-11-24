@@ -26,6 +26,9 @@ export default class Pid {
       { key: 'd_on', label: 'D 입력', unit: '–', type: 'enum', default: 'measurement',
         options: [{ value: 'measurement', label: '측정값 미분(킥 없음)' }, { value: 'error', label: '오차 미분' }],
         help: '오차 미분은 설정값이 바뀌는 순간 D 항이 튄다(설정값 킥)' },
+      { key: 'y_source', label: '측정값', unit: '–', type: 'enum', default: 'filtered',
+        options: [{ value: 'filtered', label: '센서 필터를 거친 값(기본)' }, { value: 'raw', label: '원측정값(필터 전)' }],
+        help: 'lqr·smc 는 원측정값을 쓴다. 이 옵션으로 pid 도 같은 입력으로 비교할 수 있다(필터의 위상 지연이 없지만 잡음이 더 크다)' },
     ],
     debug_keys: ['p', 'i', 'd', 'saturated'],
     needs_model: false,
@@ -55,8 +58,9 @@ export default class Pid {
     this._dbg = { p: 0, i: 0, d: 0, saturated: false, lost: false };
   }
 
-  update(ref_m, y_m, dt_s) {
+  update(ref_m, y_m_in, dt_s, aux = {}) {
     const lim = this.env.u_lim_rad;
+    const y_m = this.params.y_source === 'raw' && 'y_raw_m' in aux ? aux.y_raw_m : y_m_in;
     if (!Number.isFinite(y_m) || !Number.isFinite(ref_m)) {
       this._dbg = { ...this._dbg, lost: true };
       return this.u; // 규칙 2: 직전 u 유지, 적분 정지

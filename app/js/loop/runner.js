@@ -198,7 +198,15 @@ export class Runner {
         notes: opts.notes || '',
         ...(opts.extraMeta || {}),
       };
-      if (dev.mode === 'virtual') meta.notes = (meta.notes ? meta.notes + ' | ' : '') + '가상 장치(시뮬레이션) 세션';
+      if (dev.mode === 'virtual') {
+        meta.notes = (meta.notes ? meta.notes + ' | ' : '') + '가상 장치(시뮬레이션) 세션';
+        // 공 종류(12장 모델 오차 실험): 기본(속이 빈 공)이 아니면 배율을 메타와 메모에 남긴다
+        const ks = dev.virtualKbScale;
+        if (Number.isFinite(ks) && Math.abs(ks - 1) > 1e-9) {
+          meta.device = { ...meta.device, kb_scale: +ks.toFixed(4) };
+          meta.notes += ` | 공: 속이 찬 공(플랜트 K_b × ${ks.toFixed(2)})`;
+        }
+      }
       // 디지털 트윈(docs/spec/digital-twin.md §8): source 는 기존 'virtual' 유지(provenance simulated), device.mode = 'twin'
       const tw = dev.twinSessionMeta ? dev.twinSessionMeta() : null;
       if (tw) {

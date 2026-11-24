@@ -5,6 +5,9 @@
 //   blend = 'sigmoid' : w_far = 1/(1 + exp(−(d − boundary)/(blend_width/6)))
 //   u = kp·e + I − kd·ẏ_f + b       (D는 측정값 미분, ẏ_f = s/(0.1 s + 1)·y)
 //   bumpless = true : 게인이 바뀌어 출력이 튀려 하면 그 차이를 b 로 흡수하고 b 를 시정수 0.5 s 로 0에 감쇠.
+//      흡수할 차이는 "직전 샘플의 신호(e, ẏ_f)에 이전 게인과 새 게인을 각각 곱한 출력의 차"다. 즉 직전 샘플에 실제로 낸
+//      출력을 이어받는다. 이번 샘플의 오차로 계산하면, 설정값 스텝과 전환이 겹칠 때 이전 게인 × 새 오차라는
+//      한 번도 낸 적 없는 큰 출력을 이어받아 오히려 튐을 키운다(2026-11-13 수정 전 동작: 5.8° → 18.9°).
 //      (적분기로 흡수하면 Ki = 0 영역에서 영원히 남아 정상상태 오차가 되므로 감쇠 항을 따로 둔다.)
 //   슬라이드 50 의 게인 단위(SI 인지 deg/cm 인지)는 미확정(controller-interface §9) — SI 로 가정한다.
 import { mergeParams, saturate, dtValid, FilteredDiff, pidSpecs } from './common.js';
@@ -43,7 +46,7 @@ export default class GainSchedule {
   }
   setParams(partial) { this.params = mergeParams(GainSchedule.meta.params, partial, this.params); }
   reset(state0 = {}) {
-    this.I = 0; this.b = 0; this.ePrev = NaN; this.prevGains = null;
+    this.I = 0; this.b = 0; this.ePrev = NaN; this.ydotPrev = 0; this.prevGains = null;
     this.u = Number.isFinite(state0.u_rad) ? state0.u_rad : 0;
     this.diff.reset(Number.isFinite(state0.y_m) ? state0.y_m : NaN);
     this._dbg = { kp: 0, ki: 0, kd: 0, region: 'near', w_far: 0, i: 0, saturated: false, lost: false };
@@ -72,21 +75,19 @@ export default class GainSchedule {
     let In = this.I;
     if (ki > 0) In += ki * dt_s * (Number.isFinite(this.ePrev) ? 0.5 * (e + this.ePrev) : e);
     In = Math.max(-lim, Math.min(lim, In));
-    // bumpless: 게인 변화로 생긴 출력 차이를 b로 흡수
+    // bumpless: 게인 변화로 생긴 출력 차이를 b로 흡수 (직전 샘플의 신호 기준 — 머리말 참조)
     if (p.bumpless && this.prevGains) {
       const g = this.prevGains;
       const changed = g.kp !== kp || g.kd !== kd;
-      if (changed) {
-        const uOld = g.kp * e + In - g.kd * ydot;
-        const uNew = kp * e + In - kd * ydot;
-        this.b += uOld - uNew;
+      if (changed && Number.isFinite(this.ePrev)) {
+        this.b += (g.kp - kp) * this.ePrev - (g.kd - kd) * this.ydotPrev;
       }
       this.b *= Math.exp(-dt_s / TAU_BUMP);
     } else this.b = 0;
     const uTry = kp * e + In - kd * ydot + this.b;
     if (ki > 0 && Math.abs(uTry) > lim && Math.sign(uTry) === Math.sign(In - this.I)) In = this.I;
     this.I = ki > 0 ? In : this.I; // ki = 0 영역에서는 적분값을 고정(다른 영역의 적분을 보존)
-    this.ePrev = e;
+    this.ePrev = e; this.ydotPrev = ydot;
     this.prevGains = { kp, kd };
     const r = saturate(kp * e + this.I - kd * ydot + this.b, lim);
     this.u = r.u;
