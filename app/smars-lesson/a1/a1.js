@@ -1052,6 +1052,44 @@ function btFlowSVG(){
     </g>
   </svg>`;
 }
+/* 5-9b. M6 블루투스: HC-05 RXD 분압(5V→3.3V) 회로도 */
+function btDividerSVG(){
+  const a0 = pin('bt','RXD←').split('(')[0], a1 = pin('bt','TXD→').split('(')[0];   // A0(아두이노 TX), A1(아두이노 RX)
+  return `<svg viewBox="0 0 560 240" id="btDiv" role="img" aria-label="HC-05 RXD 분압 회로도: ${esc(a0)} - 1kΩ - RXD, RXD - 2kΩ - GND">
+    <defs><marker id="btDivArr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#4fd1e0"/></marker></defs>
+    <rect x="10" y="20" width="140" height="200" rx="8" fill="#101a2e" stroke="#4f8ef7" stroke-width="2"/>
+    <text x="20" y="38" fill="#4f8ef7" font-size="13" font-weight="700">Arduino UNO</text>
+    <text x="140" y="54" fill="#e8eaf6" font-size="12" text-anchor="end">${esc(a1)} (RX)</text>
+    <text x="140" y="104" fill="#e8eaf6" font-size="12" text-anchor="end">${esc(a0)} (TX)</text>
+    <text x="140" y="204" fill="#e8eaf6" font-size="12" text-anchor="end">GND</text>
+    <rect x="410" y="20" width="140" height="200" rx="8" fill="#141722" stroke="#6f8cff" stroke-width="2"/>
+    <text x="480" y="38" fill="#6f8cff" font-size="13" font-weight="700" text-anchor="middle">HC-05</text>
+    <text x="420" y="54" fill="#e8eaf6" font-size="12">TXD</text>
+    <text x="420" y="104" fill="#e8eaf6" font-size="12">RXD</text>
+    <text x="420" y="120" fill="#4fcf83" font-size="10">3.3V 입력</text>
+    <text x="420" y="204" fill="#e8eaf6" font-size="12">GND</text>
+    <!-- TXD → A1: 직결 -->
+    <path d="M410,50 L156,50" stroke="#4fd1e0" stroke-width="2.5" fill="none" marker-end="url(#btDivArr)"/>
+    <text x="280" y="42" fill="#7a7f99" font-size="10.5" text-anchor="middle">3.3V 출력 → UNO는 3.0V 이상을 HIGH로 읽음: 직결</text>
+    <!-- A0 → R1 → 가운데 점 → RXD -->
+    <path d="M150,100 L195,100 M255,100 L410,100" stroke="#f7a64f" stroke-width="2.5" fill="none"/>
+    <rect x="195" y="90" width="60" height="20" rx="2" fill="#1c1f2b" stroke="#f7a64f" stroke-width="2"/>
+    <text x="225" y="84" fill="#f7a64f" font-size="11.5" font-weight="700" text-anchor="middle">R1 1kΩ</text>
+    <text x="172" y="92" fill="#f74f4f" font-size="11" font-weight="700" text-anchor="middle">5V</text>
+    <text x="368" y="92" fill="#4fcf83" font-size="11" font-weight="700" text-anchor="middle">≈3.3V</text>
+    <circle cx="320" cy="100" r="4.5" fill="#4fcf83"/>
+    <!-- 가운데 점 → R2 → GND -->
+    <path d="M320,100 L320,125 M320,175 L320,200" stroke="#9aa3ad" stroke-width="2.5" fill="none"/>
+    <rect x="310" y="125" width="20" height="50" rx="2" fill="#1c1f2b" stroke="#9aa3ad" stroke-width="2"/>
+    <text x="338" y="148" fill="#c8ccd8" font-size="11.5" font-weight="700">R2 2kΩ</text>
+    <text x="338" y="163" fill="#7a7f99" font-size="10">(GND 쪽)</text>
+    <path d="M150,200 L410,200" stroke="#5c6370" stroke-width="2.5" fill="none"/>
+    <circle cx="320" cy="200" r="4.5" fill="#9aa3ad"/>
+    <text x="235" y="216" fill="#7a7f99" font-size="10.5" text-anchor="middle">GND 공통 (UNO·HC-05·R2)</text>
+    <text x="225" y="160" fill="#7a7f99" font-size="10.5" text-anchor="middle">5V × 2k ÷ (1k + 2k)</text>
+    <text x="225" y="176" fill="#4fcf83" font-size="11" font-weight="700" text-anchor="middle">≈ 3.3V</text>
+  </svg>`;
+}
 const BT_STEPS = () => ({
   pair: `<b>1 페어링</b>: PC(또는 폰)의 블루투스 설정에서 로봇 이름(예: SMARS-01)을 찾아 연결합니다. 기본 PIN은 <b>1234</b> 또는 <b>0000</b>. 다른 팀 로봇과 헷갈리지 않게 이름을 꼭 확인하세요.`,
   com: `<b>2 가상 COM 포트</b>: 페어링하면 PC에 "블루투스 COM 포트"가 생깁니다. 프로그램 입장에서는 USB 시리얼과 똑같이 보여서 Web Serial(아래 미니 모니터)로 <b>${PINMAP.bt.baud}bps</b>로 열면 됩니다. HC-05는 <b>무선 시리얼 케이블</b>인 셈입니다.`,
@@ -1144,6 +1182,24 @@ function btPrincipleHTML(){
     <div class="explain"><p>문자 하나는 이렇게 한 비트씩 줄지어 나갑니다.</p>
       <ul><li><b style="color:var(--red)">시작 비트</b>(0): "이제 보낸다" 신호</li><li><b>데이터 8비트</b>: 가장 낮은 자리부터</li><li><b style="color:var(--green)">정지 비트</b>(1): "한 글자 끝"</li></ul>
       <div class="status" id="uartInfo"></div></div>
+  </div>
+  <hr style="border:none;border-top:1px solid var(--border);margin:14px 0">
+  <div class="ia">
+    <div>${btDividerSVG()}</div>
+    <div class="explain"><p><b>HC-05 RXD에 분압(5V→3.3V)을 하는 이유</b></p>
+      <ul>
+        <li>HC-05의 블루투스 칩(BC417)은 <b>3.3V</b>로 동작합니다. 모듈 기판의 레귤레이터가 VCC(5V)는 3.3V로 낮춰 주지만, <b>RXD 신호 핀은 칩에 바로</b> 이어져 있습니다.</li>
+        <li>UNO의 TX(${pin('bt','RXD←').split('(')[0]})는 HIGH일 때 <b>5V</b>를 냅니다. 이 5V가 그대로 들어가면 칩 입력 허용 전압(약 3.6V)을 넘어 칩 안 보호 다이오드로 전류가 흐릅니다. 당장은 동작해도 열이 나고 <b>수명이 줄거나 고장</b>날 수 있습니다.</li>
+        <li>반대 방향(HC-05 TXD → ${pin('bt','TXD→').split('(')[0]})은 그냥 연결합니다. HC-05가 내는 3.3V를 UNO는 HIGH(5V의 60% = 3.0V 이상)로 읽기 때문입니다.</li>
+      </ul>
+      <p><b>저항 2개로 나누기(분압)</b>: 두 저항 사이 가운데 점의 전압 = 5V × R2 ÷ (R1 + R2) = 5 × 2 ÷ 3 ≈ <b>3.3V</b></p>
+      <ul>
+        <li>${pin('bt','RXD←').split('(')[0]} → <b>R1 1kΩ</b> → 가운데 점 → HC-05 <b>RXD</b></li>
+        <li>가운데 점 → <b>R2 2kΩ</b> → <b>GND</b> (UNO·HC-05 GND와 공통)</li>
+        <li>브레드보드: 비어 있는 세로줄 하나를 가운데 점으로 쓰고, R1·R2의 한쪽 다리와 HC-05 RXD 선을 모두 그 줄에 꽂습니다.</li>
+        <li>2kΩ이 없으면 <b>1kΩ 두 개를 직렬</b>로, 또는 2.2kΩ + 3.3kΩ(≈3.0V), 10kΩ + 20kΩ도 됩니다(9600bps라 큰 저항도 괜찮음).</li>
+      </ul>
+      <div class="warn"><b>R1과 R2를 바꿔 꽂으면</b> 약 1.7V가 되어 HC-05가 글자를 못 받습니다. 큰 저항(2kΩ)이 <b>GND 쪽</b>입니다.</div></div>
   </div>`;
 }
 function initBt(sec){ initBtFlow(sec); initUart(sec); }
@@ -1402,7 +1458,7 @@ Object.assign(LESSON, {
   /* ---------------- M6 블루투스 ---------------- */
   m6: {
     goal: `HC-05가 '무선 시리얼 케이블'로 동작하는 원리(페어링·가상 COM·UART 교차 연결)를 알고, 블루투스로 문자를 보내 로봇을 움직인다.`,
-    topWarn: `<b>배선 주의:</b> HC-05 TXD → <b>${pin('bt','TXD→')}</b>, RXD ← <b>${pin('bt','RXD←')}</b> (교차). HC-05 RXD에는 <b>분압(5V→3.3V)</b>을 권장합니다. 배선은 USB·배터리를 뺀 뒤에 바꿉니다.`,
+    topWarn: `<b>배선 주의:</b> HC-05 TXD → <b>${pin('bt','TXD→')}</b>, RXD ← <b>${pin('bt','RXD←')}</b> (교차). HC-05 RXD에는 <b>분압(5V→3.3V)</b>을 권장합니다(${pin('bt','RXD←').split('(')[0]} → 1kΩ → RXD, RXD → 2kΩ → GND, ① 원리 맨 아래 회로도). 배선은 USB·배터리를 뺀 뒤에 바꿉니다.`,
     principle: { html: () => btPrincipleHTML(), init: initBt },
     wiring: { keys:['bt'],
       notes: `<div class="box">HC-05는 <b>${PINMAP.bt.baud}bps</b>, USB는 <b>${PINMAP.usb.baud}bps</b>로 서로 다릅니다. 모터·부저 핀은 M2·M3와 같습니다(공통 핀 맵 참고).</div>
@@ -1435,6 +1491,7 @@ Object.assign(LESSON, {
         · 블루투스로 테스트: PC에서 페어링 후 미니 모니터를 <b>블루투스 COM / ${PINMAP.bt.baud}</b>로 연결, 또는 폰 블루투스 시리얼 앱 사용</div>`,
     checklist: [
       `HC-05 TXD → ${pin('bt','TXD→')}, RXD ← ${pin('bt','RXD←')}로 교차 연결했다 (바퀴는 띄운 채)`,
+      `HC-05 RXD에 분압 저항을 넣었다: ${pin('bt','RXD←').split('(')[0]} 쪽 1kΩ, GND 쪽 2kΩ (권장)`,
       '코드 검사표로 SoftwareSerial (RX, TX) 순서를 확인했다',
       `USB(${PINMAP.usb.baud})로 F·S·Z를 보내면 바퀴·부저가 반응하고 "USB> F"가 찍힌다`,
       'PC(또는 폰)에서 우리 팀 로봇 이름을 확인하고 페어링했다',
@@ -1443,6 +1500,7 @@ Object.assign(LESSON, {
     ],
     quiz: [
       { q:'HC-05 TXD를 아두이노의 TX에 꽂으면 왜 안 될까?', a:'TX는 "보내는" 핀이라 둘 다 말만 하고 아무도 듣지 않는다. 한쪽의 TX는 상대의 RX에 꽂는다(교차 연결).' },
+      { q:'HC-05 RXD에 1kΩ·2kΩ 분압을 넣는 이유와 가운데 점의 전압은?', a:'HC-05 칩은 3.3V로 동작하는데 UNO TX는 5V를 내므로 낮춰야 한다. 5V × 2k ÷ (1k + 2k) ≈ 3.3V. 반대 방향(HC-05 TXD → UNO)은 3.3V도 HIGH로 읽혀 그냥 연결한다.' },
       { q:'왜 D0/D1 대신 다른 핀과 SoftwareSerial을 쓸까?', a:'D0/D1은 USB 시리얼(업로드·시리얼 모니터)이 쓰고 있기 때문이다.' },
       { q:'웹 페이지가 Web Bluetooth로 HC-05에 바로 연결하지 못하는 이유는?', a:'Web Bluetooth는 BLE만 지원하고, HC-05는 클래식 블루투스(SPP)이다. 그래서 블루투스 COM 포트를 Web Serial로 연다.' },
       { q:"'F' 한 글자를 보낼 때 실제로 몇 비트가 나갈까?", a:'시작 비트 1 + 데이터 8 + 정지 비트 1 = 10비트.' },
